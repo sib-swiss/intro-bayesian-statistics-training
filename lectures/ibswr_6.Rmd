@@ -73,17 +73,7 @@ brmfit_t <- brm(bf(Height ~ Sex, sigma ~ Sex), swiss_army_df) # run the model
 
 ```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
 library(brms) # load the library
-run_model <- function(expr, path, reuse = TRUE) {
-  path <- paste0(path, ".Rds")
-  if (reuse) {
-    fit <- suppressWarnings(try(readRDS(path), silent = TRUE))
-  }
-  if (is(fit, "try-error")) {
-    fit <- eval(expr)
-    saveRDS(fit, file = path)
-  }
-  fit
-}
+source("./ibswrfiles/brm_run.R")
 brmfit_t <- run_model(brm(bf(Height ~ Sex, sigma ~ Sex), swiss_army_df), "./brm_models_lectures/t_test")
 ```
 
