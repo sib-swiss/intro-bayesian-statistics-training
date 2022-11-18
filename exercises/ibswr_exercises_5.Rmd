@@ -1,0 +1,61 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "5: Exercises"
+author: "Jack Kuipers"
+date: "29 November 2022"
+output:
+  pdf_document:
+    fig_width: 6
+    fig_height: 3
+    latex_engine: xelatex
+    includes:
+      in_header: ./logos/header.tex
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+library(ggplot2)
+```
+
+## Exercise 5.1 - a Bayesian analysis
+
+For the data (`lung_data.csv`) from Exercise 1.1 (from a small clinical trial on asthma patients measuring the lung function of a control group on a placebo and a treatment group on a new drug)
+
+* run a Bayesian analysis to explore the difference in function between the two groups
+* visualise the output, especially for the component of interest
+* compare the 95% credible interval to the 95% confidence interval of Exercise 1.1.
+
+Did you run the analogue of the equal/unequal variance $t$-test, and did you check the posterior?
+
+
+**NOTE**: since Bayesian analysis with `brms` and `Rstan` can take some computational time, in the lecture we used the following helper function to save an MCMC run to file the first time it is run, and load it from file otherwise:
+
+```{r}
+run_model <- function(expr, path, reuse = TRUE) {
+  path <- paste0(path, ".Rds")
+  if (reuse) {
+    fit <- suppressWarnings(try(readRDS(path), silent = TRUE))
+  }
+  if (is(fit, "try-error")) {
+    fit <- eval(expr)
+    saveRDS(fit, file = path)
+  }
+  fit
+}
+```
+
+For example, in the `Two sample $t$-test in Stan' slide where we display 
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+brmfit <- brm(Height ~ Sex, swiss_army_df) # run the model
+```
+
+we actually run the following command in the background (with a different directory)
+
+```{r, eval = FALSE}
+library(brms) # load the library
+brmfit <- run_model(brm(Height ~ Sex, swiss_army_df), "./brm_models_exercises/t_test_v") 
+```
+
+which saves/loads from `./brm_models_exercises/t_test_v.Rds`.

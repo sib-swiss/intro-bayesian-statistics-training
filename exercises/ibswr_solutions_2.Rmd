@@ -1,0 +1,168 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "2: Exercise solutions"
+author: "Jack Kuipers"
+date: "28 November 2022"
+output:
+  pdf_document:
+    fig_width: 6
+    fig_height: 3
+    latex_engine: xelatex
+    includes:
+      in_header: ./logos/header.tex
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, include = TRUE, fig.align = "center")
+knitr::opts_knit$set(global.par = TRUE)
+```
+
+First we load the tidyverse and set a seed.
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse); set.seed(42)
+```
+
+
+---
+
+## Bonus Exercise 2.1 - a testing example
+
+*This example comes from **Eddy (1982)**, and asked of medical doctors to see if they can get the right ballpark probability in the end:*
+
+* *1% of women at age forty who participate in routine screening have breast cancer.*
+* *80% of women with breast cancer will get positive mammographies.*
+* *9.6% of women without breast cancer will also get positive mammographies.*
+
+*A woman in this age group had a positive mammography in a routine screening. What is the probability that she actually has breast cancer?*
+
+We can plug all the information into Bayes theorem, using $+$ to signify a positive test and $C$ to indicate having breast cancer.
+
+$$P(C \mid +) = \frac{P(+ \mid C)P(C)}{P(+)} = \frac{0.8\times 0.01}{P(+)} = \frac{0.008}{P(+)}$$
+
+To proceed we use the expanded version of the denominator in terms of the two possible cancer states
+
+$$P(+) = P(+ \mid C)P(C) + P(+ \mid \neg C)P(\neg C) = 0.8\times0.01 + 0.096\times0.99 = 0.10304$$
+
+and obtain
+
+$$P(C \mid +) = \frac{0.008}{0.10304} = 0.078$$
+
+or around 8\%. This is quite far from a lot of people's intuitive answer of around 80% in line with the true positive rate of the test, and illustrates the dangers of "inverting" conditional probabilities in your head.
+
+A possibly easier way to get to the solution is to imagine a large population which we can separate into the four categories according to the probabilities above:
+
+```{r plot medical test frequencies, echo = FALSE, out.width="60%"}
+source("./ibswr_exercise_files/colordefs.R")
+  par(mar = c(0, 0, 0, 0))
+  plot(NULL, xlim = c(-3.75, 4.75), ylim = c(0.25, 4.25), axes = FALSE, xlab = "", ylab = "")
+  polygon(0.125 + 1.25*c(-1, -1, 1, 1, -1), 3.5 + c(-0.25, 0.25, 0.25, -0.25, -0.25), border = "grey", col = "#88888888")
+  text(0.125, 3.5, "1,000,000", cex = 2)
+  text(0.125, 4, "Total", cex = 2)
+  polygon(-2 + 0.75*c(-1, -1, 1, 1, -1), 2 + c(-0.25, 0.25, 0.25, -0.25, -0.25), border = "darkorange", col = darkorangetrans)
+  text(-2, 2.5, "Cancer",cex = 2)
+  text(-2, 2, "10,000", cex = 2)
+  polygon(2.5 + c(-1, -1, 1, 1, -1), 2 + c(-0.25, 0.25, 0.25, -0.25, -0.25), border = "dodgerblue", col = dodgerbluetrans)
+  text(2.5, 2.5, "No cancer", cex = 2)
+  text(2.5, 2, "990,000", cex = 2)
+  polygon(-3 + 0.75*c(-1, -1, 1, 1, -1), 0.5 + c(-0.25, 0.25, 0.25, -0.25, -0.25), border = "firebrick3", col = firebricktrans)
+  text(-3, 0.5, "8,000",cex = 2)
+  text(-3, 1, "Test +", cex = 2)
+  polygon(-1 + 0.75*c(-1, -1, 1, 1, -1), 0.5 + c(-0.25, 0.25, 0.25, -0.25, -0.25), border = "darkorchid4", col = darkorchidtrans)
+  text(-1, 0.5, "2,000",cex = 2)
+  text(-1, 1, "Test -", cex = 2)
+  polygon(1.25 + c(-1, -1, 1, 1, -1), 0.5 + c(-0.25, 0.25, 0.25, -0.25, -0.25), border = "firebrick3", col = firebricktrans)
+  text(1.25, 0.5, "95,040", cex = 2)
+  text(1.25, 1, "Test +", cex = 2)
+  polygon(3.75 + c(-1, -1, 1, 1, -1), 0.5 + c(-0.25, 0.25, 0.25, -0.25, -0.25), border = "darkorchid4", col = darkorchidtrans)
+  text(3.75, 0.5, "894,960", cex = 2)
+  text(3.75, 1, "Test -", cex = 2)
+  lines(c(-2, 0.125, 2.5), c(2.75, 3.25, 2.75), col = "grey", lwd = 2)
+  lines(c(-3, -2, -1), c(1.25, 1.75, 1.25), col = "grey", lwd = 2)
+  lines(c(1.25, 2.5, 3.75), c(1.25, 1.75, 1.25), col = "grey", lwd = 2)
+```
+
+Among those with a positive test: 8,000 have cancer, while 95,040 don't so
+
+$$P(C \mid +) = \frac{8,000}{8,000 + 95,040} = 0.078$$
+
+## Exercise 2.2 - confidence intervals
+
+*Take a sample from a normal distribution extract its 95% confidence interval. Is the true mean inside this confidence interval?*
+
+*Repeat this procedure a large number of times. How often is the true mean in the confidence interval?*
+
+*Is your result in line with questions 4 and 5 of the confidence interval quiz?*
+
+For a single sample
+
+```{r, echo=TRUE}
+test_sample <- rnorm(50, mean = -0.25, sd = 1)
+t.test(test_sample)$conf.int
+```
+
+we can see that the true mean is `r ifelse(t.test(test_sample)$conf.int[1] > -0.25 | t.test(test_sample)$conf.int[2] < -0.25, "not", "")` in the confidence interval.
+
+Let's move to 100 repetitions
+
+```{r, echo=TRUE}
+conf_ints <- NULL
+for (ii in 1:100) {
+    test_sample <- rnorm(50, mean = -0.25, sd = 1)
+    tt   <- t.test(test_sample, mu = -0.25) # test against true mean
+    low  <- tt$conf.int[1]
+    high <- tt$conf.int[2]
+    pval <- tt$p.value
+    me   <- tt$estimate
+    conf_ints  <- rbind(conf_ints, 
+                  data.frame(id = ii, low = low, high = high, pval = pval, me = me))
+}
+```
+
+Remembering that for two-sided tests, if a $p$-value (with a null of the true mean) is significant at a significance level $\alpha$, the $1 - \alpha$ confidence interval does *not* contain the true mean, we colour by significance and plot:
+
+```{r, out.width = "75%"}
+ggplot(conf_ints) +
+  geom_segment(aes(x = low, xend = high, y = id, yend = id, col = pval < 0.05)) + 
+  geom_point(aes(x = me, y = id, col = pval < 0.05), size = 2) + theme_minimal() +
+  theme(legend.title = element_blank(), axis.text.y = element_blank()) +
+  scale_color_manual(values = c("dodgerblue", "darkorchid4"),
+                     label = c("p-value >= 0.05", "p-value < 0.05")) +
+  labs(x = "", y = "Different CIs") + 
+  ggtitle("95% confidence intervals of the mean") +
+  geom_vline(aes(xintercept = -0.25), col = "firebrick3") + 
+  theme(text = element_text(size = 14))
+```
+
+Here `r sum(conf_ints$pval < 0.05)` were significant so `r 100*mean(conf_ints$pval > 0.05)` percent of the confidence intervals included the true mean.
+
+For a larger number of repetitions, say a million:
+
+```{r, echo = TRUE}
+n_reps <- 1e6
+mean_inside <- rep(NA, n_reps)
+for (ii in 1:n_reps) {
+    tt <- t.test(test_sample <- rnorm(50, mean = -0.25, sd = 1), mu = -0.25)
+    mean_inside[ii] <- tt$conf.int[1] < -0.25 && tt$conf.int[2] > -0.25
+}
+round(100*mean(mean_inside), 2)
+```
+
+we indeed get around 95% of the confidence intervals including the true mean of $-\frac{1}{4}$.
+
+Why, then are statements 4 and 5 of the confidence interval quiz false? The pedantic answer is that $\mu$ is fixed. Whether $\mu$ lies between 0.1 and 0.4 is deterministic and either true or false. Is it not a probabilistic question, and we cannot answer it with a probability. Note that in all the simulations above we knew the true mean, but in the quiz setting we only know the sample mean. From the sample mean and without knowing the true mean, we don't know if our particular confidence interval included the true mean or not. A weak analogy would be rolling a die. Before rolling it, the chance you get a 6 is $\frac{1}{6}$. 
+
+```{r}
+die_sample <- sample(6, 1)
+```
+
+Once rolled, you get a `r die_sample` and it either is a 6 or isn't (`r ifelse(die_sample == 6, "is", "not")` in this case). Before running our experiment and getting the data, the probability the confidence interval containing the true mean is 95%. For the particular random realisation of the confidence interval we cannot say.
+
+The misinterpretation of confidence intervals is fairly common. For example, despite this correct note in a book from a statistics professor
+
+\includegraphics{./ibswr_exercise_files/spiegel1.png}
+
+their own incorrect description 7 pages later of the confidence interval computed from real data, ironically highlights their point about misinterpretation
+
+\includegraphics{./ibswr_exercise_files/spiegel2.png}

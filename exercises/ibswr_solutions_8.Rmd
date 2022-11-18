@@ -1,0 +1,170 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "8: Exercise solutions"
+author: "Jack Kuipers"
+date: "29 November 2022"
+output:
+  pdf_document:
+    fig_width: 6
+    fig_height: 3
+    latex_engine: xelatex
+    includes:
+      in_header: ./logos/header.tex
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, include = TRUE, fig.align = "center")
+knitr::opts_knit$set(global.par = TRUE)
+```
+
+First we load the tidyverse, brms and set a seed.
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse); options(dplyr.summarise.inform = FALSE) # suppress summarise warnings
+library(brms)
+set.seed(42)
+```
+
+
+---
+
+## Optional Exercise 8.1 - Logistic regression
+
+*To run a logistic regression, we can use the `glm()` function with `family = "binomial"` (see details in `?stats::family`) and\newline`formula = cbind(cancers, noncancers) ~ ...`*
+
+* *Fit a logistic regression model of cancer incidence with `age_s`, `sex`, `race`, and `registry`, as explanatory variables (no interactions). Examine the model summary and coefficients.*
+
+* *Use `I(age_s^2)` to add a quadratic `age_s` term to the model.*
+
+* *Install the `visreg` package, and use `visreg(..., "age_s")` to visualise the fitted slope of `age_s` ($x$-axis) with respect to the log odds ($y$-axis). The points are the partial residuals with respect to `age_s`. Does the model fit and `visreg` plot change for the better when including the quadratic term?*
+
+After we load the data
+
+```{r}
+load("./data/CRC_Data.RData")
+```
+
+we run it through the logistic regression using the syntax above
+
+```{r}
+glm_fit <- glm(formula = cbind(cancers, noncancers) ~ age_s + sex + race + registry,
+                 family = "binomial", data = CRC_df)
+summary(glm_fit)
+```
+
+The regression coefficients are all very significant predictors of cancer incidence, with each coefficient representing the change in log-odds of cancer for a unit change in the continuous variable `age_s` or a change in level (compared to reference) for the categorical variables.
+
+To include the quadratic term in `age_s`, we use the suggested syntax and obtain the following regression results:
+
+```{r}
+glm_fit2 <- glm(formula = cbind(cancers, noncancers) ~ age_s + sex + race + registry + 
+                  I(age_s^2), family = "binomial", data = CRC_df)
+summary(glm_fit2)
+```
+
+There are slight changes to all categorical regression coefficients, and an obvious large change for the `age_s` and `(Intercept)` now we have the quadratic term. The quadratic term for `age_s` is also a highly significant predictor, suggesting already that the quadratic dependence on `age_s` is a better fit than a linear model.
+
+When we visualise the models with `visreg`, without the quadratic term we get the following plot
+
+```{r}
+library(visreg)
+visreg(glm_fit, xvar = "age_s")
+```
+
+where the partial residuals suggest a nonlinear trend in `age`. With the quadratic term, this looks a lot better:
+
+```{r}
+visreg(glm_fit2, xvar = "age_s")
+```
+
+
+## Exercise 8.2 - Bayesian logistic regression
+
+*For Bayesian modelling with `brms` we can use the `brm()` function with `family = binomial`, but with a somewhat different syntax for the formula. We separate the number of occurrences from the number of trials (input into the `trials` function) with `|` and\newline`formula = cancers | trials(total) ~ ...`*
+
+* *Fit a Bayesian logistic regression model of cancer incidence with `age_s`, `sex`, `race`, and `registry` as explanatory variables (no interactions). Include `I(age_s^2)` to add a quadratic `age_s` term to the model.*
+
+* *Check the model convergence.*
+
+* *If you've done Exercise 8.1, compare the regression coefficients.*
+
+* *What is the posterior distribution of the probability of having cancer for a 75 year-old Black female from registry 27?*
+
+Running the model we use the following syntax (with our helper function in the background)
+
+```{r, eval = TRUE, echo = FALSE}
+source("./ibswr_exercise_files/brm_run.R")
+```
+
+```{r, eval = TRUE, echo = TRUE}
+brmfit_ex8 <- run_model(brm(bf(cancers | trials(total) ~ age_s + sex + race + registry + 
+  I(age_s^2)), family = binomial, CRC_df), "./brm_models_exercises/logistic_ex8")
+```
+
+With so much data, we didn't worry too much about the default prior (especially as we use the rescaled age), and first we check the trace plots
+
+```{r, eval = TRUE, echo = TRUE, message=FALSE, warning=FALSE, fig.height=4.5}
+mcmc_plot(brmfit_ex8, type = "trace")
+```
+
+which all look quite good, as do the $\hat{R}$ values:
+
+```{r, eval = TRUE, echo = TRUE}
+rhat(brmfit_ex8)
+```
+
+and the effective sample sizes:
+
+```{r, eval = TRUE, echo = TRUE}
+summary(brmfit_ex8)$fixed$Bulk_ESS
+summary(brmfit_ex8)$fixed$Tail_ESS
+```
+
+If we look at the regression coefficients
+
+```{r, eval = TRUE, echo = TRUE}
+fixef(brmfit_ex8)
+```
+
+these are very similar to the logistic regression before, but now from these we can extract posterior estimates. For example, for a 75 year old Black female from registry 27, from the posterior samples of the regression coefficients we would have the following mapping to the sampled log-odds
+$$ b\_Intercept + 2.5*b\_age\_s + b\_sexfemale + b\_raceblack + b\_registry27 + 2.5^2*b\_Iage\_sE2 $$
+
+From the posterior samples we can therefore create a new column of the log-odds, which we transform back to probabilities with the inverse-logit, or expit, function
+
+```{r, eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE, out.width="65%"}
+expit <- function(x) { # inverse logit
+  exp(x)/(1 + exp(x))
+}
+as_draws_df(brmfit_ex8) %>% mutate(log_odds = b_Intercept + 2.5*b_age_s + b_sexfemale + 
+  b_raceblack + b_registry27 + 2.5^2*b_Iage_sE2,
+  probs = expit(log_odds)) %>%
+  ggplot(aes(probs)) + geom_density(color = "dodgerblue")
+```
+
+The resulting probabilities are mostly between 0.0029 and 0.003, which is closely aligned with the observed frequency of cancer in that stratum:
+
+```{r}
+CRC_df %>% filter(age == 75, sex == "female", race == "black", registry == 27) %>%
+  mutate(prob = cancers/total)
+```
+
+Rather than doing this by hand, we can use the `posterior_predict` function (or rather the `posterior_linpred` function for the linear modelling part) on new data. For this we make a small data frame of our individual 
+
+```{r}
+newdata <- data.frame(
+  age_s = c(2.5), #transformed age
+  sex = factor("female"),
+  race = factor("black"),
+  registry = c("27"),
+  total = 1e5 # dummy value needed to make the functions work
+)
+```
+
+and pass it into `posterior_linpred` with the argument `transform = TRUE` to output the results in the probability space (rather than the logit-space)
+
+```{r, eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE, out.width="65%"}
+posterior_linpred(brmfit_ex8, newdata, transform = TRUE) %>% data.frame(probs = .) %>% 
+  ggplot(aes(probs)) + geom_density(color = "dodgerblue")
+```
+

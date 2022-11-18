@@ -1,0 +1,36 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "6: Exercises"
+author: "Jack Kuipers"
+date: "29 November 2022"
+output:
+  pdf_document:
+    fig_width: 6
+    fig_height: 3
+    latex_engine: xelatex
+    includes:
+      in_header: ./logos/header.tex
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+library(ggplot2)
+```
+
+## Exercise 6.1 - a fully Bayesian analysis
+
+Take your analysis from Exercise 5.1 (of the `lung_data.csv` from Exercise 1.1) and turn it into a robust $t$-test. Now to make the analysis fully Bayesian we should select our prior choices.
+
+* Check which priors have already been set by default
+* Input sensible priors, especially for the regression coefficients and intercept of $\sigma$.
+* Check prior predictions
+* Run the Bayesian analysis and discuss the output of interest.
+
+## Bonus Exercise 6.2 - confounding
+
+**NOTE**: This exercise is an optional bonus for when you have sufficient free time.
+
+The data from the previous exercise had unfortunately lost a column, namely the participant's *Sex*. Read in the full data `lung_data_all.csv` and test for a difference in means between the two groups, adjusting to the participant's sex using `lm`.
+
+Can you see how to port the `lm` syntax into `brms` and run a Bayesian version of the same analysis?

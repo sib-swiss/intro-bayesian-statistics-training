@@ -1,0 +1,48 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "2: Exercises"
+author: "Jack Kuipers"
+date: "28 November 2022"
+output:
+  pdf_document:
+    fig_width: 6
+    fig_height: 3
+    latex_engine: xelatex
+    includes:
+      in_header: ./logos/header.tex
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+library(ggplot2)
+```
+
+## Bonus Exercise 2.1 - a testing example
+
+**NOTE**: This exercise is an optional bonus for when you have sufficient free time.
+
+This example comes from **Eddy (1982)**, and asked of medical doctors to see if they can get the right ballpark probability in the end:
+
+* 1% of women at age forty who participate in routine screening have breast cancer.
+* 80% of women with breast cancer will get positive mammographies.
+* 9.6% of women without breast cancer will also get positive mammographies.
+
+A woman in this age group had a positive mammography in a routine screening. What is the probability that she actually has breast cancer?
+
+## Exercise 2.2 - confidence intervals
+
+Take a sample from a normal distribution extract its 95% confidence interval. For example with mean of -0.25, sd of 1 and sample size of 50, we can use the \code{t.test} function:
+
+```{r}
+set.seed(42) # set a seed
+test_sample <- rnorm(50, mean = -0.25, sd = 1)
+t.test(test_sample)$conf.int
+```
+
+Is the true mean inside your confidence interval?
+
+Repeat this procedure a large number of times. How often is the true mean in the confidence interval?
+
+Is your result in line with questions 4--6 of the confidence interval quiz?
+
