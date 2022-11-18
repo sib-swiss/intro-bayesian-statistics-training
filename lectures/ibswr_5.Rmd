@@ -1,0 +1,577 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "5: t-test parametrisation"
+author: "Jack Kuipers"
+date: "29 November 2022"
+runtime: shiny
+output:
+  ioslides_presentation:
+    css: ibswr.css
+    incremental: true
+    widescreen: true
+    smaller: true
+    fig_width: 6
+    fig_height: 4.5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+library(ggplot2)
+library(dplyr)
+```
+
+
+
+## Two sample $t$-test in R
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
+With the <span class="code">t.test(...)</span> function
+</div>
+
+```{r two sample t test example fake, eval=FALSE, echo=TRUE}
+# Read in the swiss army data from file
+swiss_army_df <- read.csv("./data/Zurich_data.csv", as.is = FALSE)
+# use the regression formulation and store result
+(t_test <- t.test(Height ~ Sex, swiss_army_df))
+```
+
+<div class="columns-2">
+
+<div class="centered">
+```{r example data height several violinplots dots again}
+renderPlot({
+pp <- ggplot(swiss_army_df, aes(x = Sex, y = Height, colour = Sex, fill = Sex))
+  pp <- pp + geom_violin(alpha = 0.33)
+  pp <- pp + coord_flip() + theme_bw() + theme(text = element_text(size = 18)) +
+    scale_color_manual(values = c("darkorchid4", "firebrick3")) +
+    scale_fill_manual(values = c("darkorchid4", "firebrick3")) +
+    geom_jitter(alpha = 0.33)
+  print(pp)
+}, width = 420, height = 240)
+```
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+
+```{r two sample t test example, eval=TRUE, echo=FALSE}
+# Read in the swiss army data from file
+swiss_army_df <- read.csv("./data/Zurich_data.csv")
+# use the regression formulation
+(t_test <- t.test(Height ~ Sex, swiss_army_df))
+```
+
+</div>
+
+<span class="question">How are we modelling the data?</span>
+
+
+## Two sample $t$-test in R {.build}
+
+<div>
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
+$\left.\right.$
+</div>
+
+<span class="answer">Each group is normally distributed with own mean and variance</span>
+</div>
+
+<div class="columns-2">
+
+>- Group 1 with $N_1$ subjects: $h \sim \mathcal{N}(\mu_1,\sigma_1^2)$
+>- Group 2 with $N_2$ subjects: $h \sim \mathcal{N}(\mu_2,\sigma_2^2)$
+
+<div class="centered">
+```{r example data height several violinplots dots yet again}
+renderPlot({
+pp <- ggplot(swiss_army_df, aes(x = Sex, y = Height, colour = Sex, fill = Sex))
+  pp <- pp + geom_violin(alpha = 0.33)
+  pp <- pp + coord_flip() + theme_bw() + theme(text = element_text(size = 18)) +
+    scale_color_manual(values = c("darkorchid4", "firebrick3")) +
+    scale_fill_manual(values = c("darkorchid4", "firebrick3")) +
+    geom_jitter(alpha = 0.33)
+  print(pp)
+}, width = 420, height = 240)
+```
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+And we compare the $t$-statistic
+
+$$t=\frac{m_1-m_2}{\sqrt{\frac{s_1^2}{N_1}+\frac{s_2^2}{N_2}}}$$
+
+>- from sample means $m$ and variances $s^2$
+
+To the $t$-distribution under the null $\mu_1 = \mu_2$
+
+>- with complicated formula for the degrees of freedom $\nu$
+
+</div>
+
+Let's first assume equal variance for the two groups
+
+
+## Two sample $t$-test in R {.build}
+
+<div>
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
+With the <span class="code">t.test(..., var.equal = TRUE)</span> function
+</div>
+
+Each group is normally distributed with own mean and **common** variance
+</div>
+
+<div class="columns-2">
+
+>- Group 1: $h \sim \mathcal{N}(\mu_1,\sigma^2)$
+>- Group 2: $h \sim \mathcal{N}(\mu_2,\sigma^2)$
+
+<div class="centered">
+```{r example data height several violinplots dots and again}
+renderPlot({
+pp <- ggplot(swiss_army_df, aes(x = Sex, y = Height, colour = Sex, fill = Sex))
+  pp <- pp + geom_violin(alpha = 0.33)
+  pp <- pp + coord_flip() + theme_bw() + theme(text = element_text(size = 18)) +
+    scale_color_manual(values = c("darkorchid4", "firebrick3")) +
+    scale_fill_manual(values = c("darkorchid4", "firebrick3")) +
+    geom_jitter(alpha = 0.33)
+  print(pp)
+}, width = 420, height = 240)
+```
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+```{r two sample t test equal var, eval=TRUE, echo=TRUE}
+(t_test_v <- t.test(Height ~ Sex,
+  swiss_army_df, var.equal = TRUE))
+```
+
+</div>
+
+<span class="question">How else could we parametrise the model?</span>
+
+
+## Two sample $t$-test in R {.build}
+
+<div>
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
+$\left.\right.$
+</div>
+
+<span class="answer">In terms of the difference in means</span>
+</div>
+
+<div class="columns-2">
+
+>- Group 1: $h \sim \mathcal{N}(\mu,\sigma^2)$
+>- Group 2: $h \sim \mathcal{N}(\mu + \beta,\sigma^2)$
+
+<div class="centered">
+```{r example data height several violinplots dots and again and again}
+renderPlot({
+pp <- ggplot(swiss_army_df, aes(x = Sex, y = Height, colour = Sex, fill = Sex))
+  pp <- pp + geom_violin(alpha = 0.33)
+  pp <- pp + coord_flip() + theme_bw() + theme(text = element_text(size = 18)) +
+    scale_color_manual(values = c("darkorchid4", "firebrick3")) +
+    scale_fill_manual(values = c("darkorchid4", "firebrick3")) +
+    geom_jitter(alpha = 0.33)
+  print(pp)
+}, width = 420, height = 240)
+```
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+Or more compactly
+
+$$h \sim \mathcal{N}(\mu,\sigma^2)$$
+with
+
+$$\mu = \beta_0 + \beta_1*\mathrm{Group}$$
+</div>
+
+<span class="question">How else could we implement this model in R?</span>
+
+
+
+## Two sample $t$-test in R {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
+<span class="answer">With the</span> <span class="code">lm(...)</span> <span class="answer">function</span>
+</div>
+
+```{r, echo = TRUE, eval = TRUE}
+lmfit <- lm(Height ~ Sex, swiss_army_df) # run the linear model
+summary(lmfit)$coefficients # extract regression coefficients
+```
+
+If we compare to the <span class="code">t.test(..., var.equal = TRUE)</span> results
+
+```{r, echo = TRUE, eval = TRUE}
+c(t_test_v$estimate[2]-t_test_v$estimate[1], t_test_v$stderr, t_test_v$statistic, t_test_v$p.value)
+```
+
+>- can check they are the same
+
+## Stan {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+$\left.\right.$
+</div>
+
+<div>
+Stan is  open-source software 
+
+>- full Bayesian statistical inference 
+>- efficient state-of-the-art MCMC sampling
+>- and more
+</div>
+
+
+R interface <span class="code">Rstan</span>
+
+<div>
+We'll use *yet* another interface <span class="code">brms</span>
+
+>- Bayesian regression modelling using Stan
+>- syntax more like <span class="code">lm</span> 
+</div>
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+if (!require(brms)) { # install if not yet installed
+  install.packages("brms")
+}
+library(brms) # load the library
+```
+
+## Two sample $t$-test in Stan
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+With the <span class="code">brm(...)</span> function
+</div>
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+brmfit <- brm(Height ~ Sex, swiss_army_df) # run the model
+summary(brmfit) # extract information from the inference
+```
+
+```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
+library(brms) # load the library
+run_model <- function(expr, path, reuse = TRUE) {
+  path <- paste0(path, ".Rds")
+  if (reuse) {
+    fit <- suppressWarnings(try(readRDS(path), silent = TRUE))
+  }
+  if (is(fit, "try-error")) {
+    fit <- eval(expr)
+    saveRDS(fit, file = path)
+  }
+  fit
+}
+brmfit <- run_model(brm(Height ~ Sex, swiss_army_df), "./brm_models_lectures/t_test_v")
+summary(brmfit)
+```
+
+
+## Two sample $t$-test posterior samples {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Can access the posterior samples with the <span class="code">as_draws(...)</span> functions
+</div>
+
+```{r, echo = TRUE, eval = TRUE}
+head(as_draws_df(brmfit)) # posterior samples in a data frame
+```
+
+<div>
+>- rounded for display
+
+>- the <span class="code">lp__</span> column is the log-probability of each drawn sample
+</div>
+
+<div>
+>- can use for downstream analysis
+
+$\longrightarrow$ but there are many inbuilt functions instead!
+</div>
+
+## Two sample $t$-test coefficients {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Use the <span class="code">fixef(...), ranef(...), coef(...)</span> functions
+</div>
+
+```{r, echo = TRUE, eval = TRUE, message=FALSE, warning=FALSE}
+fixef(brmfit) # extract difference in mean coefficient (fixed effect)
+```
+
+<div class="columns-2">
+
+>- compare to 95% CI of the equal variance $t$-test
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+t_test_v$conf.int # extract CI from t-test
+```
+
+<p class="forceBreak">&nbsp;</p>
+
+```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
+t_test_v$conf.int # extract CI from t-test
+```
+</div>
+
+<div>
+Also have the distribution of $\sigma$
+
+```{r, echo = TRUE, eval = TRUE, message=FALSE, warning=FALSE}
+summary(brmfit)$spec_pars # extract sigma (model specific parameters)
+```
+</div>
+
+## Two sample $t$-test chains
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Plot chains with the <span class="code">plot(...)</span> function
+</div>
+
+```{r, echo = TRUE, eval = TRUE}
+plot(brmfit) # plot the chains
+```
+
+## Two sample $t$-test plots
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Plot components with the <span class="code">mcmc_plot(...)</span> function
+</div>
+
+<div class="columns-2">
+
+We are interested in the regression coefficient $\beta_1$
+
+>- <span class="code">(b_)SexM</span> in the <span class="code">brms</span> syntax
+
+<div class="centered">
+
+```{r, echo = TRUE, eval = TRUE, fig.height=1.5, fig.width=4.5, warning=FALSE, message=FALSE}
+mcmc_plot(brmfit, variable = "b_SexM",
+          type = "intervals")
+```
+
+</div>
+
+Also further options, including
+
+>- <span class="code">"dens"</span>, <span class="code">"hist"</span> and <span class="code">"violin"</span>
+
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+
+```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE}
+mcmc_plot(brmfit, variable = "b_SexM",
+          type = "areas")
+
+```
+</div>
+
+</div>
+
+
+## Two sample $t$-test pairwise plots
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Explore pairwise dependencies with the <span class="code">pairs(...)</span> function
+</div>
+
+```{r, echo = TRUE, eval = TRUE}
+pairs(brmfit) # plot pairwise
+```
+
+## Two sample $t$-test predictive check
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Predictive check with the <span class="code">pp_check(...)</span> function
+</div>
+
+```{r, echo = TRUE, eval = TRUE, fig.height=3, warning=FALSE, message=FALSE}
+pp_check(brmfit) # plot predictive check
+```
+
+Compares kernel density of the data (dark)
+
+>- to samples from the model (default 10 sets)
+
+
+## Two sample $t$-test  {.build}
+
+<div>
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+$\left.\right.$
+</div>
+
+<span class="question">How might we parametrise a $t$-test with unequal variance?</span>
+</div>
+
+<div class="columns-2">
+
+>- Group 1: $h \sim \mathcal{N}(\mu,\sigma^2)$
+>- Group 2: $h \sim \mathcal{N}(\mu + \beta,\sigma^2 + \gamma)$
+
+<div class="centered">
+```{r example data height several violinplots dots and again and again and again}
+renderPlot({
+pp <- ggplot(swiss_army_df, aes(x = Sex, y = Height, colour = Sex, fill = Sex))
+  pp <- pp + geom_violin(alpha = 0.33)
+  pp <- pp + coord_flip() + theme_bw() + theme(text = element_text(size = 18)) +
+    scale_color_manual(values = c("darkorchid4", "firebrick3")) +
+    scale_fill_manual(values = c("darkorchid4", "firebrick3")) +
+    geom_jitter(alpha = 0.33)
+  print(pp)
+}, width = 420, height = 240)
+```
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+Or more compactly
+
+$$h \sim \mathcal{N}(\mu,\sigma^2)$$
+with
+
+$$\mu = \beta_0 + \beta_1*\mathrm{Group}$$
+$$\sigma = \gamma_0 + \gamma_1*\mathrm{Group}$$
+</div>
+
+Just need the syntax for <span class="code">brms</span>
+
+## Two sample $t$-test in Stan {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Wrap model inside <span class="code">bf(...)</span> function
+</div>
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+brmfit_t <- brm(bf(Height ~ Sex, sigma ~ Sex), swiss_army_df) # run the model
+summary(brmfit_t)
+```
+
+```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
+brmfit_t <- run_model(brm(bf(Height ~ Sex, sigma ~ Sex), swiss_army_df), "./brm_models_lectures/t_test")
+summary(brmfit_t)
+```
+
+## Two sample $t$-test coefficients {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Use the <span class="code">fixef(...), ranef(...), coef(...)</span> functions
+</div>
+
+```{r, echo = TRUE, eval = TRUE, message=FALSE, warning=FALSE}
+fixef(brmfit_t) # extract coefficients (fixed effect)
+```
+
+With this model formulation <span class="code">brms</span>
+
+>- has a *log* link 
+
+Actually sampling/estimating $\log(\sigma)$
+
+>- SD estimate for women would be exp(`r round(fixef(brmfit_t)[2, 1], 3)`) = `r round(exp(fixef(brmfit_t)[2, 1]), 3)`
+>- SD estimate for men would be exp(`r round(fixef(brmfit_t)[2, 1], 3)` + `r round(fixef(brmfit_t)[4, 1], 3)`) = `r round(exp(fixef(brmfit_t)[2, 1] + fixef(brmfit_t)[4, 1]), 3)`
+
+To have the same treatment for the equal variance model we could specify
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+brmfit_again <- brm(bf(Height ~ Sex, sigma ~ 1), swiss_army_df) # equal variance model
+```
+
+
+## Two sample $t$-test model comparison
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Compare the predictive checks from the <span class="code">pp_check(...)</span> function
+</div>
+
+<div class="columns-2">
+
+<div class="centered">
+```{r, echo = TRUE, eval = TRUE, fig.height=3, fig.width=4.5, warning=FALSE, message=FALSE}
+pp_check(brmfit_t, ndraws = 40)
+```
+
+*unequal variance*
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r, echo = TRUE, eval = TRUE, fig.height=3, fig.width=4.5, warning=FALSE, message=FALSE}
+pp_check(brmfit, ndraws = 40)
+```
+
+*equal variance*
+</div>
+
+</div>
+
+>- Similar in this case
+
+
+
+## Summary {.build}
+
+<div>
+With a <span class="def">$t$-test</span> parametrised like <span class="code">lm</span>
+
+>- we can build up more complicated models
+>- equal variance, unequal variance, $\ldots$
+</div>
+
+<div>
+Easily run <span class="def">MCMC</span>-based sampling with <span class="code">bmrs</span>
+
+>- modelling syntax with regression formula 
+>- <span class="code">bf(... ~ ...)</span>
+</div>
+
+<div>
+Can extract and visualise the output
+
+>- coefficients and their CIs
+>- distributions of the coefficients
+>- posterior checks
+</div>
+
+<div>
+But for fully <span class="def">Bayesian</span> inference
+
+>- we need to specify our priors
+$\rightarrow$ Part 2
+</div>
+
+<div>
+$\rightarrow$ Exercises 5
+</div>
+
+

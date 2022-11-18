@@ -1,0 +1,488 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "6: Robust t-tests and priors"
+author: "Jack Kuipers"
+date: "29 November 2022"
+runtime: shiny
+output:
+  ioslides_presentation:
+    css: ibswr.css
+    incremental: true
+    widescreen: true
+    smaller: true
+    fig_width: 6
+    fig_height: 4.5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+library(ggplot2)
+library(dplyr)
+```
+
+## Two sample $t$-test
+
+<div>
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+$\left.\right.$
+</div>
+
+We looked at the two-sample $t$-test with unequal variance
+</div>
+
+<div class="columns-2">
+
+>- Group 1: $h \sim \mathcal{N}(\mu,\sigma^2)$
+>- Group 2: $h \sim \mathcal{N}(\mu + \beta,\sigma^2 + \gamma)$
+
+<div class="centered">
+```{r example data height several violinplots dots and again and again and again}
+# Read in the swiss army data from file
+swiss_army_df <- read.csv("./data/Zurich_data.csv")
+t_test <- t.test(Height ~ Sex, swiss_army_df)
+renderPlot({
+pp <- ggplot(swiss_army_df, aes(x = Sex, y = Height, colour = Sex, fill = Sex))
+  pp <- pp + geom_violin(alpha = 0.33)
+  pp <- pp + coord_flip() + theme_bw() + theme(text = element_text(size = 18)) +
+    scale_color_manual(values = c("darkorchid4", "firebrick3")) +
+    scale_fill_manual(values = c("darkorchid4", "firebrick3")) +
+    geom_jitter(alpha = 0.33)
+  print(pp)
+}, width = 420, height = 240)
+```
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+Or more compactly
+
+$$h \sim \mathcal{N}(\mu,\sigma^2)$$
+with
+
+$$\mu = \beta_0 + \beta_1*\mathrm{Group}$$
+$$\sigma = \gamma_0 + \gamma_1*\mathrm{Group}$$
+And <span class="code">brms</span> syntax below
+
+</div>
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+brmfit_t <- brm(bf(Height ~ Sex, sigma ~ Sex), swiss_army_df) # run the model
+```
+
+```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
+library(brms) # load the library
+run_model <- function(expr, path, reuse = TRUE) {
+  path <- paste0(path, ".Rds")
+  if (reuse) {
+    fit <- suppressWarnings(try(readRDS(path), silent = TRUE))
+  }
+  if (is(fit, "try-error")) {
+    fit <- eval(expr)
+    saveRDS(fit, file = path)
+  }
+  fit
+}
+brmfit_t <- run_model(brm(bf(Height ~ Sex, sigma ~ Sex), swiss_army_df), "./brm_models_lectures/t_test")
+```
+
+## Robust $t$-test  {.build}
+
+<div>
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+$\left.\right.$
+</div>
+
+To make the $t$-test more robust, model the data with a $t$-distribution **Kruschke 2013**
+</div>
+
+<div class="columns-2">
+
+>- Group 1: $h \sim \mathcal{T}_{\nu}(\mu,\sigma^2)$
+>- Group 2: $h \sim \mathcal{T}_{\nu}(\mu + \beta,\sigma^2 + \gamma)$
+
+<div class="centered">
+```{r example data height several violinplots dots and again and again and again and again}
+renderPlot({
+pp <- ggplot(swiss_army_df, aes(x = Sex, y = Height, colour = Sex, fill = Sex))
+  pp <- pp + geom_violin(alpha = 0.33)
+  pp <- pp + coord_flip() + theme_bw() + theme(text = element_text(size = 18)) +
+    scale_color_manual(values = c("darkorchid4", "firebrick3")) +
+    scale_fill_manual(values = c("darkorchid4", "firebrick3")) +
+    geom_jitter(alpha = 0.33)
+  print(pp)
+}, width = 420, height = 240)
+```
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+Or more compactly
+
+$$h \sim \mathcal{T}_{\nu}(\mu,\sigma^2)$$
+with
+
+$$\mu = \beta_0 + \beta_1*\mathrm{Group}$$
+$$\sigma = \gamma_0 + \gamma_1*\mathrm{Group}$$
+and the additional parameter $\nu$
+
+</div>
+
+Just replace the *gaussian* family by *student* in <span class="code">brms</span>
+
+## Robust $t$-test in Stan {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Use the *family* argument of <span class="code">brm(...)</span>
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+brmfit_robust <- brm(bf(Height ~ Sex, sigma ~ Sex), family = student, swiss_army_df) # run the model
+summary(brmfit_robust)
+```
+</div>
+
+```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
+brmfit_robust <- run_model(brm(bf(Height ~ Sex, sigma ~ Sex), family = student, swiss_army_df), "./brm_models_lectures/t_test_robust")
+summary(brmfit_robust)
+```
+
+
+## Two sample $t$-test coefficients {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+$\left.\right.$
+
+```{r, echo = TRUE, eval = TRUE, message=FALSE, warning=FALSE}
+summary(brmfit_robust)$spec_par # extract nu
+```
+
+The degree of freedom $\nu$ is large, so it is close to Gaussian 
+</div>
+
+And very similar CI of interest
+
+```{r, echo = TRUE, eval = TRUE, message=FALSE, warning=FALSE}
+fixef(brmfit_robust)["SexM", ] # extract difference in means
+```
+
+<div class="columns-2">
+
+>- 95% CI of the Gaussian model
+
+```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
+fixef(brmfit_t)[3, -2]
+```
+
+<p class="forceBreak">&nbsp;</p>
+
+>- 95% CI of the $t$-test
+
+```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
+t_test$conf.int # extract CI from t-test
+```
+</div>
+
+## Two sample $t$-test model comparison {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Compare the predictive checks from the <span class="code">pp_check(...)</span> function
+
+<div class="columns-2">
+
+<div class="centered">
+```{r, echo = TRUE, eval = TRUE, fig.height=3, fig.width=4.5, warning=FALSE, message=FALSE}
+pp_check(brmfit_robust, ndraws = 40) 
+```
+
+*robust*
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r, echo = TRUE, eval = TRUE, fig.height=3, fig.width=4.5, warning=FALSE, message=FALSE}
+pp_check(brmfit_t, ndraws = 40) 
+```
+
+*Gaussian*
+</div>
+
+</div>
+</div>
+
+<span class="question">What have we neglected so far?</span>
+
+
+## Priors {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+<span class="answer">The priors!</span> Let's extract them with the <span class="code">prior_summary(...)</span> function
+</div>
+
+<div>
+>- The <span class="code">brms</span> defaults are
+
+```{r, echo = TRUE}
+prior_summary(brmfit_robust)[, -c(4:5, 7)] # hide some columns for display
+```
+</div>
+
+<div>
+>- Uniformative for the regression coefficients $\beta_1$, $\gamma_1$
+>- *Intercepts* are Student-$t$ with parameters estimated from the data
+>- *sigma* has a log-link, so its priors are on $\log(\sigma)$
+>- Wide Gamma for $\nu$ with lower-bound of 1
+</div>
+
+<span class="question">What should we use?</span>
+
+## Prior selection {.build}
+
+<span class="answer">It's an open choice, but we should aim to use information we might know.</span>
+
+>- Heights are around 1.6m
+>- typical variations are tens of cm
+>- can be below 1m, above 2m
+
+Let's stick with Student-$t$ with low degrees of freedom (heavy tails)
+
+>- something like <span class="code">student_t(3, 0, 20)</span> for $\beta_1$
+
+Variation in sds could be up to a factor 2
+
+>- something like <span class="code">student_t(3, 0, 0.5)</span> for $\gamma_1$ (with the log-link)
+
+<span class="code">Brms</span> syntax:
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+brmfit_robust_p <- brm(bf(Height ~ Sex, sigma ~ Sex), family = student, 
+                       prior = prior(student_t(3, 0, 20), class = "b", coef = "SexM") +
+                       prior(student_t(3, 0, 0.5), class = "b", coef = "SexM", dpar = "sigma"),
+                       swiss_army_df)
+```
+
+
+```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
+brmfit_robust_p <- run_model(brm(bf(Height ~ Sex, sigma ~ Sex), family = student, prior = prior(student_t(3, 0, 20), class = "b", coef = "SexM") + prior(student_t(3, 0, 0.5), class = "b", coef = "SexM", dpar = "sigma"), swiss_army_df), "./brm_models_lectures/t_test_robust_p")
+```
+
+
+## Priors {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Check it works with the <span class="code">prior_summary(...)</span> function
+</div>
+
+<div>
+>- The <span class="code">brms</span> defaults are updated to
+
+```{r, echo = TRUE}
+prior_summary(brmfit_robust_p)[, -c(4:5, 7)] # hide some columns for display
+```
+</div>
+
+<div>
+For a visual check we can also sample from the priors
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+brmfit_robust_prior <- brm(bf(Height ~ Sex, sigma ~ Sex), family = student, 
+                       prior = prior(student_t(3, 0, 20), class = "b", coef = "SexM") +
+                       prior(student_t(3, 0, 0.5), class = "b", coef = "SexM", dpar = "sigma"),
+                       sample_prior = "only", swiss_army_df) # this line
+```
+
+
+```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
+brmfit_robust_prior <- run_model(brm(bf(Height ~ Sex, sigma ~ Sex), family = student, prior = prior(student_t(3, 0, 20), class = "b", coef = "SexM") + prior(student_t(3, 0, 0.5), class = "b", coef = "SexM", dpar = "sigma"), sample_prior = "only", swiss_army_df), "./brm_models_lectures/t_test_robust_prior")
+```
+</div>
+
+## Posterior vs Prior
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Compare the posterior and prior samples with the <span class="code">mcmc_plot(...)</span> function
+</div>
+
+<div class="columns-2">
+
+<div class="centered">
+```{r, echo = TRUE, eval = TRUE, fig.height=3, fig.width=4.5, warning=FALSE, message=FALSE}
+mcmc_plot(brmfit_robust_p, type = "dens")
+```
+
+*posterior*
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r, echo = TRUE, eval = TRUE, fig.height=3, fig.width=4.5, warning=FALSE, message=FALSE}
+mcmc_plot(brmfit_robust_prior, type = "dens")
+```
+
+*prior*
+</div>
+
+</div>
+
+>- Posteriors are well inside priors
+
+## Prior predictive check
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Predictive check with the <span class="code">pp_check(...)</span> function
+</div>
+
+```{r, echo = TRUE, eval = TRUE, fig.height=3, warning=FALSE, message=FALSE}
+pp_check(brmfit_robust_prior, ndraws = 40) + xlim(0, 300) + ylim(0, 0.5) # plot predictive check
+```
+
+since samples are from the prior (in this case)
+
+>- data compatible with prior, but too often prior has low sd (hence spikes).
+
+## Updated prior {.build}
+
+<div>
+We wouldn't expect sds below about 1cm
+
+>- simple to impose a lower bound (say 0 with log-link)
+>- or choose positive distribution (say <span class="code">gamma</span>)
+</div>
+
+<div>
+We also might not expect such a large change in sds between conditions
+
+>- lower sd for $\gamma_1$ to <span class="code">student_t(3, 0, 0.2)</span>  
+</div>
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+brmfit_robust_prior2 <- brm(bf(Height ~ Sex, sigma ~ Sex), family = student, 
+                        prior = prior(student_t(3, 0, 20), class = "b", coef = "SexM") +
+                        prior(student_t(3, 0, 0.2), class = "b", coef = "SexM", dpar = "sigma") + # lower sd
+                        prior(student_t(3, 0, 2.5), class = "Intercept", dpar = "sigma", lb = 0), # bound
+                        sample_prior = "only", swiss_army_df) # prior samples
+```
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+brmfit_robust_p2 <- brm(bf(Height ~ Sex, sigma ~ Sex), family = student, 
+                        prior = prior(student_t(3, 0, 20), class = "b", coef = "SexM") +
+                        prior(student_t(3, 0, 0.2), class = "b", coef = "SexM", dpar = "sigma") + # lower sd
+                        prior(student_t(3, 0, 2.5), class = "Intercept", dpar = "sigma", lb = 0), # bound
+                        swiss_army_df) # posterior samples
+```
+
+```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
+brmfit_robust_prior2 <- run_model(brm(bf(Height ~ Sex, sigma ~ Sex), family = student, prior = prior(student_t(3, 0, 20), class = "b", coef = "SexM") + prior(student_t(3, 0, 0.2), class = "b", coef = "SexM", dpar = "sigma") + prior(student_t(3, 0, 2.5), class = "Intercept", dpar = "sigma", lb = 0), sample_prior = "only", swiss_army_df), "./brm_models_lectures/t_test_robust_prior2")
+
+brmfit_robust_p2 <- run_model(brm(bf(Height ~ Sex, sigma ~ Sex), family = student, prior = prior(student_t(3, 0, 20), class = "b", coef = "SexM") + prior(student_t(3, 0, 0.2), class = "b", coef = "SexM", dpar = "sigma") + prior(student_t(3, 0, 2.5), class = "Intercept", dpar = "sigma", lb = 0), swiss_army_df), "./brm_models_lectures/t_test_robust_p2")
+```
+
+## Priors {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Check it updated with the <span class="code">prior_summary(...)</span> function
+</div>
+
+<div>
+```{r, echo = TRUE}
+prior_summary(brmfit_robust_p2)[, -c(4:5, 7)] # hide some columns for display
+```
+</div>
+
+Again we can check samples from the prior
+
+## Prior predictive check
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Predictive check with the <span class="code">pp_check(...)</span> function
+</div>
+
+```{r, echo = TRUE, eval = TRUE, fig.height=3, warning=FALSE, message=FALSE}
+pp_check(brmfit_robust_prior2, ndraws = 40) + xlim(50, 250) + ylim(0, 0.2) # plot predictive check
+```
+
+for samples from the updated priors
+
+>- have more realistic spreads under the prior.
+
+
+## Robust t-test
+
+<div class="columns-2">
+
+We are interested in the regression coefficient $\beta_1$
+
+>- <span class="code">(b_)SexM</span> in the <span class="code">brms</span> syntax
+
+```{r, echo = TRUE, eval = TRUE}
+fixef(brmfit_robust_p2)["SexM", ]
+```
+
+
+<div class="centered">
+```{r, echo = TRUE, eval = TRUE, fig.height=1.5, fig.width=4.5, warning=FALSE, message=FALSE}
+mcmc_plot(brmfit_robust_p2, variable = "b_SexM",
+          type = "intervals")
+```
+</div>
+
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r, echo = TRUE, eval = TRUE, fig.height=4, fig.width=4.5, warning=FALSE, message=FALSE}
+mcmc_plot(brmfit_robust_p2, variable = "b_SexM",
+          type = "dens")
+```
+</div>
+
+</div>
+
+
+
+## Summary {.build}
+
+<div>
+With a <span class="def">$t$-test</span> parametrised like <span class="code">lm</span>
+
+>- we can keep building up more complicated models
+>- equal variance, unequal variance, robust, $\ldots$
+</div>
+
+<div>
+With <span class="code">brms</span> can easily run <span class="def">MCMC</span>-based sampling
+
+>- regression formula syntax <span class="code">bf(... ~ ...)</span>
+>- specify distributional assumptions with *family*
+</div>
+
+<div>
+But default <span class="def">priors</span> 
+
+>- often flat or unrealistic
+>- can check by sampling from prior
+</div>
+
+<div>
+But we can (should) specify sensible priors for fully <span class="def">Bayesian</span> inference
+
+>- <span class="code">prior(...)</span> function 
+</div>
+
+<div>
+$\rightarrow$ Exercises 6
+</div>
+
+

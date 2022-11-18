@@ -1,0 +1,611 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "1: t-test recap"
+author: "Jack Kuipers"
+date: "28 November 2022"
+runtime: shiny
+output:
+  ioslides_presentation:
+    css: ibswr.css
+    incremental: true
+    widescreen: true
+    smaller: true
+    fig_width: 6
+    fig_height: 4.5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+library(ggplot2)
+library(dplyr)
+```
+
+
+## Average difference?
+
+<div id=hidestuffless class="centered">
+```{r average difference samples}
+rv <- reactiveValues(n_samp = 10, 
+                     local_samples = rnorm(10, mean = -0.25, sd = 1),
+                     local_samples2 = rep(NA, 10))
+
+sidebarPanel(
+  actionButton("runAD", "Resample", icon = NULL), hr(),
+  renderUI({sliderInput("n_sampAD", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}), width = 2
+)
+
+observeEvent(rv$local_samples, { # update last plot
+  rv$local_samples2 <- rv$local_samples
+})
+
+observeEvent(input$runAD, {
+  rv$n_samp <- input$n_sampAD
+  rv$local_samples <- rnorm(input$n_sampAD, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/flagFALSE.R")
+  source("./ibswrfiles/ggplotnormalsample.R", local = TRUE)
+}, width = 600, height = 450)
+```
+</div>
+
+<span class="question">Question: is the mean 0?</span>
+
+
+## Average difference?
+
+<div id=hidestuffless class="centered">
+```{r average difference samples mean sd}
+sidebarPanel(
+  actionButton("runADM", "Resample", icon = NULL), hr(),
+  renderUI({sliderInput("n_sampADM", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}), width = 2
+)
+
+observeEvent(input$runADM, {
+  rv$n_samp <- input$n_sampADM
+  rv$local_samples <- rnorm(input$n_sampADM, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/flagTRUE.R")
+  source("./ibswrfiles/ggplotnormalsample.R", local = TRUE)
+}, width = 600, height = 450)
+```
+</div>
+
+>- display sample mean and standard deviation
+
+
+## CLT recap {.build}
+
+<div>
+The sample mean
+
+$$m = \frac{1}{N}\sum_{i=1}^{N}x_i$$
+
+is a random variable
+</div>
+
+>- mean estimate: $\widehat{\mu_{m}} = \overline{x}$
+
+>- variance estimate: $\widehat{\sigma_{m}^{2}} = \frac{s^2}{N}$
+
+<div>
+>- standard error 
+
+$$s_{m} = \frac{s}{\sqrt{N}}$$
+</div>
+
+>- becomes Gaussian as $N\to\infty$ (CLT)
+
+## The normal distribution
+
+<div class="columns-2">
+Normally distributed $X$
+
+>- continuous state space:
+
+$$X \in \mathbb{R}$$
+
+>- probability:
+
+$$P(x<X\leq x+\mathrm{d}x) = f(x)\mathrm{d}x$$
+for infinitesimal $\mathrm{d}x$
+
+>- $f(x)$ is the <span class="def">probability density</span>
+
+$$f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\mathrm{e}^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
+
+Parameters
+
+>- mean $\mu$
+>- variance $\sigma^2$
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r normal distribution ggplot one}
+inputPanel(sliderInput("normal_mean", label = "Mean:",
+              min = -20, max = 20, value = 0, step = 1),
+           sliderInput("normal_sd", label = "Standard deviation:",
+              min = 0.2, max = 4, value = 1, step = 0.1),
+           checkboxInput("normal_rescale", "Scale x?", value = FALSE))
+renderPlot({
+  source("./ibswrfiles/flagsTRUE.R")
+  source("./ibswrfiles/normalrvplot.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+</div>
+
+## Average difference?
+
+<div id=hidestuffless class="centered">
+```{r average difference samples decorated}
+sidebarPanel(
+  actionButton("runADD", "Resample", icon = NULL), hr(),
+  renderUI({sliderInput("n_sampADD", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}), width = 2
+)
+
+observeEvent(input$runADD, {
+  rv$n_samp <- input$n_sampADD
+  rv$local_samples <- rnorm(input$n_sampADD, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/flagsTRUE.R")
+  source("./ibswrfiles/ggplotnormalsample.R", local = TRUE)
+}, width = 600, height = 450)
+```
+</div>
+
+>- Estimated Gaussian approximation to the distribution of the sample mean (unnormalised)
+
+
+## Probability that the mean is 0? {.build}
+
+<div>
+<div id=hidestuffless class="centered">
+```{r average difference samples just mean}
+sidebarPanel(
+  actionButton("runADJ", "Resample", icon = NULL), hr(),
+  renderUI({sliderInput("n_sampADJ", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}), hr(),
+  checkboxInput("rescaleADJ", "Scale x?", value = FALSE), width = 2
+)
+
+observeEvent(input$runADJ, {
+  rv$n_samp <- input$n_sampADJ
+  rv$local_samples <- rnorm(input$n_sampADJ, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/ggplotjustnormalsample.R", local = TRUE)
+}, width = 600, height = 450)
+```
+</div>
+
+<span class="question">Question: with the Gaussian approximation, what is the probability the mean is 0?</span>
+</div>
+
+<span class="answer">Answer: 0</span>
+
+
+## $p$-values {.build}
+
+<div>
+<div id=hidestuffless class="centered">
+```{r average difference samples just mean inv 1}
+sidebarPanel(
+  actionButton("runADI1", "Resample", icon = NULL), hr(),
+  renderUI({sliderInput("n_sampADI1", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}), hr(),
+  checkboxInput("rescaleADI1", "Scale z?", value = FALSE), width = 2
+)
+
+observeEvent(input$runADI1, {
+  rv$n_samp <- input$n_sampADI1
+  rv$local_samples <- rnorm(input$n_sampADI1, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  local_flag <- input$rescaleADI1
+  source("./ibswrfiles/flagFALSE.R")
+  source("./ibswrfiles/ggplotjustnormalsampleinv.R", local = TRUE)
+}, width = 600, height = 330)
+```
+</div>
+
+Invert the thinking
+
+>- <span class="def">assume</span> the true mean is 0
+
+$$\mu_m=0$$
+</div>
+
+<div>
+>- $z$ is Gaussian approximation to sample mean distribution with mean fixed to 0
+
+$$z \sim \mathcal{N}(0,s_m^2)$$
+</div>
+
+
+## $p$-values {.build}
+
+<div>
+<div id=hidestuffless class="centered">
+```{r average difference samples just mean inv 2}
+sidebarPanel(
+  actionButton("runADI2", "Resample", icon = NULL), hr(),
+  renderUI({sliderInput("n_sampADI2", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}), hr(),
+  checkboxInput("rescaleADI2", "Scale z?", value = TRUE), width = 2
+)
+
+observeEvent(input$runADI2, {
+  rv$n_samp <- input$n_sampADI2
+  rv$local_samples <- rnorm(input$n_sampADI2, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  local_flag <- input$rescaleADI2
+  source("./ibswrfiles/flagFALSE.R")
+  source("./ibswrfiles/ggplotjustnormalsampleinv.R", local = TRUE)
+}, width = 600, height = 330)
+```
+</div>
+
+Invert the thinking
+
+>- <span class="def">assume</span> the true mean is 0
+
+$$\mu_m=0 \, , \qquad z \sim \mathcal{N}(0,s_m^2)$$
+
+<span class="question">Question: how do we obtain a probability of observing a sample mean $m$?</span>
+</div>
+
+<span class="answer">Answer: we need to select a range of $z$</span>
+
+
+## $p$-values {.build}
+
+<div>
+<div id=hidestuffless class="centered">
+```{r average difference samples just mean inv 3}
+sidebarPanel(
+  actionButton("runADI3", "Resample", icon = NULL), hr(),
+  renderUI({sliderInput("n_sampADI3", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}), hr(),
+  checkboxInput("rescaleADI3", "Scale z?", value = TRUE), width = 2
+)
+
+observeEvent(input$runADI3, {
+  rv$n_samp <- input$n_sampADI3
+  rv$local_samples <- rnorm(input$n_sampADI3, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  local_flag <- input$rescaleADI3
+  source("./ibswrfiles/flagFALSE.R")
+  source("./ibswrfiles/ggplotjustnormalsampleinv.R", local = TRUE)
+}, width = 600, height = 330)
+```
+</div>
+
+Invert the thinking
+
+>- <span class="def">assume</span> the true mean is 0
+
+$$\mu_m=0 \, , \qquad z \sim \mathcal{N}(0,s_m^2)$$
+
+<span class="question">Question: which range should we take?</span>
+</div>
+
+<span class="answer">Answer: more (or as) extreme values than $\vert m\vert$</span>
+
+
+## $p$-values {.build}
+
+<div>
+<div id=hidestuffless class="centered">
+```{r average difference samples just mean inv 4}
+sidebarPanel(
+  actionButton("runADI4", "Resample", icon = NULL), hr(),
+  renderUI({sliderInput("n_sampADI4", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}), hr(),
+  checkboxInput("rescaleADI4", "Scale z?", value = TRUE), width = 2
+)
+
+observeEvent(input$runADI4, {
+  rv$n_samp <- input$n_sampADI4
+  rv$local_samples <- rnorm(input$n_sampADI4, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  local_flag <- input$rescaleADI4
+  source("./ibswrfiles/flagTRUE.R")
+  source("./ibswrfiles/ggplotjustnormalsampleinv.R", local = TRUE)
+}, width = 600, height = 330)
+```
+</div>
+
+The <span class="def">$p$-value</span> is the probability of observing a more extreme (or as extreme) sample mean
+
+$$p = P(\vert z \vert \geq \vert m \vert) , \qquad z \sim \mathcal{N}(0,s_m^2)$$
+
+>- <span class="def">assuming</span> the true mean is 0
+</div>
+
+<span class="question">Question: why take absolute values?</span>
+
+<span class="answer">Answer: because the sample mean can be extreme in either direction</span>
+
+
+## Computing $p$-values {.build}
+
+Define <span class="def">null hypothesis</span> $H_0$
+
+>- that there is no effect
+>- mean $\mu_0 = 0$
+
+Rescale sample mean to obtain <span class="def">$t$-statistic</span>
+
+$$t = \frac{m - \mu_0}{s_m} = \sqrt{N} \frac{m-\mu_0}{s}$$
+
+Compute the distribution of $t$ <span class="def">assuming</span> $H_0$
+
+>- $\mu_m=0$
+
+But the sample variance and standard error $s_m$ is a random variable
+
+>- adds variance to $t$
+
+Normal data leads to <span class="def">Student-$t$</span> distribution
+
+$$t \sim \mathcal{T}_{N-1}$$
+
+## The Student-$t$ distribution
+
+<div class="columns-2">
+Student-$t$ distributed $T$
+
+>- continuous state space:
+
+$$T \in \mathbb{R}$$
+
+>- probability:
+
+$$P(t<T\leq t+\mathrm{d}t) = f(t)\mathrm{d}t$$
+for infinitessimal $\mathrm{d}t$
+
+>- $f(t)$ is the probability density
+
+$$f(t) = \frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\sqrt{\pi\nu}\Gamma\left(\frac{\nu}{2}\right)}\left(1+\frac{t^2}{\nu}\right)^{-\frac{\nu+1}{2}}$$
+
+Parameter
+
+>- <span class="def">degrees of freedom</span> $\nu>0$
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r student t distribution ggplot}
+inputPanel(sliderInput("studentt_nu", label = "Degrees of freedom:",
+              min = 1, max = 20, value = 5, step = 1),
+           checkboxInput("normal_show", "Show Gaussian?", value = FALSE))
+renderPlot({
+  source("./ibswrfiles/flagFALSE.R", local = TRUE)
+  source("./ibswrfiles/studenttrvggplot.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+
+>- Becomes Gaussian as $\nu\to\infty$
+</div>
+
+
+## Computing $p$-values {.build}
+
+<div class="columns-2">
+Define null hypothesis $H_0$
+
+>- that there is no effect
+>- mean $\mu_0 = 0$
+
+Compute $t$-statistic
+
+$$t = \frac{m - \mu_0}{s_m} = \sqrt{N} \frac{m-\mu_0}{s}$$
+
+Follows Student-$t$</span> distribution <span class="def">under the null</span>
+
+$$t_0 \sim \mathcal{T}_{N-1}$$
+
+>- if data is normally distributed
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r average difference samples t test}
+inputPanel(
+  actionButton("runADT", "Resample", icon = NULL),
+  renderUI({sliderInput("n_sampADT", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}))
+
+observeEvent(input$runADT, {
+  rv$local_samples2 <- rnorm(input$n_sampADT, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  tempy <- input$runADT
+  local_samples <- rv$local_samples2
+  source("./ibswrfiles/ggplotttestsample.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+</div>
+
+<div id="hidestuffless">
+<span class="question">Question: is the mean 0?</span>
+</div>
+
+<span class="answer">Answer: no (it's actually -0.25).  We can see it is negative better with larger sample sizes.</span>
+
+
+## Computing in R {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
+
+With the <span class="code">t.test(...)</span> function
+</div>
+
+```{r t test example data 1, echo=TRUE}
+# Generate some Gaussian samples with mean -0.25
+test_samples <- rnorm(50, mean = -0.25, sd = 1)
+```
+
+>- test if the mean is 0
+
+```{r t test example test 1, echo=TRUE}
+# Run a t-test with null hypothesis of mean 0
+t.test(test_samples)
+```
+
+
+## Computing in R
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
+
+With the <span class="code">t.test(...)</span> function
+</div>
+
+```{r t test example data 2, eval=FALSE, echo=TRUE}
+# Generate some Gaussian samples with mean -0.25
+test_samples <- rnorm(50, mean = -0.25, sd = 1)
+```
+
+>- test if the mean is 0
+
+```{r t test example test, echo=TRUE}
+# extract the t-statistic
+t.test(test_samples)$statistic
+# extract the p-value
+t.test(test_samples)$p.value
+```
+
+## Two sample $t$-test in R {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
+
+With the <span class="code">t.test(...)</span> function
+</div>
+
+```{r t test example data two fake, eval=FALSE, echo=TRUE}
+# Generate some Gaussian samples with mean -0.25 and control with mean 0
+test_samples <- rnorm(50, mean = -0.25, sd = 1)
+control_samples <- rnorm(50, mean = 0, sd = 1)
+```
+
+```{r t test example data two, echo=FALSE}
+control_samples <- rnorm(50, mean = 0, sd = 1)
+```
+
+>- test for a difference in means
+
+```{r t test example test two, echo=TRUE}
+# Run a two sample t-test with null hypothesis of equal means
+t.test(test_samples, control_samples)
+```
+
+## Two sample $t$-test in R {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
+With the <span class="code">t.test(...)</span> function
+</div>
+
+```{r two sample t test example fake, eval=FALSE, echo=TRUE}
+# Read in the swiss army data from file
+swiss_army_df <- read.csv("./data/Zurich_data.csv")
+# use the regression formulation
+t.test(Height ~ Sex, swiss_army_df)
+```
+
+<div class="columns-2">
+
+```{r two sample t test example, eval=TRUE, echo=FALSE}
+# Read in the swiss army data from file
+swiss_army_df <- read.csv("./data/Zurich_data.csv")
+# use the regression formulation
+t.test(Height ~ Sex, swiss_army_df)
+```
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r example data height several violinplots dots again}
+renderPlot({
+pp <- ggplot(swiss_army_df, aes(x = Sex, y = Height, colour = Sex, fill = Sex))
+  pp <- pp + geom_violin(alpha = 0.33)
+  pp <- pp + coord_flip() + theme_bw() + theme(text = element_text(size = 18)) +
+    scale_color_manual(values = c("darkorchid4", "firebrick3")) +
+    scale_fill_manual(values = c("darkorchid4", "firebrick3")) +
+    geom_jitter(alpha = 0.33)
+  print(pp)
+}, width = 450, height = 300)
+```
+</div>
+</div>
+
+>- clear difference in mean heights, and large sample size 
+
+
+
+## Summary {.build}
+
+<div>
+<span class="def">$p$-values</span> are a measure of surprise
+
+>- how unusual would the data be <span class="def">under</span> the null?
+</div>
+
+<div>
+For normal data the rescaled sample mean
+
+>- follows a <span class="def">Student $t$-distribution</span>
+>- becomes more normal with larger sample sizes (CLT)
+</div>
+
+<div>
+<span class="def">$t$-tests</span> can be employed to examine average differences
+
+>- one sample, paired samples and two samples
+>- more groups $\to$ <span class="def">ANOVA</span>
+</div>
+
+<div>
+$t$-tests assume no outliers and normality 
+
+>- can check with <span class="def">EDA</span> and <span class="def">Q-Q plots</span> 
+</div>
+
+<div>
+$\rightarrow$ Exercises 1
+</div>
+
+

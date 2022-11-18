@@ -1,0 +1,556 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "4: Bayesian first steps"
+author: "Jack Kuipers"
+date: "28 November 2022"
+runtime: shiny
+output:
+  ioslides_presentation:
+    css: ibswr.css
+    incremental: true
+    widescreen: true
+    smaller: true
+    fig_width: 6
+    fig_height: 4.5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+library(ggplot2)
+library(dplyr)
+```
+
+
+## Average difference?
+
+<div id=hidestuffless class="centered">
+```{r average difference samples}
+rv <- reactiveValues(n_samp = 10, 
+                     local_samples = rnorm(10, mean = -0.25, sd = 1),
+                     cis = rep(NA, 2),
+                     p0 = NA,
+                     p1 = NA,
+                     pH0 = NA)
+
+sidebarPanel(
+  actionButton("runAD", "Resample", icon = NULL), hr(),
+  renderUI({sliderInput("n_sampAD", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}), width = 2
+)
+
+observeEvent(rv$local_samples, { # update last plot
+  rv$local_samples2 <- rv$local_samples
+})
+
+observeEvent(input$runAD, {
+  rv$n_samp <- input$n_sampAD
+  rv$local_samples <- rnorm(input$n_sampAD, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/flagFT.R", local = TRUE)
+  source("./ibswrfiles/ggplotnormalsample.R", local = TRUE)
+}, width = 600, height = 450)
+```
+</div>
+
+<span class="question">Question: what is the probability of the null hypothesis?</span>
+
+## Bayes theorem again {.build}
+
+<div>
+We would like to know the probability of the hypothesis given the data: $P(H_0 \mid D)$
+
+>- using Bayes theorem
+
+$$ P(H_0 \mid D) = \frac{P(D \mid H_0)P(H_0)}{P(D)} $$
+$$P(D) = P(D \mid H_0)P(H_0) + P(D \mid \neg H_0)P(\neg H_0)$$
+</div>
+
+Need to know:
+
+>- the <span class="def">prior</span> probability of the null hypothesis: $P(H_0)$
+>- the <span class="def">likelihood</span> of the data under the null hypothesis: $P(D \mid H_0)$
+>- the <span class="def">likelihood</span> of the data under <span class="def">all</span> other hypotheses: $P(D \mid \neg H_0)$
+
+<div>
+Note we can rescale all likelihoods without changing $P(H_0 \mid D)$
+
+$$P(D \mid \ldots) \rightarrow cP(D \mid \ldots)$$
+
+>- can ignore constants in the likelihood
+</div>
+
+
+## Null likelihood {.build}
+
+<div class="columns-2">
+
+The null hypothesis:
+
+>- true mean is 0
+>- the data comes from a Gaussian
+
+The probability of each data point $x_i$ is $f(x_i)\mathrm{d}x$ with Gaussian <span class="def">probability density</span>
+
+$$f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\mathrm{e}^{-\frac{(x-0)^2}{2\sigma^2}}$$
+
+The likelihood is then
+
+$$P(D \mid H_0) \propto \prod_{i}f(x_i)$$
+
+ignoring the constants $\mathrm{d}x$
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r normal distribution ggplot one}
+inputPanel(sliderInput("normal_mean_dummy", label = "Mean:",
+              min = 0, max = 0, value = 0, step = 1),
+           sliderInput("normal_sd", label = "Standard deviation:",
+              min = 0.2, max = 4, value = 1, step = 0.1))
+renderPlot({
+  local_samples <- rv$local_samples
+  local_mean <- 0
+  local_sd <- input$normal_sd
+  source("./ibswrfiles/flagFALSE.R", local = TRUE)
+  source("./ibswrfiles/normallikeplot.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+</div>
+
+Let's fix $\sigma = 1$
+
+## Null likelihood {.build}
+
+<div class="columns-2">
+
+The null hypothesis:
+
+>- true mean is 0
+>- the data comes from a Gaussian
+>- with sd of 1
+
+The likelihood is then
+
+$$P(D \mid H_0) \propto \prod_{i}\mathrm{e}^{-\frac{x_i^2}{2}} = \mathrm{e}^{-\frac{\sum_i x_i^2}{2}}$$
+further ignoring the constants $\frac{1}{\sqrt{2\pi}}$
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r normal distribution ggplot two}
+inputPanel(sliderInput("normal_mean_dummy2", label = "Mean:",
+              min = 0, max = 0, value = 0, step = 1),
+           sliderInput("normal_sd_dummy", label = "Standard deviation:",
+              min = 1, max = 1, value = 1, step = 0.1))
+renderPlot({
+  local_samples <- rv$local_samples
+  local_mean <- 0
+  local_sd <- 1
+  source("./ibswrfiles/flagTRUE.R", local = TRUE)
+  source("./ibswrfiles/normallikeplot.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+</div>
+
+<span class="question">Question: what about under the alternative?</span>
+
+## Alternative likelihood {.build}
+
+<div class="columns-2">
+
+The null hypothesis:
+
+>- true mean is any value $\mu$
+>- the data comes from a Gaussian
+>- with sd of 1
+
+The likelihood is then
+
+$$P(D \mid \mu, \neg H_0) \propto \prod_{i}\mathrm{e}^{-\frac{(x_i-\mu)^2}{2}} = \mathrm{e}^{-\frac{\sum_i (x_i-\mu)^2}{2}}$$
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r normal distribution ggplot three}
+inputPanel(sliderInput("normal_mean", label = "Mean:",
+              min = -3, max = 3, value = 0, step = 0.1),
+           sliderInput("normal_sd_dummy2", label = "Standard deviation:",
+              min = 1, max = 1, value = 1, step = 0.1))
+renderPlot({
+  local_samples <- rv$local_samples
+  local_mean <- input$normal_mean
+  local_sd <- 1
+  source("./ibswrfiles/flagTRUE.R", local = TRUE)
+  source("./ibswrfiles/normallikeplot.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+</div>
+
+<span class="question">Question: how do we cope with **all** value of $\mu$?</span>
+
+## Marginal probability {.build}
+
+<span class="answer">Answer: Integrate over **all** $\mu$!</span>
+
+<div>
+First we need to define a <span class="def">prior</span> probability (density) for $\mu$ for our alternative hypothesis
+
+>- $p(\mu \mid \neg H_0)$
+</div>
+
+<div>
+Then we use the probability rule $P(A \cap B) = P(A \mid B)P(B)$ to write the joint
+
+$$P(D \cap \mu \mid \neg H_0) = P(D \mid \mu, \neg H_0)p(\mu \mid \neg H_0)$$
+</div>
+
+<div>
+Finally we <span class="def">marginalise</span> over $\mu$
+
+$$P(D \mid \neg H_0) = \int P(D \cap \mu \mid \neg H_0) \mathrm{d} \mu = \int P(D \mid \mu, \neg H_0)p(\mu \mid \neg H_0) \mathrm{d} \mu$$
+</div>
+
+<span class="question">Question: what should we choose for the prior probability of $\mu$?</span>
+
+
+
+## Prior choice
+
+<div class="columns-2">
+
+<span class="answer">Answer: we don't know which direction we might expect a difference from 0</span>
+
+>- symmetric distribution around 0
+
+<span class="answer">Or much about the process</span>
+
+>- fat tails
+
+<span class="answer">So let's pick a scaled Student-$t$</span>
+
+$$\mu \sim s\mathcal{T}_{\nu}$$
+
+>- becomes Gaussian as $\nu\to\infty$
+
+<span class="question">Question: what values should be pick for the scale $s$ and the degrees of freedom $\nu$?</span>
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r student t distribution ggplot}
+inputPanel(sliderInput("studentt_s", label = "Scale:",
+              min = 0.2, max = 4, value = 1, step = 0.1),
+              sliderInput("studentt_nu", label = "Degrees of freedom:",
+              min = 1, max = 20, value = 5, step = 1))
+renderPlot({
+  source("./ibswrfiles/flagTRUE.R", local = TRUE)
+  source("./ibswrfiles/studenttrvggplot.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+
+</div>
+
+## Alternative likelihood {.build}
+
+<div class="columns-2">
+
+The alternative likelihood was
+
+$$P(D \mid \mu, \neg H_0) \propto \prod_{i}\mathrm{e}^{-\frac{(x_i-\mu)^2}{2}} = \mathrm{e}^{-\frac{\sum_i (x_i-\mu)^2}{2}}$$
+
+<div class="centered">
+```{r alt likelihood ggplot}
+renderPlot({
+  local_samples <- rv$local_samples
+  local_mu <- input$normal_mean_two
+  source("./ibswrfiles/flagTRUE.R", local = TRUE)
+  source("./ibswrfiles/altlikeplot.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r normal distribution ggplot four}
+inputPanel(sliderInput("normal_mean_two", label = "Mean:",
+              min = -3, max = 3, value = 0, step = 0.1),
+           sliderInput("normal_sd_dummy3", label = "Standard deviation:",
+              min = 1, max = 1, value = 1, step = 0.1))
+renderPlot({
+  local_samples <- rv$local_samples
+  local_mean <- input$normal_mean_two
+  local_sd <- 1
+  source("./ibswrfiles/flagTRUE.R", local = TRUE)
+  source("./ibswrfiles/normallikeplot.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+</div>
+
+Let's put it together
+
+
+## Likelihood and prior
+
+<div class="columns-2">
+
+$$P(D \mid \mu, \neg H_0)$$
+
+<div class="centered">
+```{r alt likelihood ggplot two}
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/flagFALSE.R", local = TRUE)
+  source("./ibswrfiles/altlikeplot.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+
+
+<p class="forceBreak">&nbsp;</p>
+
+$$p(\mu \mid \neg H_0)$$
+
+<div class="centered">
+```{r student t distribution ggplot two}
+renderPlot({
+  source("./ibswrfiles/flagTRUE.R", local = TRUE)
+  source("./ibswrfiles/studenttrvggplot.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+
+</div>
+
+Multiply the two components together
+
+
+## Joint distribution
+
+$$P(D \cap \mu \mid \neg H_0) = P(D \mid \mu, \neg H_0)p(\mu \mid \neg H_0)$$
+
+<div class="centered">
+```{r joint ggplot}
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/flagFALSE.R", local = TRUE)
+  source("./ibswrfiles/jointlikeplot.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+
+$$P(D \mid \neg H_0) = \int P(D \cap \mu \mid \neg H_0) \mathrm{d} \mu$$
+
+```{r}
+observeEvent({rv$local_samples
+  input$studentt_s
+  input$studentt_nu
+  input$pH0}, {
+  q2 <- sum(rv$local_samples^2)
+  q1 <- sum(rv$local_samples)
+  q0 <- length(rv$local_samples)
+  rv$p0 <- exp(-q2/2)
+  xs <- 5*c(-600:600)/1000
+  ys <- dt(xs/input$studentt_s, df = input$studentt_nu)/input$studentt_s
+  ys2 <- exp(-(q2 - 2*q1*xs + q0*xs^2)/2)
+  cumvals <- cumsum(ys*ys2)/sum(ys*ys2)
+  rv$cis <- c(xs[which.min((cumvals - 0.025)^2)], xs[which.min((cumvals - 0.975)^2)])
+  rv$p1 <- sum(ys*ys2)*(xs[2]-xs[1])
+  rv$pH0 <- rv$p0*input$pH0/(rv$p0*input$pH0 + rv$p1*(1-input$pH0))})
+```
+
+>- integrate numerically to get `r renderText(signif(rv$p1, 3))`
+
+## Probability of the null hypothesis {.build}
+
+<div>
+$$P(H_0 \mid D) = \frac{P(D \mid H_0)P(H_0)}{P(D)} \,, \qquad P(D) = P(D \mid H_0)P(H_0) + P(D \mid \neg H_0)P(\neg H_0)$$
+</div>
+
+<div class="columns-2">
+<br>
+Finally we also need to select a prior probability of the null hypothesis
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r pH0 slider}
+inputPanel(sliderInput("pH0", label = "Prior probability of the null:",
+              min = 0, max = 1, value = 0.5, step = 0.05))
+```
+</div>
+<br>
+</div>
+
+<div class="columns-2">
+
+From numerical integral:
+
+`r renderUI(
+withMathJax(paste0("$$P(D \\mid \\neg H_0) = ", signif(rv$p1, 3), "$$"))
+)`
+
+<p class="forceBreak">&nbsp;</p>
+
+From likelihood at $\mu = 0$:
+
+`r renderUI(
+withMathJax(paste0("$$P(D \\mid H_0) = ", signif(rv$p0, 3), "$$"))
+)`
+
+</div>
+
+<div>
+<span class="answer">Answer: The probability of the null hypothesis is</span>
+
+`r renderUI(
+withMathJax(paste0("$$P(H_0 \\mid D) = \\frac{", signif(rv$p0, 3), "*", input$pH0, "}{", 
+signif(rv$p0, 3), "*", input$pH0, " + ", signif(rv$p1, 3), "*", 1-input$pH0, "} = ",
+signif(rv$pH0, 3), "$$"))
+)`
+</div>
+
+>- with our likelihood model and prior assumptions
+
+## Posterior {.build}
+
+Rather than integrating over $\mu$
+
+>- the mean $\mu$ is the quantity we care about!
+
+
+Rather than trying to find its "true" fixed value
+
+>- how would we describe its distribution, given the information we have
+
+$$p(\mu \mid D) \propto P(D \mid \mu) \cdot p(\mu)$$
+
+>- the <span class="def">posterior</span> is proportional to the <span class="def">likelihood</span> times the <span class="def">prior</span>
+
+>- follows from Bayes theorem
+
+We already have all these quantities
+
+## Posterior
+
+<div class="columns-2">
+
+<div class="centered">
+<span class="def">likelihood</span> $P(D \mid \mu)$
+```{r alt likelihood ggplot three}
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/flagFALSE.R", local = TRUE)
+  source("./ibswrfiles/altlikeplot.R", local = TRUE)
+}, width = 300, height = 200)
+```
+</div>
+
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+<span class="def">prior</span> $p(\mu)$
+```{r student t distribution ggplot three}
+renderPlot({
+  source("./ibswrfiles/flagTRUE.R", local = TRUE)
+  source("./ibswrfiles/studenttrvggplot.R", local = TRUE)
+}, width = 300, height = 200)
+```
+</div>
+
+</div>
+
+<div class="centered" id="hidestuff">
+<span class="def">posterior</span> $p(\mu \mid D)$
+```{r joint ggplot two}
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/flagTRUE.R", local = TRUE)
+  source("./ibswrfiles/jointlikeplot.R", local = TRUE)
+}, width = 300, height = 200)
+```
+</div>
+
+
+## Credible interval {.build}
+
+<div class="columns-2">
+
+The <span class="def">credible interval</span> contains the central part of the posterior distribution
+
+>- usually 95% is chosen
+
+```{r, ci example, echo = FALSE}
+renderPrint({
+  paste0("[", round(rv$cis[1], 3), ", ", round(rv$cis[2], 3), "]")
+})
+```
+
+Bayesian analogue to the <span class="def">confidence interval</span>
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r joint ggplot three}
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/flagsTRUE.R", local = TRUE)
+  source("./ibswrfiles/jointlikeplot.R", local = TRUE)
+}, width = 300, height = 300)
+```
+</div>
+</div>
+
+<div>
+With samples from the posterior
+
+$$\mu_i \qquad i = 1,\ldots,M \, , \qquad \mu_i \sim p(\mu \mid D)$$
+
+>- obtain Monte Carlo estimate from sample quantiles
+</div>
+
+## Summary {.build}
+
+<div>
+The <span class="def">posterior</span> distribution 
+
+$$p(\mu \mid D) \propto P(D \mid \mu) \cdot p(\mu)$$
+
+>- proportional to the <span class="def">likelihood</span> times the <span class="def">prior</span>
+>- updates prior belief with the likelihood from the data
+</div>
+
+<div>
+Often we cannot compute analytically
+
+>- obtain Monte Carlo samples from the posterior
+>- MCMC, HMC etc 
+</div>
+
+<div>
+The <span class="def">credible interval</span> contains the central 95% of the posterior
+
+>- estimate from samples
+</div>
+
+<div>
+Can also use samples to integrate/marginalise
+
+>- eg to obtain the estimate of the probability of a hypothesis  
+</div>
+
+<div>
+$\rightarrow$ Exercises 4
+</div>
+
+

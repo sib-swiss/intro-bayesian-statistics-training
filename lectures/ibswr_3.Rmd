@@ -1,0 +1,53 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "3: Monte Carlo methods"
+author: "Jack Kuipers"
+date: "28 November 2022"
+runtime: shiny
+output:
+  ioslides_presentation:
+    css: ibswr.css
+    incremental: true
+    widescreen: true
+    smaller: true
+    fig_width: 6
+    fig_height: 4.5
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+library(ggplot2)
+```
+
+
+## Monte Carlo approximation {.build}
+
+## Mean of a Gaussian {.build}
+
+## From mean to sample mean {.build}
+
+## Numerical integration {.build}
+
+## Monte Carlo integration {.build}
+
+## MCMC {.build}
+
+## MCMC code {.build}
+
+## MCMC burnin {.build}
+
+## MCMC example {.build}
+
+
+## Summary {.build}
+
+
+<div>
+$\rightarrow$ Exercises 3
+</div>
+
+
+
+

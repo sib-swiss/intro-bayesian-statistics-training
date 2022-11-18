@@ -1,0 +1,637 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "2: p-values and confidence intervals"
+author: "Jack Kuipers"
+date: "28 November 2022"
+runtime: shiny
+output:
+  ioslides_presentation:
+    css: ibswr.css
+    incremental: true
+    widescreen: true
+    smaller: true
+    fig_width: 6
+    fig_height: 4.5
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+library(ggplot2)
+```
+
+
+## $p$-value plot recap {.build}
+
+<div class="columns-2">
+Assuming the mean is 0
+
+>- compute how extreme the $t$-statistic is
+
+$$t = \frac{m - \mu_0}{s_m} = \sqrt{N} \frac{m-\mu_0}{s}$$
+
+Using the <span class="def">Student-$t$</span> distribution <span class="def">under the null</span>
+
+$$t_0 \sim \mathcal{T}_{N-1}$$
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r average difference samples t test}
+rv <- reactiveValues(n_samp = 10, 
+                     local_samples = rnorm(10, mean = -0.25, sd = 1))
+
+inputPanel(
+  actionButton("runADT", "Resample", icon = NULL),
+  renderUI({sliderInput("n_sampADT", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}))
+
+observeEvent(input$runADT, {
+  rv$n_samp <- input$n_sampADT
+  rv$local_samples <- rnorm(input$n_sampADT, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/ggplotttestsample.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+</div>
+
+<div id="hidestuffless">
+<span class="question">Question: instead of fixing the mean to 0</span>
+
+<span class="question">What is the estimated distribution of the mean itself?</span>
+</div>
+
+
+## Confidence intervals
+
+<div class="columns-2">
+
+<span class="answer">Answer: an "unscaled" student $t$</span>
+
+$$m \sim \overline{x} + s_m \mathcal{T}_{N-1} = \overline{x} + \frac{s}{\sqrt{N}} \mathcal{T}_{N-1}$$
+
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r confidence interval simple}
+inputPanel(
+  actionButton("runCIS", "Resample", icon = NULL),
+  renderUI({sliderInput("n_sampCIS", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}))
+
+observeEvent(input$runCIS, {
+  rv$n_samp <- input$n_sampCIS
+  rv$local_samples <- rnorm(input$n_sampCIS, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/flagFALSE.R", local = TRUE)
+  source("./ibswrfiles/ggplotCIsample.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+</div>
+
+
+## Confidence intervals {.build}
+
+<div class="columns-2">
+
+<span class="answer">Answer: an "unscaled" student $t$</span>
+
+$$m \sim \overline{x} + s_m \mathcal{T}_{N-1} = \overline{x} + \frac{s}{\sqrt{N}} \mathcal{T}_{N-1}$$
+
+The <span class="def">confidence interval</span> contains the central part of the distribution
+
+>- usually 95% is chosen
+
+```{r CI example fake, eval=FALSE, echo=TRUE}
+# extract the 95% confidence interval
+t.test(test_samples)$conf.int
+```
+
+```{r, CI example, echo = FALSE}
+renderPrint({
+  local_conf.int <- t.test(rv$local_samples)$conf.int
+  paste0("[", round(local_conf.int[1], 3), ", ", round(local_conf.int[2], 3), "]")
+})
+```
+
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r confidence interval}
+inputPanel(
+  actionButton("runCI", "Resample", icon = NULL),
+  renderUI({sliderInput("n_sampCI", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}))
+
+observeEvent(input$runCI, {
+  rv$n_samp <- input$n_sampCI
+  rv$local_samples <- rnorm(input$n_sampCI, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/flagTRUE.R", local = TRUE)
+  source("./ibswrfiles/ggplotCIsample.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+</div>
+
+<div id="hidestuff">
+<span class="question">Question: if the 95% confidence interval excludes 0</span>
+
+<span class="question">What can you say about the $p$-value?</span>
+</div>
+
+<span class="answer">Answer: it is less than 0.05</span>
+
+
+## Confidence interval quiz
+
+<div id="hidestuffless">
+**Hoekstra et al (2014)**
+</div>
+
+<div class="columns-2">
+
+Professor Bumbledorf conducts an experiment, analyzes the data, and reports:
+
+<div class="centered">
+<img src="./ibswrfiles/bumbledorfspeech.png" alt="" width=450px>
+</div>
+
+Please mark each of the following six statements as "true" or "false".  False means that the statement does not follow logically from Bumbledorf's result.  Also note that all, several, or none of the statements may be correct.
+
+<p class="forceBreak">&nbsp;</p>
+
+$$\left.\right.$$
+
+</div>
+
+
+## Confidence interval quiz
+
+<div id="hidestuffless">
+**Hoekstra et al (2014)**
+</div>
+
+<div class="columns-2">
+
+Professor Bumbledorf conducts an experiment, analyzes the data, and reports:
+
+<div class="centered">
+<img src="./ibswrfiles/bumbledorfspeech.png" alt="" width=450px>
+</div>
+
+<div class="centered">
+```{r countdown}
+fluidRow(column(6, offset = 1, p(" "),
+  actionButton('start_CD', 'Start'),
+  actionButton('stop_CD', 'Pause'),
+  actionButton('reset_CD', 'Reset')),
+  column(4,
+  numericInput('minutes_CD', 'Minutes:', value = 6, min = 1, max = 12, step = 1)))
+
+  timer <- reactiveVal(360)
+  active <- reactiveVal(FALSE)
+
+    observe({
+    invalidateLater(1000, session)
+    isolate({
+      if (active())
+      {
+        timer(timer() - 1)
+        if (timer() < 1)
+        {
+          active(FALSE)
+        }
+      }
+    })
+  })
+
+  # observers for actionbuttons
+  observeEvent(input$start_CD, {active(TRUE)})
+  observeEvent(input$stop_CD, {active(FALSE)})
+  observeEvent(input$reset_CD, {timer(60*as.numeric(input$minutes_CD))})
+  observeEvent(input$minutes_CD, {timer(60*as.numeric(input$minutes_CD))})
+
+renderText(ifelse(timer() > 0, paste0("Time left: ", floor(timer()/60), "m ", timer()%%60, "s"), "Time's up!"))
+```
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+[1.] The probability that the true mean is greater than 0 is at least 95%.
+
+[2.] The probability that the true mean equals 0 is smaller than 5%.
+
+[3.] The "null hypothesis" that the true mean equals 0 is likely to be incorrect.
+
+[4.] There is a 95% probability that the true mean lies between 0.1 and 0.4.
+
+[5.] We can be 95% confident that the true mean lies between 0.1 and 0.4.
+
+[6.] If we were to repeat the experiment over and over, then 95% of the time the true mean falls between 0.1 and 0.4.
+
+</div>
+
+<div id="hidestuffless">
+<span class="question">Question: which statements are true and which are false?</span>
+</div>
+
+## Confidence interval quiz
+
+<div id="hidestuffless">
+**Hoekstra et al (2014)**
+</div>
+
+<div class="columns-2">
+
+Professor Bumbledorf conducts an experiment, analyzes the data, and reports:
+
+<div class="centered">
+<img src="./ibswrfiles/bumbledorfspeech.png" alt="" width=450px>
+</div>
+
+Please mark each of the following six statements as "true" or "false".  False means that the statement does not follow logically from Bumbledorf's result.  Also note that all, several, or none of the statements may be correct.
+
+<p class="forceBreak">&nbsp;</p>
+
+[1.] The probability that the true mean is greater than 0 is at least 95%.
+
+[2.] The probability that the true mean equals 0 is smaller than 5%.
+
+[3.] The "null hypothesis" that the true mean equals 0 is likely to be incorrect.
+
+[4.] There is a 95% probability that the true mean lies between 0.1 and 0.4.
+
+[5.] We can be 95% confident that the true mean lies between 0.1 and 0.4.
+
+[6.] If we were to repeat the experiment over and over, then 95% of the time the true mean falls between 0.1 and 0.4.
+
+</div>
+
+<div id="hidestuffless">
+<span class="question">Question: which statements are true and which are false?</span>
+</div>
+
+
+## Confidence interval quiz
+
+<div id="hidestuffless">
+**Hoekstra et al (2014)**
+</div>
+
+<div class="columns-2">
+
+Professor Bumbledorf conducts an experiment, analyzes the data, and reports:
+
+<div class="centered">
+<img src="./ibswrfiles/bumbledorfspeech.png" alt="" width=450px>
+</div>
+
+Please mark each of the following six statements as "true" or "false".  False means that the statement does not follow logically from Bumbledorf's result.  Also note that all, several, or none of the statements may be correct.
+
+<p class="forceBreak">&nbsp;</p>
+
+[1.] The probability that the true mean is greater than 0 is at least 95%. <span class="answer">False</span>
+
+[2.] The probability that the true mean equals 0 is smaller than 5%. <span class="answer">False</span>
+
+[3.] The "null hypothesis" that the true mean equals 0 is likely to be incorrect. <span class="answer">False</span>
+
+[4.] There is a 95% probability that the true mean lies between 0.1 and 0.4. <span class="answer">False</span>
+
+[5.] We can be 95% confident that the true mean lies between 0.1 and 0.4. <span class="answer">False</span>
+
+[6.] If we were to repeat the experiment over and over, then 95% of the time the true mean falls between 0.1 and 0.4. <span class="answer">False</span>
+
+</div>
+
+<div id="hidestuffless">
+<span class="answer">Answer: the sample mean (and its distribution) is a random variable.<br>It depends on the unknown true mean, but we cannot simply "invert".</span>
+</div>
+
+## Confidence intervals and p-values 
+
+<div class="columns-2">
+
+If the 95% confidence interval excludes 0
+
+```{r, CI example 2, echo = FALSE}
+renderPrint({
+  local_conf.int <- t.test(rv$local_samples)$conf.int
+  paste0("[", round(local_conf.int[1], 3), ", ", round(local_conf.int[2], 3), "]",
+         ifelse(local_conf.int[1] > 0 || local_conf.int[2] < 0, " excludes 0", " does not exclude 0"))
+})
+```
+
+$\rightarrow$ $p$-value is below 5%
+
+```{r, p CI example, echo = FALSE}
+renderPrint({
+  local_p_val <- t.test(rv$local_samples)$p.value
+  paste0("p = ", signif(local_p_val, 3), ", ", 
+         ifelse(local_p_val < 0.05, "below 5%", "not below 5%"))
+})
+```
+
+But the $p$-value is the probability of the data (or more extreme) <span class="def">given</span> the null hypothesis
+
+<span class="answer">NOT the probability of the hypothesis <span class="def">given</span> the data</span>
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r confidence interval 2}
+inputPanel(
+  actionButton("runCI2", "Resample", icon = NULL),
+  renderUI({sliderInput("n_sampCI2", label = "Number of samples",
+              min = 5, max = 200, value = rv$n_samp, step = 5)}))
+
+observeEvent(input$runCI2, {
+  rv$n_samp <- input$n_sampCI2
+  rv$local_samples <- rnorm(input$n_sampCI2, mean = -0.25, sd = 1)
+})
+
+renderPlot({
+  local_samples <- rv$local_samples
+  source("./ibswrfiles/flagsTRUE.R", local = TRUE)
+  source("./ibswrfiles/ggplotCIsample.R", local = TRUE)
+}, width = 400, height = 300)
+```
+</div>
+</div>
+
+
+
+## Probability {.build}
+
+<div id="hidestuffless" class="centered">
+```{r just probability }
+sidebarPanel(actionButton("start_JP", "Start"), hr(),
+  selectInput("n_sampsJP", label = "Number of samples:",
+        choices = c(1, 10, 20, 50, 100), selected = 1),
+  sliderInput("wait_timeJP", label = "Wait time:",
+              min = 100, max = 1000, value = 1000, step = 100), width = 2)
+
+  rvJP <- reactiveValues(i = 0, samp_value = c(), flag = FALSE)
+
+  observeEvent(input$start_JP, {
+    rvJP$i <- 0
+    rvJP$samp_value <- runif(1)
+    rvJP$flag <- TRUE
+    observe({
+      if (isolate(rvJP$flag) == TRUE) {
+        isolate({
+          rvJP$i <- rvJP$i + 1
+          rvJP$samp_value <- runif(1)
+        })
+      }
+      if (isolate(rvJP$i) < as.numeric(input$n_sampsJP)) {
+        invalidateLater(input$wait_timeJP, session)
+      } else {
+        rvJP$flag <- FALSE
+      }
+    })
+  })
+  
+  renderPlot( {
+    local_bottomx <- 0
+    local_topx <- 1
+    local_samp_value <- rvJP$samp_value
+    source("./ibswrfiles/colordefs.R")
+    source("./ibswrfiles/conditional0.R", local = TRUE)
+    if (rvJP$i > 0) {
+      source("./ibswrfiles/conditional1.R", local = TRUE)
+    }
+  }, width = 600, height = 300)
+```
+
+Uniform samples in $(0,1)$ with the <span class="code">runif()</span> function.
+</div>
+
+<span class="question">Questions: What is $P(A)$, the probability the sample hits $A$?  What is $P(B)$?</span>
+
+<span class="answer">Answers: $P(A)=\frac{6}{10} = \frac{3}{5}$, $P(B)=\frac{3}{10}$</span>
+
+<span class="question">Question: What is $P(A \cap B)$, the probability the sample hits both $A$ and $B$?</span>
+
+<span class="answer">Answer: $P(A \cap B) = \frac{2}{10} = \frac{1}{5}$</span>
+
+
+## Conditional probability {.build}
+
+<div id="hidestuffless" class="centered">
+```{r conditional probability }
+sidebarPanel(actionButton("start_CP", "Start"), hr(),
+  selectInput("condit_CP", label = "Condition:",
+        choices = c(" - ", "A", "B"), selected = " - "),
+  sliderInput("wait_timeCP", label = "Wait time:",
+              min = 100, max = 1000, value = 1000, step = 100), width = 2)
+
+  xlims <- c(0, 0.1, 0.5, 0.7, 0.8, 1)
+  rvCP <- reactiveValues(i = 0, samp_value = c(), flag = FALSE)
+
+  observeEvent(input$start_CP, {
+    rvCP$i <- 0
+    rvCP$samp_value <- runif(1)
+    rvCP$flag <- TRUE
+    observe({
+      if (isolate(rvCP$flag) == TRUE) {
+        isolate({
+          rvCP$i <- rvCP$i + 1
+          if (input$condit_CP == " - ") {
+            rvCP$samp_value <- runif(1)
+          }
+          if (input$condit_CP == "A") {
+            rvCP$samp_value <- runif(1, min = xlims[2], max = xlims[4])
+          }
+          if (input$condit_CP == "B") {
+            rvCP$samp_value <- runif(1, min = xlims[3], max = xlims[5])
+          }          
+        })
+      }
+      if (isolate(rvCP$i) < 20) {
+        invalidateLater(input$wait_timeCP, session)
+      } else {
+        rvCP$flag <- FALSE
+      }
+    })
+  })
+  
+  renderPlot({
+    local_bottomx <- 0
+    local_topx <- 1
+    if (input$condit_CP == "A") {
+      local_bottomx <- xlims[2]
+      local_topx <- xlims[4]
+    }
+    if (input$condit_CP == "B") {
+      local_bottomx <- xlims[3]
+      local_topx <- xlims[5]
+    } 
+    local_samp_value <- rvCP$samp_value
+    source("./ibswrfiles/colordefs.R")
+    source("./ibswrfiles/conditional0.R", local = TRUE)
+    if (rvCP$i > 0) {
+      source("./ibswrfiles/conditional1.R", local = TRUE)
+    }
+  }, width = 600, height = 300)
+```
+
+Uniform samples in $(0,1)$ with the <span class="code">runif()</span> function.
+</div>
+
+<span class="question">Question: what is $P(B \mid A)$, the probability the sample also hits $B$, given that it hits $A$?</span>
+
+<span class="answer">Answer: $P(B \mid A)=\frac{2}{6} = \frac{1}{3}$</span>
+
+<span class="question">Question: what is $P(A \mid B)$?</span>
+
+<span class="answer">Answer: $P(A \mid B)=\frac{2}{3}$</span>
+
+
+## Bayes theorem {.build}
+
+Conditional probability
+
+$$ P(B \mid A) = \frac{P(A \cap B)}{P(A)} $$
+
+>- we rescale or renormalise to only $A$ events
+
+Rearrange
+
+$$ P(B \mid A)P(A) = P(A \cap B) = P(A \mid B)P(B) $$
+
+Bayes theorem
+
+$$ P(B \mid A) = \frac{P(A \mid B)P(B)}{P(A)} \, , \qquad P(A) = P(A \mid B)P(B) + P(A \mid \neg B)P(\neg B)  $$
+
+<div>
+<span class="question">Question: All families with two children and at least one daughter are entered into a raffle.</span>
+
+<span class="question">What's the chance the winning family has two daughters?</span>
+</div>
+
+<span class="answer">Answer: $\approx\frac{1}{3}$.  We renormalise to the three possibilities: $\{D,D\}$, $\{D,S\}$, $\{S,D\}$.</span>
+
+## Family example
+
+<div>
+<span class="question">What's the chance the winning family has two daughters?</span> <span class="answer">Answer: $\approx\frac{1}{3}$.</span>
+</div>
+
+<div class="columns-2">
+
+Or we can simulate, or compute:
+
+```{r echo = TRUE}
+n_fam <- 1e5 # number of families
+first_child <- sample(c("D", "S"), 
+                n_fam, replace = TRUE)
+second_child <- sample(c("D", "S"), 
+                n_fam, replace = TRUE)
+families <- cbind(first_child, second_child)
+# remove those with two sons
+two_sons <- which(rowSums(families == "S") == 2)
+selected_families <- families[-two_sons, ]
+# work out the fraction with two daughters
+p_two_daughters <- mean(rowSums(
+  selected_families == "D") == 2)
+# print the simulation results
+signif(p_two_daughters, 3) 
+```
+
+<p class="forceBreak">&nbsp;</p>
+
+There are four (approximately) equally likely configurations of the two children
+
+>- $\{D,D\}$, $\{D,S\}$, $\{S,D\}$, $\{S,S\}$.
+
+Denote by $C$ the condition of at least one daughter
+
+>- $P(C) = \frac{3}{4}$ and $P(D,D \cap C) = \frac{1}{4}$
+
+Bayes Theorem:
+
+$$P(D,D \mid C) = \frac{P(D,D \cap C)}{P(C)}$$
+$$= \frac{\frac{1}{4}}{\frac{3}{4}} = \frac{1}{3}$$
+</div>
+
+
+## Bayes theorem and $p$-values {.build}
+
+<div>
+The $p$-value is the probability of the data (or more extreme) given the null hypothesis
+
+$$p = P(D^{+} \mid H_0)$$
+</div>
+
+We would like to know the probability of the hypothesis given the data: $P(H_0 \mid D)$
+
+<div>
+$$ P(H_0 \mid D) = \frac{P(D \mid H_0)P(H_0)}{P(D)} $$
+
+>- Bayes theorem
+</div>
+
+Need to know:
+
+>- the <span class="def">prior</span> probability of the null hypothesis: $P(H_0)$
+>- $P(D)$
+
+$$P(D) = P(D \mid H_0)P(H_0) + P(D \mid \neg H_0)P(\neg H_0)$$
+
+>- the <span class="def">likelihood</span> of the data under <span class="def">all</span> other hypotheses: $P(D \mid \neg H_0)$
+
+The $p$-value does not include this information.
+
+## Summary {.build}
+
+<div>
+<span class="def">$p$-values</span> are a measure of surprise
+
+>- probability of the data statistic (sample mean) or more extreme <span class="def">given</span> the null
+</div>
+
+<div>
+Commonly misinterpreted
+
+>- not the probability of the hypothesis <span class="def">given</span> the data!
+</div>
+
+<div>
+<span class="def">Confidence intervals</span> are the central part of estimates of the distribution of the statistic (sample mean)
+
+>- contain similar information to the $p$-value but even more commonly misinterpreted
+</div>
+
+<div>
+To "invert" <span class="def">conditional</span> probabilities
+
+>- <span class="def">Bayes theorem</span>
+
+$$ P(H_0 \mid D) = \frac{P(D \mid H_0)P(H_0)}{P(D)} \, , \qquad P(D) = P(D \mid H_0)P(H_0) + P(D \mid \neg H_0)P(\neg H_0)  $$
+
+Need information beyond the $p$-value: the <span class="def">prior</span> $H_0$ and to consider all alternative hypotheses! 
+</div>
+
+<div>
+$\rightarrow$ Exercises 2
+</div>
+
+
+
+
