@@ -48,17 +48,7 @@ lung_data <- read.csv("./data/lung_data.csv")
 which we can plug straight into a `brms` model. Since in Exercise 1.1 we used the default $t$-test which has unequal variance, we'll work analogously here. Following the lecture example, we use the helper function from the Exercise sheet to run
 
 ```{r, eval = TRUE, echo = FALSE}
-run_model <- function(expr, path, reuse = TRUE) {
-  path <- paste0(path, ".Rds")
-  if (reuse) {
-    fit <- suppressWarnings(try(readRDS(path), silent = TRUE))
-  }
-  if (is(fit, "try-error")) {
-    fit <- eval(expr)
-    saveRDS(fit, file = path)
-  }
-  fit
-}
+source("./ibswr_exercise_files/brm_run.R")
 ```
 
 ```{r, eval = TRUE, echo = TRUE}

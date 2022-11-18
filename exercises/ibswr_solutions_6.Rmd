@@ -45,20 +45,10 @@ lung_data <- read.csv("./data/lung_data.csv")
 ```
 
 ```{r, eval = TRUE, echo = FALSE}
-run_model <- function(expr, path, reuse = TRUE) {
-  path <- paste0(path, ".Rds")
-  if (reuse) {
-    fit <- suppressWarnings(try(readRDS(path), silent = TRUE))
-  }
-  if (is(fit, "try-error")) {
-    fit <- eval(expr)
-    saveRDS(fit, file = path)
-  }
-  fit
-}
+source("./ibswr_exercise_files/brm_run.R")
 ```
 
-straight into the robust $t$-test `brms` model from the lecture (using the helper function from exercises 5)
+straight into the robust $t$-test `brms` model from the lecture (using the helper function from Exercises 5)
 
 ```{r, eval = TRUE, echo = TRUE}
 brmfit_t_ex6_r <- run_model(brm(bf(Lung.function ~ Trial.arm, sigma ~ Trial.arm),
