@@ -1,0 +1,479 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "8: Bayesian logistic regression"
+author: "Jack Kuipers"
+date: "29 November 2022"
+runtime: shiny
+output:
+  ioslides_presentation:
+    css: ibswr.css
+    incremental: true
+    widescreen: true
+    smaller: true
+    fig_width: 6
+    fig_height: 4.5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+library(ggplot2)
+library(dplyr)
+```
+
+
+## Admission data {.build}
+
+<div class="columns-2">
+
+Dataset of whether students were accepted to Grad School in the US
+
+>- Admission (whether admitted or not)
+>- GRE (Graduate exam score divided by 100)
+>- GPA (Grade point average)
+
+```{r diamond data, echo=TRUE}
+# Read in the file
+admiss_data <- read.csv("./data/GradSchool.csv")
+head(admiss_data)
+```
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r}
+renderPlot({
+  local_data <- admiss_data
+ggplot(local_data, aes_string(x = input$disp_variable)) + theme_bw() + theme(text = element_text(size = 18)) +
+  geom_histogram(col = "darkorange", fill = "darkorange", alpha = 0.5, bins = 30) 
+}, width = 450, height = 300)
+
+selectInput("disp_variable", "Display variable:",
+c("Admission", "GRE", "GPA"))
+```
+</div>
+</div>
+
+<span class="question">Question: How do we handle predicting a binary response?<span>
+
+
+## From binary to continous to likelihood {.build}
+
+<span class="answer">Answer: We predict the probability of the binary value being 1.</span>
+
+Let us say for each student $S_i$ with *Admission* value $A_i \in \{0,1\}$
+
+>- we predict as $\widehat{\rho}_i$ the probability of $S_i$ being admitted  
+
+$$\widehat{\rho}_i = P(A_i=1)$$
+
+<span class="question">Question: What is the likelihood of $A_i$?<span>
+
+<span class="answer">Answer:</span>
+
+$$L_i = \left\{ \begin{array}{ccc}1 - \widehat{\rho}_i & & A_i=0 \\ \widehat{\rho}_i && A_i=1 \end{array} \right.$$
+
+<span class="question">Question: What is the log-likelihood of $A_i$?<span>
+
+<span class="answer">Answer: We take logs and use $A_i$ as an indicator function</span>
+
+$$l_i = A_i \log(\widehat{\rho}_i) + (1 - A_i)\log(1 - \widehat{\rho}_i)$$
+
+## Log-likelihood {.build}
+
+Log-likelihood of all the data is then
+
+$$l = \sum_i \left[A_i \log(\widehat{\rho}_i) + (1 - A_i)\log(1 - \widehat{\rho}_i)\right]$$
+We want to maximise this likelihood 
+
+>- when we predict $\widehat{\rho}$ from the covariates
+
+When we regress
+
+$$\rho \sim \text{GRE} + \text{GPA}$$
+
+<span class="question">Question: What's the problem here?<span>
+
+<span class="answer">Answer: $\rho$ has to be between 0 and 1</span>
+
+<span class="question">Question: How do we ensure this?<span>
+
+<span class="answer">Answer: Transform it.</span>
+
+## Logit {.build}
+
+<div class="columns-2">
+
+A common choice is <span class="code">logit()</span>
+
+$$\mathrm{logit}(\rho) = \log\left(\frac{\rho}{1 - \rho}\right)$$
+
+>- rotational symmetry around $\rho=\frac{1}{2}$
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r logit ggplot, echo=FALSE}
+renderPlot({
+  xs <- c(1:299)/300
+  logs <- log(xs/(1 - xs))
+  df_local <- data.frame(x = xs, y = logs)
+ggplot(df_local, aes(x = x, y = y)) + theme_bw() + 
+  theme(text = element_text(size = 18)) +
+  geom_line(colour = "dodgerblue", size = 2) + ylab(expression("logit("*rho*")")) +
+  xlab(expression(rho))
+}, width = 450, height = 300)
+```
+</div>
+
+</div>
+
+<span class="question">Question: What is the $\frac{\rho}{1 - \rho}$ term?</span>
+
+<span class="answer">Answer: $\frac{\rho}{1 - \rho}$ is the <span class="def">odds</span>.</span>
+
+<span class="question">Question: For $\rho=\frac{1}{3}$ what are the odds?</span>
+
+<div>
+<span class="answer">Answer: $\frac{1}{2}$.</span> In <span class="def">betting odds</span>, would be 2 to 1 (against)
+
+</div>
+
+
+## Logistic regression {.build}
+
+We have a binary response variable: $y$
+
+$\to$ model underlying probability of being 1: $\rho$
+
+$\to$ transform to odds: $\frac{\rho}{1 - \rho}$
+
+$\to$ transform with log: $\log\left(\frac{\rho}{1 - \rho}\right)$
+
+$\to$ regress log odds on covariates: 
+
+$$\log\left(\frac{\rho}{1 - \rho}\right) = \beta_0 + \beta_1 x_1 + \ldots$$
+
+To learn regression coefficients
+
+$\to$ predict log odds with regression
+
+$\to$ predicted probabilities $\widehat{\rho}$
+
+$\to$ maximise (log-)likelihood $l$ numerically.
+
+
+## Logistic regression in R {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
+With the <span class="code">glm(...)</span> function, with <span class="code">family="binomial"</span> 
+</div>
+
+```{r eval=TRUE, echo=TRUE}
+glm_fit <- glm(Admission ~ GRE + GPA, admiss_data, family="binomial")
+glm_fit
+```
+
+>- Deviance is like sum of squared residuals
+
+## Regression coefficients {.build}
+
+```{r logistic regression diamond base coefficients, eval=TRUE, echo=FALSE}
+summary(glm_fit)$coefficients
+```
+
+<span class="question">Question: How much would the predicted odds of being *Admitted* change if we increase the *GRE* by 0.4 and the *GPA* by 0.2?</span>
+
+<span class="answer">Answer: by a factor of exp(0.4 * `r renderText({round(summary(glm_fit)$coefficients[2, 1], 4)})` + 0.2 * `r renderText({round(summary(glm_fit)$coefficients[3, 1], 4)})`) = `r renderText({round(exp(0.4*summary(glm_fit)$coefficients[2, 1] + 0.2*summary(glm_fit)$coefficients[3, 1]), 4)})`. </span>
+
+Remember we regress the log odds on the covariates
+
+$$\log\left(\frac{\rho}{1 - \rho}\right) \sim \beta_0 + \beta_1 x_1 + \ldots$$
+
+>- change in the covariates
+>- leads to a linear change in log odds
+
+Exponentiate the linear change
+
+>- multiplicative factor in the odds
+
+## Predicted probabilities {.build}
+
+Instead of odds, we can look at the predicted probabilities
+
+```{r eval=TRUE, echo=TRUE}
+admiss_data$p_prob <- predict(glm_fit, type = "response")
+```
+
+<div class="columns-2">
+
+```{r diamond data scatterplot ggplot predicted fake, echo=TRUE, eval=FALSE}
+# plot of predicted probabilities
+ggplot(admiss_data, aes(x=p_prob, 
+                         y = Admission)) +
+  geom_point(colour = "dodgerblue", 
+             alpha = 0.5) +
+# change axes labels  
+  xlab(expression(hat(rho)))
+```
+
+And for a particular "student"
+
+```{r eval=TRUE, echo=TRUE}
+new_data <- data.frame(GRE = 5.5, GPA = 3.5)
+```
+
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r echo = FALSE, fig.height=3, fig.width=4.5}
+# plot of predicted probabilities
+ggplot(admiss_data, aes(x=p_prob, 
+                         y = Admission)) +
+  geom_point(colour = "dodgerblue", 
+             alpha = 0.5) +
+# change axes labels  
+  xlab(expression(hat(rho)))
+```
+</div>
+</div>
+
+```{r eval=TRUE, echo=TRUE}
+predict(glm_fit, type = "response", new_data)
+```
+
+
+## Bayesian logistic regression {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+For the Bayesian version with <span class="code">brms</span>, similar syntax with <span class="code">family=bernoulli</span>
+</div>
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+brm_logistic <- brm(Admission ~ GRE + GPA, family = bernoulli, 
+                prior = prior(student_t(3, 0, 1), class = "b"), # sets for both beta
+                admiss_data) # run the model
+```
+
+```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
+library(brms) # load the library
+source("./ibswrfiles/brm_run.R")
+brm_logistic <- run_model(brm(Admission ~ GRE + GPA, family = bernoulli, 
+                prior = prior(student_t(3, 0, 1), class = "b"), # sets for both beta
+                admiss_data), "./brm_models_lectures/brm_logistic")
+```
+
+Bernoulli is binomial with 1 trial, hence syntax (each subject is 1 row)
+
+>- for collated data need <span class="code">family=binomial</span> and <span class="code">success | trials</span> syntax
+>-  $\rightarrow$ see Exercises 8
+
+Trace plots look good, as we would expect for a small model:
+
+<div class="columns-2">
+
+<div class="centered">
+```{r, echo = FALSE, eval = TRUE, fig.height=2, fig.width=4.5, warning=FALSE, message=FALSE}
+mcmc_plot(brm_logistic, variable = "b_GRE", type = "trace")
+```
+</div>
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r, echo = FALSE, eval = TRUE, fig.height=2, fig.width=4.5, warning=FALSE, message=FALSE}
+mcmc_plot(brm_logistic, variable = "b_GPA", type = "trace")
+```
+</div>
+</div>
+
+## Bayesian logistic regression {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Model summary
+</div>
+
+```{r, echo = TRUE}
+summary(brm_logistic)
+```
+
+>- Coefficients away from 0
+>- logit-link function
+
+## Regression coefficents and pp check
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Visualise regression coefficients and posterior predictions
+</div>
+
+<div class="columns-2">
+
+```{r, echo = TRUE, eval = TRUE, fig.height=3, fig.width = 4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
+mcmc_plot(brm_logistic, variable = "b_G",
+    regex = TRUE, prob_outer = 0.95, 
+    type = "intervals") + xlim(0, 1.4) +
+  geom_vline(xintercept = 0, 
+    color = "darkorange")
+```
+
+>- higher scores consistent with higher success for *Admission*
+
+<p class="forceBreak">&nbsp;</p>
+
+```{r, echo = TRUE, eval = TRUE, fig.height=3, fig.width = 4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
+# plot predictive check
+pp_check(brm_logistic, ndraws = 40)
+```
+
+>- Posterior samples in line with kernel density estimate
+</div>
+
+
+## Posterior probability of admission {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Posterior predictions with <span class="code">posterior_predict</span> and <span class="code">posterior_linpred</span>
+</div>
+
+<span class="code">posterior_predict</span>
+
+>- provides posterior samples in the outcome binary space
+
+<span class="code">posterior_linpred</span>
+
+>- provides posterior samples in the (logit-transformed) regression space with <span class="code">transform = FALSE</span> 
+>- or probability-space with <span class="code">transform = TRUE</span>
+
+<div class="columns-2">
+
+For our particular "student", let's get samples in the probability space:
+
+```{r eval=FALSE, echo=TRUE}
+new_data <- data.frame(GRE = 5.5, GPA = 3.5)
+```
+
+```{r eval=TRUE, echo=TRUE}
+new_data_prob <- posterior_linpred(brm_logistic, 
+                  new_data, transform = TRUE)
+```
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r, fig.height = 2.5, fig.width = 4.5}
+new_data_prob %>% data.frame(probability = .) %>% ggplot(aes(x = probability)) + geom_density(colour = "dodgerblue", size = 2) + theme_bw()
+```
+</div>
+
+</div>
+
+## Perfect premium {.build}
+
+<div class="columns-2">
+
+For both GRE and GPA
+
+>- some students get a perfect score
+
+Let's add to the data frame
+
+```{r, echo = TRUE, eval = TRUE}
+admiss_data %>% mutate(perfect = GRE == 8 &
+  GPA == 4) -> admiss_data
+head(admiss_data)
+```
+
+<p class="forceBreak">&nbsp;</p>
+
+<div class="centered">
+```{r}
+renderPlot({
+  local_data <- admiss_data
+ggplot(local_data, aes_string(x = input$disp_variable2)) + theme_bw() + theme(text = element_text(size = 18)) +
+  geom_histogram(col = "darkorange", fill = "darkorange", alpha = 0.5, bins = 30) 
+}, width = 450, height = 300)
+
+selectInput("disp_variable2", "Display variable:",
+c("GRE", "GPA"))
+```
+</div>
+</div>
+
+<span class="question">Question: Is there a premium for getting a perfect score?<span>
+
+
+## Bayesian premium estimate {.build}
+
+<div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+Add *perfect* to the Bayesian model with <span class="code">brms</span>
+</div>
+
+```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
+brm_logist_prem <- brm(Admission ~ GRE + GPA + perfect, family = bernoulli, # add perfect
+                   prior = prior(student_t(3, 0, 1), class = "b"), # sets for all beta
+                   admiss_data) # run the model
+```
+
+```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
+brm_logist_prem <- run_model(brm(Admission ~ GRE + GPA + perfect, family = bernoulli, 
+                prior = prior(student_t(3, 0, 1), class = "b"), # sets for both beta
+                admiss_data), "./brm_models_lectures/brm_logist_prem")
+```
+
+<div class="columns-2">
+
+```{r, echo = TRUE, eval = TRUE, fig.height=1.5, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
+mcmc_plot(brm_logist_prem, variable = "b_per",
+    regex = TRUE, prob_outer = 0.95, 
+    type = "intervals") + geom_vline(
+      xintercept = 0, color = "darkorange")
+```
+
+<p class="forceBreak">&nbsp;</p>
+
+```{r, echo = FALSE, eval = TRUE, fig.height=3, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
+mcmc_plot(brm_logist_prem, variable = "b_perfect", regex = TRUE, prob_outer = 0.95, 
+    type = "areas") + geom_vline(xintercept = 0, color = "darkorange")
+```
+
+</div>
+
+>- Posterior of perfect score premium is typically positive, but a lot of uncertainty!
+
+
+## Summary {.build}
+
+<div>
+For binary response variables
+
+>- <span class="def">logistic regression</span>
+>- model log <span class="def">odds</span> as a function of covariates
+</div>
+
+<div>
+The exponential of the regression coefficients
+
+>- related to multiplicative change in the <span class="def">odds</span> 
+</div>
+<div>
+
+<div>
+With <span class="code">brms</span> can again easily run <span class="def">Bayesian</span> logistic regression
+
+>- with the same regression formula syntax <span class="code">bf(... ~ ...)</span>
+>- but with <span class="code">family=bernoulli</span>
+</div>
+
+<div>
+And a slightly different syntax for <span class="code">family=binomial</span>
+
+$\rightarrow$ Exercises 8
+</div>
+

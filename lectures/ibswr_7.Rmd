@@ -264,7 +264,7 @@ $$\mathrm{log\_Price} = \beta_0 + \beta_1\mathrm{log\_Carats} + \beta_2\mathrm{C
 ## Multiple regression {.build}
 
 <div>
-<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./isarfiles/files/R_logo.png" alt="" height=50px></div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
 With the <span class="code">lm(...)</span> function
 </div>
 
@@ -367,7 +367,7 @@ $$\widehat{y} = \left\{ \begin{array}{ccc}\beta_0 + \beta_1x_1 & & k=0 \\
 ## Interaction terms {.build}
 
 <div>
-<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./isarfiles/files/R_logo.png" alt="" height=50px></div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
 With the <span class="code">lm(...)</span> function
 </div>
 
@@ -475,7 +475,7 @@ print(pp)
 ## Adding clarity to the model
 
 <div>
-<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./isarfiles/files/R_logo.png" alt="" height=50px></div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
 With the <span class="code">lm(...)</span> function
 </div>
 
@@ -490,7 +490,7 @@ summary(lm_diamond_fit3)$coefficients[1:15, ]
 ## Adding clarity to the model
 
 <div>
-<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./isarfiles/files/R_logo.png" alt="" height=50px></div>
+<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
 With the <span class="code">lm(...)</span> function
 </div>
 
@@ -511,7 +511,7 @@ For the Bayesian version with <span class="code">brms</span> we can easily use t
 </div>
 
 ```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
-brmfit_diamonds <- brm(bf(log_Price ~ log_Carats*(Color + Clarity)), diamond_data) # run the model
+brmfit_diamonds <- brm(log_Price ~ log_Carats*(Color + Clarity), diamond_data) # run the model
 ```
 
 ```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
@@ -529,19 +529,15 @@ To check convergence, we can look again at trace plots, eg
 
 <div class="columns-2">
 
-<div class="centered">
-```{r, echo = FALSE, eval = TRUE, fig.height=2, fig.width=4.5, warning=FALSE, message=FALSE}
+```{r, echo = FALSE, eval = TRUE, fig.height=2, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
 mcmc_plot(brmfit_diamonds, variable = "b_ColorH", type = "trace")
 ```
-</div>
 
 <p class="forceBreak">&nbsp;</p>
 
-<div class="centered">
-```{r, echo = FALSE, eval = TRUE, fig.height=2, fig.width=4.5, warning=FALSE, message=FALSE}
+```{r, echo = FALSE, eval = TRUE, fig.height=2, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
 mcmc_plot(brmfit_diamonds, variable = "sigma", type = "trace")
 ```
-</div>
 </div>
 
 <div id=hidestuffless>
@@ -594,22 +590,18 @@ We are interested in the regression coefficients of *Color* and *Clarity*
 
 <div class="columns-2">
 
-<div class="centered">
-```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE}
+```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
 mcmc_plot(brmfit_diamonds, variable = "*_Col*",
           regex = TRUE, type = "intervals")
 ```
-</div>
 
 
 <p class="forceBreak">&nbsp;</p>
 
-<div class="centered">
-```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE}
+```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
 mcmc_plot(brmfit_diamonds, variable = "*_Cla*",
           regex = TRUE, type = "intervals")
 ```
-</div>
 
 </div>
 
@@ -624,22 +616,17 @@ And the **interaction** regression coefficients of *Color* and *Clarity* with *l
 
 <div class="columns-2">
 
-<div class="centered">
-```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE}
+```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
 mcmc_plot(brmfit_diamonds, variable = "*:Col*",
           regex = TRUE, type = "intervals")
 ```
-</div>
-
 
 <p class="forceBreak">&nbsp;</p>
 
-<div class="centered">
-```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE}
+```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
 mcmc_plot(brmfit_diamonds, variable = "*:Cla*",
           regex = TRUE, type = "intervals")
 ```
-</div>
 
 </div>
 
