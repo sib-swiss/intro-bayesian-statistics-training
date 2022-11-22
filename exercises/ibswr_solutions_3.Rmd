@@ -25,7 +25,103 @@ library(tidyverse); set.seed(42)
 ```
 
 
-## Bonus Exercise 3.1 - Monte Carlo integration
+## Exercise 3.1 - MCMC
+
+*For MCMC we can walk randomly and accept according the the MH ratio to eventually sample proportionally to any target distribution $p(x)$. For example, a Student-$t$ distribution with $\nu = 5$.*
+
+*Examine the output MCMC chain for different lengths. How many samples would we need to get close to the Student-$t$ distribution?*
+
+*Use the samples to estimate (see description in Bonus Exercise 3.2)*
+
+$$\int \cos(t) f_5(t) \mathrm{d} t \, , \qquad f_{\nu}(t) = \frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\sqrt{\pi\nu}\Gamma\left(\frac{\nu}{2}\right)}\left(1+\frac{t^2}{\nu}\right)^{-\frac{\nu+1}{2} } \rightarrow Student's\;t-distribution\;with\;\nu\;degree\;of\;freedom $$
+
+
+```{r, echo = FALSE}
+# simple MCMC function
+# n_its is the number of iterations
+# start_x the initial position
+# rw_sd is the sd of the Gaussian random walk
+basicMCMC <- function(n_its = 1e3, start_x = 0, rw_sd = 1, ...) {
+  xs <- rep(NA, n_its) # to store all the sampled values
+  x <- start_x # starting point
+  xs[1] <- x # first value
+  p_x <- target_density(x, ...) # probability density at current value of x
+  for (ii in 2:n_its) { # MCMC iterations
+    x_prop <- x + rnorm(1, mean = 0, sd = rw_sd) # Gaussian random walk to propose next x
+    p_x_prop <- target_density(x_prop, ...) # probability density at proposed x
+    if (runif(1) < p_x_prop/p_x) { # MH acceptance probability
+      x <- x_prop # accept move
+      p_x <- p_x_prop # update density
+    }
+    xs[ii] <- x # store current position, even when move rejected
+  }
+  return(xs)
+}
+target_density <- function(x, nu) {
+  dt(x, nu) # student-t density
+}
+```
+
+First we run a short chain with the default length of 1000 iterations:
+
+```{r}
+short_chain <- basicMCMC(nu = 5)
+```
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+source("./ibswr_exercise_files/colordefs.R")
+xs <- 5*c(-1000:1000)/1000
+ys <- dt(xs, df = 5)
+dft <- data.frame(xs, ys)
+# data from short chain
+hist_t_plot <- function(df, dft) {
+  pp <- ggplot(df)
+  pp <- pp + geom_histogram(data = df, aes(x = t, y = ..density..), bins = 30,
+          position = "identity", colour = "darkorange", fill = darkorangetrans) +
+          ylab("Density") + xlim(c(-5, 5))
+  pp <- pp + geom_point(data = dft, aes(xs, ys), colour = "dodgerblue", size = 2) + theme_bw(base_size = 18) 
+  print(pp)
+}
+hist_t_plot(data.frame(t = short_chain), dft)
+```
+
+It's not so bad, but a few discrepancies. Let's try longer chains
+
+```{r}
+longer_chain <- basicMCMC(n_its = 1e4, nu = 5)
+```
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+hist_t_plot(data.frame(t = longer_chain), dft)
+```
+
+```{r}
+even_longer_chain <- basicMCMC(n_its = 1e5, nu = 5)
+```
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+hist_t_plot(data.frame(t = even_longer_chain), dft)
+```
+
+and they start to look quite good.
+
+For the integral we simply evaluate the cosine at each of our sampled values and get
+
+```{r}
+mean(cos(short_chain))
+mean(cos(longer_chain))
+mean(cos(even_longer_chain))
+very_long_chain <- basicMCMC(n_its = 1e6, nu = 5)
+mean(cos(very_long_chain))
+```
+
+This gets close to the numerical value
+
+```{r}
+integrate(function(x) cos(x)*dt(x, 5),-Inf,Inf)$value
+```
+
+## Bonus Exercise 3.2 - Monte Carlo integration
 
 *Computing expectations can be applied to any continuous function*
 
@@ -113,99 +209,3 @@ integrate(function(x) cos(x)*exp(-x^2), -Inf, Inf)$value
 ```
 
 The exact value of the integral is $\sqrt{\pi} \exp(-\frac{1}{4})$: `r sqrt(pi)*exp(-1/4)`.
-
-## Exercise 3.2 - MCMC
-
-*For MCMC we can walk randomly and accept according the the MH ratio to eventually sample proportionally to any target distribution $p(x)$. For example, a Student-$t$ distribution with $\nu = 5$.*
-
-*Examine the output MCMC chain for different lengths. How many samples would we need to get close to the Student-$t$ distribution?*
-
-*Use the samples to estimate (see description in Bonus Exercise 3.1)*
-
-$$\int \cos(t) f_5(t) \mathrm{d} t \, , \qquad f_{\nu}(t) = \frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\sqrt{\pi\nu}\Gamma\left(\frac{\nu}{2}\right)}\left(1+\frac{t^2}{\nu}\right)^{-\frac{\nu+1}{2}}$$
-
-```{r, echo = FALSE}
-# simple MCMC function
-# n_its is the number of iterations
-# start_x the initial position
-# rw_sd is the sd of the Gaussian random walk
-basicMCMC <- function(n_its = 1e3, start_x = 0, rw_sd = 1, ...) {
-  xs <- rep(NA, n_its) # to store all the sampled values
-  x <- start_x # starting point
-  xs[1] <- x # first value
-  p_x <- target_density(x, ...) # probability density at current value of x
-  for (ii in 2:n_its) { # MCMC iterations
-    x_prop <- x + rnorm(1, mean = 0, sd = rw_sd) # Gaussian random walk to propose next x
-    p_x_prop <- target_density(x_prop, ...) # probability density at proposed x
-    if (runif(1) < p_x_prop/p_x) { # MH acceptance probability
-      x <- x_prop # accept move
-      p_x <- p_x_prop # update density
-    }
-    xs[ii] <- x # store current position, even when move rejected
-  }
-  return(xs)
-}
-target_density <- function(x, nu) {
-  dt(x, nu) # student-t density
-}
-```
-
-First we run a short chain with the default length of 1000 iterations:
-
-```{r}
-short_chain <- basicMCMC(nu = 5)
-```
-
-```{r, echo = FALSE, message=FALSE, warning=FALSE}
-source("./ibswr_exercise_files/colordefs.R")
-xs <- 5*c(-1000:1000)/1000
-ys <- dt(xs, df = 5)
-dft <- data.frame(xs, ys)
-# data from short chain
-hist_t_plot <- function(df, dft) {
-  pp <- ggplot(df)
-  pp <- pp + geom_histogram(data = df, aes(x = t, y = ..density..), bins = 30,
-          position = "identity", colour = "darkorange", fill = darkorangetrans) +
-          ylab("Density") + xlim(c(-5, 5))
-  pp <- pp + geom_point(data = dft, aes(xs, ys), colour = "dodgerblue", size = 2) + theme_bw(base_size = 18) 
-  print(pp)
-}
-hist_t_plot(data.frame(t = short_chain), dft)
-```
-
-It's not so bad, but a few discrepancies. Let's try longer chains
-
-```{r}
-longer_chain <- basicMCMC(n_its = 1e4, nu = 5)
-```
-
-```{r, echo = FALSE, message=FALSE, warning=FALSE}
-hist_t_plot(data.frame(t = longer_chain), dft)
-```
-
-```{r}
-even_longer_chain <- basicMCMC(n_its = 1e5, nu = 5)
-```
-
-```{r, echo = FALSE, message=FALSE, warning=FALSE}
-hist_t_plot(data.frame(t = even_longer_chain), dft)
-```
-
-and they start to look quite good.
-
-For the integral we simply evaluate the cosine at each of our sampled values and get
-
-```{r}
-mean(cos(short_chain))
-mean(cos(longer_chain))
-mean(cos(even_longer_chain))
-very_long_chain <- basicMCMC(n_its = 1e6, nu = 5)
-mean(cos(very_long_chain))
-```
-
-This gets close to the numerical value
-
-```{r}
-integrate(function(x) cos(x)*dt(x, 5),-Inf,Inf)$value
-```
-
