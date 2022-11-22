@@ -64,7 +64,8 @@ Examine the output MCMC chain for different lengths. How many samples would we n
 
 Use the samples to estimate (see description in Bonus Exercise 3.2)
 
-$$\int \cos(t) f_5(t) \mathrm{d} t \, , \qquad f_{\nu}(t) = \frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\sqrt{\pi\nu}\Gamma\left(\frac{\nu}{2}\right)}\left(1+\frac{t^2}{\nu}\right)^{-\frac{\nu+1}{2} } \rightarrow Student's\;t-distribution\;with\;\nu\;degree\;of\;freedom $$
+$$\int \cos(t) f_5(t) \mathrm{d} t \, , \qquad f_{\nu}(t) = \frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\sqrt{\pi\nu}\Gamma\left(\frac{\nu}{2}\right)}\left(1+\frac{t^2}{\nu}\right)^{-\frac{\nu+1}{2}}$$
+where $f_{\nu}(t)$ is the probability density of a Student's $t$-distribution with $\nu$ degrees of freedom. 
 
 ## Bonus Exercise 3.2 - Monte Carlo integration
 
@@ -82,13 +83,12 @@ for $N$ random samples $x_i$ sampled according to $p(x)$. Use samples from a Gau
 
 $$\int \vert x \vert \mathrm{e}^{-x^2} \mathrm{d} x \, , \qquad \int \sin(x) \mathrm{e}^{-x^2} \mathrm{d} x\, , \qquad \int \cos(x) \mathrm{e}^{-x^2} \mathrm{d} x$$
 
-**Reminder**, the Gaussian has the following general form:
+**Reminder**, the Gaussian probability density has the following general form:
 
 $$
-p(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \mathrm{e}^{- \frac{(x - \mu)^ 2}{ 2\sigma^2} }.
+p(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \mathrm{e}^{- \frac{(x - \mu)^ 2}{ 2\sigma^2} }
 $$
 
-
-Compare the estimated values to the exact values of the integrals. How does the accuracy depend on the sample size?
+Compare the estimated values to the exact values of the integrals.
 
 **NOTE:** For the comparison to the real values, you can integrate analytically or use `R`'s `integrate` function. The errors from the true value, like standard errors in general, decrease like $\frac{1}{\sqrt{N}}$.
