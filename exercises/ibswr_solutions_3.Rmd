@@ -118,20 +118,20 @@ mean(cos(very_long_chain))
 This gets close to the numerical value
 
 ```{r}
-integrate(function(x) cos(x)*dt(x, 5),-Inf,Inf)$value
+integrate(function(x) cos(x)*dt(x, 5), -Inf, Inf)$value
 ```
 
 ## Bonus Exercise 3.2 - Monte Carlo integration
 
 *Computing expectations can be applied to any continuous function*
 
-$$E[f(x)] = \int f(x) p(x) \mathrm{d} x$$
+$$E[g(x)] = \int g(x) p(x) \mathrm{d} x$$
 
 *so that integrals where we recognise $p(x)$ as (proportional to) a probability distribution may be estimated with Monte Carlo methods since* 
 
-$$E[f(x)] \approx \frac{1}{N} \sum_{i=1}^{N} f(x_i) $$
+$$E[g(x)] \approx \frac{1}{M} \sum_{i=1}^{M} g(x_i) $$
 
-*for $N$ random samples $x_i$ sampled according to $p(x)$. Use samples from a Gaussian to estimate the following three integrals:*
+*for $M$ random samples $x_i$ sampled according to $p(x)$. Use samples from a Gaussian to estimate the following three integrals:*
 
 $$\int \vert x \vert \mathrm{e}^{-x^2} \mathrm{d} x \, , \qquad \int \sin(x) \mathrm{e}^{-x^2} \mathrm{d} x\, , \qquad \int \cos(x) \mathrm{e}^{-x^2} \mathrm{d} x$$
 **Reminder**, *the Gaussian probability density has the following general form:*
@@ -148,11 +148,11 @@ Looking at the three integrals we can identify a normal distribution. From the g
 \mathrm{e}^{-x^2} =  {\color{red}{\sqrt{\pi}}} \frac{1}{\sqrt{2 \pi {\color{red}{\frac{1}{2}}}}} \mathrm{e}^{- \frac{(x - {\color{red}{0}})^ 2}{ 2 {\color{red}{\frac{1}{2}} }} }
 \end{align}
 
-to the values $\mu = 0$ and $\sigma^2 = \frac{1}{2}$. Thus we sample $N$ particles with this parameterisation:
+to the values $\mu = 0$ and $\sigma^2 = \frac{1}{2}$. Thus we sample $M$ particles with this parameterisation:
 
 ```{r Monte Carlo}
-N <- 1e5
-normal_samples <- rnorm(N, mean = 0, sd = sqrt(1/2))
+M <- 1e5
+normal_samples <- rnorm(M, mean = 0, sd = sqrt(1/2))
 ```
 
 Then we evaluate the samples with the three functions above (don't forget to multiply the constant factor $\sqrt{\pi}$) and average them. That's it.

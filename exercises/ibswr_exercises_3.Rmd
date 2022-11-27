@@ -73,13 +73,13 @@ where $f_{\nu}(t)$ is the probability density of a Student's $t$-distribution wi
 
 Computing expectations can be applied to any continuous function
 
-$$E[f(x)] = \int f(x) p(x) \mathrm{d} x$$
+$$E[g(x)] = \int g(x) p(x) \mathrm{d} x$$
 
 so that integrals where we recognise $p(x)$ as (proportional to) a probability distribution may be estimated with Monte Carlo methods since 
 
-$$E[f(x)] \approx \frac{1}{N} \sum_{i=1}^{N} f(x_i) $$
+$$E[g(x)] \approx \frac{1}{M} \sum_{i=1}^{M} g(x_i) $$
 
-for $N$ random samples $x_i$ sampled according to $p(x)$. Use samples from a Gaussian to estimate the following three integrals:
+for $M$ random samples $x_i$ sampled according to $p(x)$. Use samples from a Gaussian to estimate the following three integrals:
 
 $$\int \vert x \vert \mathrm{e}^{-x^2} \mathrm{d} x \, , \qquad \int \sin(x) \mathrm{e}^{-x^2} \mathrm{d} x\, , \qquad \int \cos(x) \mathrm{e}^{-x^2} \mathrm{d} x$$
 
@@ -91,4 +91,4 @@ $$
 
 Compare the estimated values to the exact values of the integrals.
 
-**NOTE:** For the comparison to the real values, you can integrate analytically or use `R`'s `integrate` function. The errors from the true value, like standard errors in general, decrease like $\frac{1}{\sqrt{N}}$.
+**NOTE:** For the comparison to the real values, you can integrate analytically or use `R`'s `integrate` function. The errors from the true value, like standard errors in general, decrease like $\frac{1}{\sqrt{M}}$.
