@@ -1,0 +1,38 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "9: Outlook"
+author: "Jack Kuipers"
+date: "29 November 2022"
+runtime: shiny
+output:
+  ioslides_presentation:
+    css: ibswr.css
+    incremental: true
+    widescreen: true
+    smaller: true
+    fig_width: 6
+    fig_height: 4.5
+---
+
+## Outlook
+
+<div>
+Rstan vignettes
+
+>- [https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html]
+>- [https://mc-stan.org/rstan/articles/]
+</div>
+
+<div>
+Model checking selection (leave-one-out cross-validation)
+
+>- [https://mc-stan.org/loo/articles/loo2-example.html]
+>- [https://mc-stan.org/loo/articles/index.html]
+</div>
+
+<div>
+More advanced modelling with brms
+
+>- [https://journal.r-project.org/archive/2018/RJ-2018-017/index.html]
+>- [https://paul-buerkner.github.io/brms/articles/]
+</div>
