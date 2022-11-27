@@ -33,7 +33,7 @@ where the correspond to Rmarkdown files that should be opened with Rstudio and t
  * lecture 3 : Monte Carlo methods
  * lecture 4 : Bayesian first steps
  * lecture 5 : Bayesian t-tests (STAN + BRMS)
- * lecture 6 : Priors
+ * lecture 6 : Robust t-tests and priors
  * lecture 7 : Bayesian linear regression
  * lecture 8 : Bayesian logistic regression
 
