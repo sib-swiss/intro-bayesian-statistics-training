@@ -1,0 +1,108 @@
+---
+title: "Introduction to Bayesian Statistics with R"
+subtitle: "0: Overview"
+author: "Jack Kuipers"
+date: "28 November 2022"
+runtime: shiny
+output:
+  ioslides_presentation:
+    css: ibswr.css
+    incremental: true
+    widescreen: true
+    smaller: true
+    fig_width: 6
+    fig_height: 4.5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(knitr)
+start_date <- as.Date("28-11-22", format = "%d-%m-%y")
+f_date <- function(d, m, k=0) {
+  format(d+m*1+k, "%d-%m-%y")
+}
+```
+
+## Overview {.build}
+
+<div>
+
+Interactive lectures **Jack Kuipers**
+
+>- start of each session
+>- written in R shiny
+</div>
+
+<div>
+<span class="question">Questions on the slides</span>
+
+>- <span class="answer">think about and work on the question <br> or form small groups and discuss</span>
+</div>
+
+<div>
+Every session has an associated exercise sheet
+
+>- end of each session
+>- hand in for marking for credit points **Wandrille Duchemin**
+</div>
+
+<div>
+New course
+
+>- feedback always highly appreciated
+</div>
+
+## Topics
+
+Day 1: Bayesian beginnings, `r f_date(start_date, 0)`
+
+<div class="centered">
+<div style="width: 75%; display: inline-block">
+| n | Topic | Breaks | Time |
+|:-:|:-----:|:------:|:----:|
+|0|Overview|--|9:00--9:15|
+|1|t-test recap|--|9:15--10:30|
+|--|--|Coffee|10:30--11:00|
+|2|p-values and confidence intervals|--|11:00--12:30|
+|--|--|Lunch|12:30--13:30|
+|3|Monte Carlo methods|--|13:30--15:00|
+|--|--|Coffee|15:00--15:30|
+|4|Bayesian first steps|--|15:30--17:00|
+</div>
+</div>
+
+## Topics
+
+Day 2: Bayesian regression, `r f_date(start_date, 1)`
+
+<div class="centered">
+<div style="width: 75%; display: inline-block">
+| n | Topic | Breaks | Time |
+|:-:|:-----:|:------:|:----:|
+|5|Bayesian t-tests|--|9:00--10:30|
+|--|--|Coffee|10:30--11:00|
+|6|Robust t-tests and priors|--|11:00--12:30|
+|--|--|Lunch|12:30--13:30|
+|7|Bayesian multiple regression|--|13:30--15:00|
+|--|--|Coffee|15:00--15:30|
+|8|Bayesian logistic regression|--|15:30--16:45|
+|9|Outlook|--|16:45--17:00|
+</div>
+</div>
+
+
+## Software
+
+You will need
+
+>- latex [https://www.latex-project.org/get/]
+>- R and Rstudio [https://www.r-project.org/ https://www.rstudio.com/]
+>- Packages: rmarkdown, shiny, tidyverse (ggplot2, knitr, readr, ...)
+
+And for the Bayesian regression
+
+>- Rstan [https://mc-stan.org/users/interfaces/rstan]
+>- brms [https://cran.r-project.org/web/packages/brms/index.html]
+
+
+
