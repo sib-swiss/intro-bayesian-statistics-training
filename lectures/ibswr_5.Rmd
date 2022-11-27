@@ -1,6 +1,6 @@
 ---
 title: "Introduction to Bayesian Statistics with R"
-subtitle: "5: t-test parametrisation"
+subtitle: "5: Bayesian t-tests"
 author: "Jack Kuipers"
 date: "29 November 2022"
 runtime: shiny
