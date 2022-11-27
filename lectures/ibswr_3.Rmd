@@ -570,11 +570,141 @@ Lies behind lots of Bayesian analyses
 
 ## MCMC {.build}
 
-## MCMC code {.build}
+Markov Chain Monte Carlo (MCMC) **Rosenbluth**$\times$**2, Teller**$\times$**2, Metropolis (1953); Hastings  (1970)**
 
-## MCMC example {.build}
+<div>
+To sample proportionally to any function $p(x)$:
+</div>
 
-## MCMC burnin {.build}
+<div>
+[1.] From current position $x$, propose a new position $x'$
+
+$$x' = x + \delta\, , \qquad \delta \sim q(d)$$
+
+>- with a symmetric distribution $q$(d), *eg* a normal (can modify algorithm for asymmetric too)
+</div>
+
+<div>
+[2.] Accept $x'$ with probability
+
+$$\min \left(1, \frac{p(x')}{p(x)}\right)$$
+
+>- and move current position to $x'$
+>- otherwise stay at $x$
+</div>
+
+<div>
+[3.] Repeat, that's all!
+
+>- (though it may take many iterations to converge)
+</div>
+
+
+## MCMC example
+
+```{r}
+sidebarPanel(actionButton("mcmc_step", "Next step"), width = 2)
+
+target_dens <- function(x) {
+  0.6*dnorm(x, -0.6, 0.6/1.6) + 0.4*dnorm(x, 0.4, 0.4/1.6)
+}
+
+q_sd <- 0.42
+
+rv_mcmc <- reactiveValues(x = 0, 
+                          x_p = 0,
+                          mh_rat = 0,
+                          acc_flag = 0)
+
+observeEvent(input$mcmc_step, {
+  if (rv_mcmc$acc_flag) {
+    rv_mcmc$x <- rv_mcmc$x_p
+  }
+  rv_mcmc$x_p <- rv_mcmc$x + rnorm(1, 0, q_sd)
+  rv_mcmc$mh_rat <- min(1, target_dens(rv_mcmc$x_p)/target_dens(rv_mcmc$x))
+  rv_mcmc$acc_flag <- 1*(runif(1) < rv_mcmc$mh_rat)
+  }, ignoreNULL = FALSE, ignoreInit = TRUE
+)
+
+renderPlot({
+  source("./ibswrfiles/colordefs.R")
+  source("./ibswrfiles/flagFALSE.R")
+  cur_x <- rv_mcmc$x
+  x_p <- rv_mcmc$x_p
+  acc_flag <- rv_mcmc$acc_flag
+  source("./ibswrfiles/mcmc_ex.R", local = TRUE)
+}, width = 800, height = 400)
+```
+
+```{r}
+renderUI(paste0("Current x: ", round(rv_mcmc$x, 6)))
+renderUI(paste0("Proposed x: ", round(rv_mcmc$x_p, 6)))
+```
+
+```{r}
+renderUI(paste0("Acceptance probability: ", round(rv_mcmc$mh_rat, 6)))
+renderUI(paste0("Move was ", ifelse(rv_mcmc$acc_flag == 1, "accepted", "rejected"), "."))
+```
+
+
+## MCMC samples
+
+<div id="hidestuffless" class="centered">
+```{r mcmc chain}
+sidebarPanel(actionButton("start_mcmc", "Start"), hr(),
+  selectInput("n_mcmc", label = "Number of samples:",
+              choices = c(1, 10, 40, 100, 400, 1000), selected = 1), hr(),
+  sliderInput("wait_time_mcmc", label = "Wait time:",
+              min = 100, max = 1000, value = 1000, step = 100), width = 2)
+
+rv_mcmc2 <- reactiveValues(i = 0, x = 0, x_p = 0, mh_rat = 0, acc_flag = 0,
+                           totalCounts = rep(0, 31), flag = FALSE)
+
+observeEvent(input$start_mcmc, {
+  rv_mcmc2$i <- 0
+  rv_mcmc2$x_p <- rv_mcmc2$x + rnorm(1, 0, q_sd)
+  rv_mcmc2$mh_rat <- min(1, target_dens(rv_mcmc2$x_p)/target_dens(rv_mcmc2$x))
+  rv_mcmc2$acc_flag <- 1*(runif(1) < rv_mcmc2$mh_rat)
+  rv_mcmc2$totalCounts = rep(0, 31)
+  rv_mcmc2$flag <- TRUE
+  observe({
+    if (isolate(rv_mcmc2$flag) == TRUE) {
+      isolate({
+        rv_mcmc2$i <- rv_mcmc2$i + 1
+        if (rv_mcmc2$acc_flag) {
+          rv_mcmc2$x <- rv_mcmc2$x_p
+        }
+        rv_mcmc2$x_p <- rv_mcmc2$x + rnorm(1, 0, q_sd)
+        rv_mcmc2$mh_rat <- min(1, target_dens(rv_mcmc2$x_p)/target_dens(rv_mcmc2$x))
+        rv_mcmc2$acc_flag <- 1*(runif(1) < rv_mcmc2$mh_rat)
+        hitIndex <- floor(rv_mcmc2$x*5) + 16
+        if(hitIndex > 0 && hitIndex < 31){
+          rv_mcmc2$totalCounts[hitIndex] <- rv_mcmc2$totalCounts[hitIndex] + 1
+        } else { # put in rubbish bin
+          rv_mcmc2$totalCounts[31] <- rv_mcmc2$totalCounts[31] + 1
+        }
+      })
+    }
+    if (isolate(rv_mcmc2$i) < isolate(as.numeric(input$n_mcmc))) {
+      invalidateLater(input$wait_time_mcmc, session)
+    } else {
+      rv_mcmc2$flag <- FALSE
+    }
+  })
+})
+  
+renderPlot({
+  cur_x <- rv_mcmc2$x
+  x_p <- rv_mcmc2$x_p
+  acc_flag <- rv_mcmc2$acc_flag
+  local_counts <- rv_mcmc2$totalCounts
+  source("./ibswrfiles/colordefs.R")
+  source("./ibswrfiles/flagTRUE.R")
+  source("./ibswrfiles/mcmc_ex.R", local = TRUE)
+}, width = 600, height = 450)
+```
+</div>
+
 
 ## Summary {.build}
 
