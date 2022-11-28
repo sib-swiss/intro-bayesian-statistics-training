@@ -91,7 +91,14 @@ Day 2: Bayesian regression, `r f_date(start_date, 1)`
 </div>
 
 
-## Software
+## Learning outcomes and software {.build}
+
+At the end of the course, participants should be able to:
+
+* Recognise the core components of a Bayesian model
+* List the main concepts of methods for Bayesian inference
+* Implement a simple Bayesian model in R
+* Interpret the results of a Bayesian model
 
 You will need
 
