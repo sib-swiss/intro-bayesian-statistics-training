@@ -309,7 +309,7 @@ fixef(brmfit) # extract difference in mean coefficient (fixed effect)
 
 <div class="columns-2">
 
->- compare to 95% CI of the equal variance $t$-test
+>- *cf* 95% CI of the equal variance $t$-test
 
 ```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
 t_test_v$conf.int # extract CI from t-test
@@ -350,18 +350,14 @@ Plot components with the <span class="code">mcmc_plot(...)</span> function
 
 <div class="columns-2">
 
-We are interested in the regression coefficient $\beta_1$
+We are interested in regression coefficient $\beta_1$
 
 >- <span class="code">(b_)SexM</span> in the <span class="code">brms</span> syntax
 
-<div class="centered">
-
-```{r, echo = TRUE, eval = TRUE, fig.height=1.5, fig.width=4.5, warning=FALSE, message=FALSE}
+```{r, echo = TRUE, eval = TRUE, fig.height=1.5, fig.width=4.5, warning=FALSE, message=FALSE, fig.align='center'}
 mcmc_plot(brmfit, variable = "b_SexM",
           type = "intervals")
 ```
-
-</div>
 
 Also further options, including
 
@@ -370,14 +366,11 @@ Also further options, including
 
 <p class="forceBreak">&nbsp;</p>
 
-<div class="centered">
-
-```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE}
+```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE, fig.align='center'}
 mcmc_plot(brmfit, variable = "b_SexM",
           type = "areas")
 
 ```
-</div>
 
 </div>
 
@@ -482,14 +475,14 @@ fixef(brmfit_t) # extract coefficients (fixed effect)
 
 With this model formulation <span class="code">brms</span>
 
->- has a *log* link 
+>- has a *log* link for $\sigma$
 
 Actually sampling/estimating $\log(\sigma)$
 
 >- SD estimate for women would be exp(`r round(fixef(brmfit_t)[2, 1], 3)`) = `r round(exp(fixef(brmfit_t)[2, 1]), 3)`
 >- SD estimate for men would be exp(`r round(fixef(brmfit_t)[2, 1], 3)` + `r round(fixef(brmfit_t)[4, 1], 3)`) = `r round(exp(fixef(brmfit_t)[2, 1] + fixef(brmfit_t)[4, 1]), 3)`
 
-To have the same treatment for the equal variance model we could specify
+To have the same treatment (with the log-link) for the equal variance model we could specify
 
 ```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
 brmfit_again <- brm(bf(Height ~ Sex, sigma ~ 1), swiss_army_df) # equal variance model
