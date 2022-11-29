@@ -412,7 +412,7 @@ for samples from the updated priors
 
 <div class="columns-2">
 
-We are interested in the regression coefficient $\beta_1$
+We are interested in regression coefficient $\beta_1$
 
 >- <span class="code">(b_)SexM</span> in the <span class="code">brms</span> syntax
 
@@ -421,22 +421,17 @@ fixef(brmfit_robust_p2)["SexM", ]
 ```
 
 
-<div class="centered">
-```{r, echo = TRUE, eval = TRUE, fig.height=1.5, fig.width=4.5, warning=FALSE, message=FALSE}
+```{r, echo = TRUE, eval = TRUE, fig.height=1.5, fig.width=4.5, warning=FALSE, message=FALSE, fig.align='center'}
 mcmc_plot(brmfit_robust_p2, variable = "b_SexM",
           type = "intervals")
 ```
-</div>
-
 
 <p class="forceBreak">&nbsp;</p>
 
-<div class="centered">
-```{r, echo = TRUE, eval = TRUE, fig.height=4, fig.width=4.5, warning=FALSE, message=FALSE}
+```{r, echo = TRUE, eval = TRUE, fig.height=4, fig.width=4.5, warning=FALSE, message=FALSE, fig.align='center'}
 mcmc_plot(brmfit_robust_p2, variable = "b_SexM",
           type = "dens")
 ```
-</div>
 
 </div>
 
