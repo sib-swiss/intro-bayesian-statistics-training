@@ -17,6 +17,18 @@ output:
 ## Outlook
 
 <div>
+Multiple Perspectives on Inference for Two Simple Statistical Scenarios **(2019)**
+
+>- [https://doi.org/10.1080/00031305.2019.1565553]
+</div>
+
+<div>
+Statistical rethinking **McElreath (2020)**
+
+>- examples coded in brms [https://bookdown.org/content/4857/]
+</div>
+
+<div>
 Rstan vignettes
 
 >- [https://cran.r-project.org/web/packages/rstan/vignettes/rstan.html]
@@ -24,15 +36,15 @@ Rstan vignettes
 </div>
 
 <div>
-Model checking selection (leave-one-out cross-validation)
-
->- [https://mc-stan.org/loo/articles/loo2-example.html]
->- [https://mc-stan.org/loo/articles/index.html]
-</div>
-
-<div>
 More advanced modelling with brms
 
 >- [https://journal.r-project.org/archive/2018/RJ-2018-017/index.html]
 >- [https://paul-buerkner.github.io/brms/articles/]
+</div>
+
+<div>
+Model checking selection (leave-one-out cross-validation)
+
+>- [https://mc-stan.org/loo/articles/loo2-example.html]
+>- [https://mc-stan.org/loo/articles/index.html]
 </div>

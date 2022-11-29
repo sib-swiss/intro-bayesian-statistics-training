@@ -517,7 +517,7 @@ brmfit_diamonds <- brm(log_Price ~ log_Carats*(Color + Clarity), diamond_data) #
 ```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
 library(brms) # load the library
 source("./ibswrfiles/brm_run.R")
-brmfit_diamonds <- run_model(brm(bf(log_Price ~ log_Carats*(Color + Clarity)), diamond_data), "./brm_models_lectures/diamonds")
+brmfit_diamonds <- run_model(brm(log_Price ~ log_Carats*(Color + Clarity), diamond_data), "./brm_models_lectures/diamonds")
 ```
 
 Note that this version has
@@ -551,7 +551,7 @@ But there are many regression coefficients to plot
 For the Bayesian version with <span class="code">brms</span> we can easily use the same syntax
 
 ```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
-brmfit_diamonds <- brm(bf(log_Price ~ log_Carats*(Color + Clarity)), diamond_data) # run the model
+brmfit_diamonds <- brm(log_Price ~ log_Carats*(Color + Clarity), diamond_data) # run the model
 ```
 </div>
 

@@ -366,7 +366,7 @@ new_data_prob <- posterior_linpred(brm_logistic,
 <p class="forceBreak">&nbsp;</p>
 
 <div class="centered">
-```{r, fig.height = 2.5, fig.width = 4.5}
+```{r, fig.height = 2.5, fig.width = 4.5, warning = FALSE, message = FALSE}
 new_data_prob %>% data.frame(probability = .) %>% ggplot(aes(x = probability)) + geom_density(colour = "dodgerblue", size = 2) + theme_bw()
 ```
 </div>
