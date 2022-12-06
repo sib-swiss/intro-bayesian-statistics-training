@@ -1,3 +1,6 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7403204.svg)](https://doi.org/10.5281/zenodo.7403204)
+
+
 # Introduction to Bayesian statistics with R
 
 This course material is part of the "Introduction to Bayesian statistics with R" two-day course of [SIB Training](https://www.sib.swiss/training/upcoming-training-courses) and is 
@@ -38,4 +41,12 @@ where the correspond to Rmarkdown files that should be opened with Rstudio and t
  * lecture 8 : Bayesian logistic regression
 
 Each lecture is accompanied by one or two exercises which can be found in the `exercises/` folder, which contains the exercises instructions and solutions (as `.pdf` files), as well as the data files used in the exercise (in the `data/`) subfolder.
+
+## Citation
+
+If you re-use or mention this course material, please cite:
+
+
+Jack Kuipers, & Wandrille Duchemin. (2022, December 6). Introduction to Bayesian statistics with R. Zenodo. [https://doi.org/10.5281/zenodo.7403204](https://doi.org/10.5281/zenodo.7403204)
+
 
