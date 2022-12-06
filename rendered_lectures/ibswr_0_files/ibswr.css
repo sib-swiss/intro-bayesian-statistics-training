@@ -1,0 +1,41 @@
+
+#hidestuffevenmore {margin-top:-200px;}
+
+#hidestuffmore {margin-top:-100px;}
+
+#hidestuff {margin-top:-50px;}
+
+#hidestuffless {margin-top:-25px;}
+
+.question {
+    font-weight:bold; 
+    color:#68228b;
+}
+
+.answer {
+    font-weight:bold; 
+    color:#cd2626;
+}
+
+.code {
+    font-weight:bold; 
+    font-family:monospace;
+}
+
+.def {
+    font-weight:bold; 
+    color:#1e90ff;
+}
+
+.other {
+    font-weight:bold; 
+    color:#ff8c00;
+}
+
+small {
+    font-size: 67%;
+}
+
+.forceBreak { -webkit-column-break-after: always; break-after: column; }
+
+
