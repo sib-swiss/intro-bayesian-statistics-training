@@ -1,0 +1,25 @@
+{
+  "title": "Introduction to Bayesian statistics with R",
+  "keywords": [
+    "training",
+    "bioinformatics",
+    "github",
+    "course",
+    "statistics",
+    "bayesian statistics",
+    "Rstan",
+    "R"
+  ],
+  "creators": [
+    {
+      "name": "Jack Kuipers",
+      "affiliation": "ETH Zürich, D-BSSE",
+      "orcid": "0000-0001-5357-2705"
+    },
+    {
+      "name": "Wandrille Duchemin",
+      "affiliation": "SIB Swiss Institute of Bioinformatics",
+      "orcid": "0000-0001-8854-7235"
+    }  
+  ]
+}
