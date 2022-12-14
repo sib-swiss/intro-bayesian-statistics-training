@@ -50,3 +50,14 @@ If you re-use or mention this course material, please cite:
 Jack Kuipers, & Wandrille Duchemin. (2022, December 6). Introduction to Bayesian statistics with R. Zenodo. [https://doi.org/10.5281/zenodo.7403204](https://doi.org/10.5281/zenodo.7403204)
 
 
+## Series of talks
+
+During this course, experts in the field presented state-of-the-art Bayesian methods and their application in the life sciences. The recordings of their talks and slides can be found below:
+
+
+| Speaker      | Talk title | Links to | 
+| ----------- | ----------- | ----------- |
+| Simone Tiberi (University of Bologna)      | Bayesian stochastic modelling in Systems Biology       | [Video](https://youtu.be/teZRw1I9ujg), [Slides](https://sibcloud-my.sharepoint.com/:b:/g/personal/patricia_palagi_sib_swiss/EUBUQgIQDP1Gl3sKNF7XZxIBGJvwctgcu1RvwujhXVOKSQ?e=C080oC) |
+| Simone Tiberi (University of Bologna)      | Bayesian approaches for (bulk and single-cell) RNA-seq data       | [Video](https://youtu.be/3ur-ItPJPp0), [Slides](https://sibcloud-my.sharepoint.com/:b:/g/personal/patricia_palagi_sib_swiss/EUkByxLY0gdApL4ju6Is_GUBxJGy-ZxgH1zAn5rqMGYfCw?e=fEgfSz) |
+| Zoltan Kutalik (University of Lausanne and SIB)   | Informative Bayesian priors boost power in genome-wide association studies | [Video](https://youtu.be/IRxnP5II2wI), [Slides GWAS](https://sibcloud-my.sharepoint.com/:b:/g/personal/patricia_palagi_sib_swiss/EUD_hK5gr5BGuSj9ce1u2pcBQy3i476P6d2m9ybuPi55fA?e=d2ddyU), [Slides LHC](https://sibcloud-my.sharepoint.com/:b:/g/personal/patricia_palagi_sib_swiss/EQuK7Dk8lERIg0wPyn59cpIBoG2PPY13bp_ilKrZ2ZAoNQ?e=RwGM0j)  |
+| Timothy Vaughan (BSSE-ETHZ and SIB)   | Bayesian foundations of Phylogenetic and Phylodynamic inference | [Video](https://youtu.be/eB62qiLTBRQ), [Slides](https://sibcloud-my.sharepoint.com/:b:/g/personal/patricia_palagi_sib_swiss/EW6hwzgbkl1FjzxwlQ3Q7UQBZZzLuuR4K7Iu816LQM33TA?e=DRgC7f)  |
