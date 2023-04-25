@@ -4,7 +4,7 @@ subtitle: "7: Bayesian multiple regression"
 author: "Jack Kuipers"
 date: "29 November 2022"
 runtime: shiny
-output:
+output: 
   ioslides_presentation:
     css: ibswr.css
     incremental: true
@@ -22,362 +22,380 @@ library(dplyr); options(dplyr.summarise.inform = FALSE) # remove summarise warni
 ```
 
 
-## Diamond data {.build}
+## Fish data {.build}
 
-Dataset of the price of diamonds, which depends on the 4 C's **De Veaux, 2015**
+Dataset on the total length of fishes, depending on their head's size **Engelman, 2023**
 
->- Carats (weight, 1 carat = 0.2g)
->- Colour (white to yellow, D:K)
->- Clarity (whether marks/inclusions are present)
->- Cut (how well shaped)
+>- *total_length* : total length, in cm
+>- *OOL* : Orbit-Opercular Length, in cm
+>- *head_height* : head height, in cm
+>- *HC_fin* : is the caudal fin heterocercal or not (ie. assymetric)
+
+
+The original goal of this data-set was to be able to determine the length of extinct placoderm fishes where only the armored head fossilized.
+
+<img src='ibswrfiles/measurement_chart.png' height=300>
+<!--![measurement chart](measurement_chart.png) -->
+
+
+## Fish data 2 {.build}
+
 
 ```{r diamond data, echo=TRUE}
 # Read in the file, with character columns as factors
-diamond_data <- read.csv("./data/diamonds.csv", as.is = FALSE)
-head(diamond_data)
+fish_data <- read.csv("data/devonian_fish_tale.simple.csv", stringsAsFactors = TRUE , row.names = 1)
+head(fish_data)
 ```
 
-<span class="question">Question: how are diamonds distributed over the categorical variables?</span>
+<span class="question">Question: how are fishes distributed over the categorical variables?</span>
 
 >- <span class="code">geom_bar</span>
 
-## Diamond categories {.build}
+## Fish categories {.build}
 
 <div class="columns-2">
 
-```{r diamond data histogram ggplot Color fake, echo=TRUE, eval=FALSE}
+```{r fish data histogram ggplot Color fake, echo=TRUE, eval=FALSE}
 # plot bar chart of Color
-ggplot(diamond_data, aes(x = Color)) +
+ggplot(fish_data, aes(x = higher_group)) +
   geom_bar(col = "darkorange", alpha = 0.5) 
 ```
 
 ```{r, eval=TRUE, echo=FALSE}
-diamond_data_old <- diamond_data
+fish_data_old <- fish_data
 ```
 
-```{r diamond color summary fake, eval=FALSE, echo=TRUE}
-summary(diamond_data$Color)
+```{r fish group summary fake, eval=FALSE, echo=TRUE}
+summary(fish_data$higher_group)
 ```
 
 ```{r select cat variable}
   selectInput("cat_variable", "Categorical variable:",
-  c("Color", "Clarity", "Cut"))
+  c("higher_group", "swimbladder", "HC_fin"))
 ```
 
-```{r diamond cat summary, eval=TRUE, echo=FALSE}
+```{r fish cat summary, eval=TRUE, echo=FALSE}
 renderPrint(
-  if(input$reorder){
-    summary(diamond_data[, which(colnames(diamond_data) == input$cat_variable)])
-  } else {
-    summary(diamond_data_old[, which(colnames(diamond_data) == input$cat_variable)])
-  }
+
+    summary(fish_data[, which(colnames(fish_data) == input$cat_variable)])
+
 )
 ```
 
 <p class="forceBreak">&nbsp;</p>
 
 <div class="centered">
-```{r diamond data histogram ggplot Color, echo=FALSE}
+```{r fish data histogram ggplot Color, echo=FALSE}
 # plot histograms
 renderPlot({
-  local_data <- diamond_data_old
-  if (input$reorder) {
-    local_data <- diamond_data
-  }
+  local_data <- fish_data_old
+
 ggplot(local_data, aes_string(x = input$cat_variable)) + theme_bw() + theme(text = element_text(size = 18)) +
-  geom_bar(col = "darkorange", fill = "darkorange", alpha = 0.5) 
+  geom_bar(col = "darkorange", fill = "darkorange", alpha = 0.5) + coord_flip()
 }, width = 450, height = 300)
 ```
 </div>
 </div>
 
-<div id="hidestuffless">
-But the alphabetical order is only good for colour!
-</div>
-
-```{r, reorder factors, eval=TRUE, echo=TRUE}
-diamond_data$Clarity <- factor(diamond_data$Clarity, levels=c("IF","VVS1","VVS2","VS1","VS2","SI1","SI2"))
-diamond_data$Cut <- factor(diamond_data$Cut, levels = c("Ideal", "Excellent", "Very Good", "Good"))
-```
-
-```{r reorder checkbox}
-checkboxInput("reorder", "Reorder variables?", value = FALSE)
-```
 
 <span class="question">Question: What about the continuous variables?</span>
 
 
-## Diamond continuous {.build}
+## Fish continuous {.build}
 
 <div class="columns-2">
-
-```{r diamond data histogram ggplot Price fake log, echo=TRUE, eval=FALSE}
-ggplot(diamond_data, aes(x = Price, 
-  y = ..density..)) + # histogram of Price
-geom_histogram(col = "darkorange", alpha = 0.5) 
+  
+```{r fish data histogram ggplot Price fake log, echo=TRUE, eval=FALSE}
+ggplot(fish_data, aes(x = OOL, 
+                         y = ..density..)) + # histogram of Price
+  geom_histogram(col = "darkorange", alpha = 0.5) 
 ```
 
-```{r diamond price summary fake log, eval=FALSE, echo=TRUE}
-summary(diamond_data$Price)
+```{r fish price summary fake log, eval=FALSE, echo=TRUE}
+summary(fish_data$OOL)
 ```
 
 ```{r select cont variable log again}
 selectInput("cont_variable_a", "Continuous variable:",
-  c("Price", "Carats"))
+            c('total_length',"head_height", "OOL"))
 ```
 
 ```{r diamond cont summary log, eval=TRUE, echo=FALSE}
 renderPrint(
   if (input$log_transform) {
-    summary(diamond_data[, which(colnames(diamond_data) == paste0("log_", input$cont_variable_a))]) 
+    summary(fish_data[, which(colnames(fish_data) == paste0("log_", input$cont_variable_a))]) 
   } else {
-    summary(diamond_data[, which(colnames(diamond_data) == input$cont_variable_a)]) 
+    summary(fish_data[, which(colnames(fish_data) == input$cont_variable_a)]) 
   }
 )
 ```
 
 <span class="question">Question: Shall we log-transform?</span>
-
+  
 <p class="forceBreak">&nbsp;</p>
 
 <div class="centered">
-```{r diamond data histogram ggplot Price log, echo=FALSE}
+```{r fish data histogram ggplot Price log, echo=FALSE}
 # plot histogram of price
 renderPlot({
   local_var <- input$cont_variable_a
   if (input$log_transform) {
     local_var <- paste0("log_", local_var)
   }
-ggplot(diamond_data, aes_string(x = local_var, y = "..density..")) + 
-  theme_bw() + theme(text = element_text(size = 18)) +
-  geom_histogram(bins = 20, col = "darkorange", fill = "darkorange", alpha = 0.5) 
+  ggplot(fish_data, aes_string(x = local_var, y = "..density..")) + 
+    theme_bw() + theme(text = element_text(size = 18)) +
+    geom_histogram(bins = 20, col = "darkorange", fill = "darkorange", alpha = 0.5) 
 }, width = 450, height = 300)
 ```
 </div>
-
+  
 ```{r log checkbox}
 checkboxInput("log_transform", "Log transform?", value = FALSE)
 ```
 
 </div>
-
+  
 <div id="hidestuffless">
->- *Price* is to the nearest dollar
->- *Carats* measured to nearest 0.01
 
 ```{r, log transform, eval=TRUE, echo=TRUE}
-diamond_data$log_Price <- log(diamond_data$Price + 1)
-diamond_data$log_Carats <- log(diamond_data$Carats + 0.01)
+fish_data$log_total_length <- log(fish_data$total_length)
+fish_data$log_OOL <- log(fish_data$OOL)
+fish_data$log_head_height <- log(fish_data$head_height)
 ```
 </div>
-
-## Price vs Colour {.build}
+  
+## total_length vs OOL  {.build}
 
 <div class="columns-2">
-
-```{r diamond price vs colour fake, echo=TRUE, eval=FALSE}
-# colour the price data by the colour
-ggplot(diamond_data, aes(x = Color, 
-       y = log_Price, fill = Color)) +
-# add box plots with transparency
-  geom_boxplot(colour = "dodgerblue", 
+  
+```{r fish data scatter ggplot fake, echo=TRUE, eval=FALSE}
+ggplot(fish_data, aes(x = log_OOL, 
+                         y = log_total_length)) +
+  # add box plots with transparency
+  geom_point(colour = "dodgerblue", 
                alpha = 0.5) +
-# change colours
-  scale_fill_manual(values = colorRampPalette(
-    c("white", "Gold"))(8)) + 
-# and font size and theme
+  # and font size and theme
   theme_bw() +
   theme(text = element_text(size = 18))
 ```
 
+
+```{r select cont variable log again2}
+selectInput("cont_variable_b", "Continuous variable:",
+            c("head_height", "OOL",
+              "log_head_height", "log_OOL"))
+```
+
+
 <p class="forceBreak">&nbsp;</p>
 
 <div class="centered">
-```{r diamond price vs colour, echo=FALSE, eval=TRUE}
-# colour the price data by the colour
+```{r fish data scatter ggplot, echo=FALSE}
+# plot histogram of price
 renderPlot({
-ggplot(diamond_data, aes(x = Color, 
-       y = log_Price, fill = Color)) +
-# add box plots with transparency
-  geom_boxplot(colour = "dodgerblue", alpha = 0.5) +
-  scale_fill_manual(values = colorRampPalette(c("white", "Gold"))(8)) + 
-  theme_bw() + 
+  local_var <- input$cont_variable_b
+  if (input$log_transform) {
+    local_var <- paste0("log_", local_var)
+  }
+  ggplot(fish_data, aes_string(x = local_var, 
+                         y = "log_total_length")) +
+  # add box plots with transparency
+  geom_point(colour = "dodgerblue", 
+               alpha = 0.5) +
+  # and font size and theme
+  theme_bw() +
   theme(text = element_text(size = 18))
 }, width = 450, height = 300)
 ```
 </div>
+
 </div>
+  
+<div id="hidestuffless">
+<span class="question">Question: how does the categorical variable factor there?</span>
+</div>
+  
 
-<span class="question">Question: Do you notice anything odd?</span>
-
-<span class="answer">Answer: The more coloured and more common diamonds cost more.</span>
-
-<span class="question">Question: Why?</span>
-
-
-## Size vs Colour {.build}
+## total_length vs OOL  {.build}
 
 <div class="columns-2">
-
-```{r diamond size vs colour fake, echo=TRUE, eval=FALSE}
-# colour the size data by the colour
-ggplot(diamond_data, aes(x = Color, 
-       y = log_Carats, fill = Color)) +
-# add box plots with transparency
-  geom_boxplot(colour = "dodgerblue", 
-               alpha = 0.5) +
-# change colours
-  scale_fill_manual(values = colorRampPalette(
-    c("white", "Gold"))(8)) + 
-# and font size and theme
+  
+```{r fish data scatter ggplot col fake , echo=TRUE, eval=FALSE}
+ggplot(fish_data, aes(x = log_OOL, 
+                      y = log_total_length,
+                      colour = HC_fin)) +
+  # add box plots with transparency
+  geom_point(alpha = 0.5) +
+  # and font size and theme
   theme_bw() +
   theme(text = element_text(size = 18))
 ```
 
+
+```{r select cont variable log again3}
+selectInput("cont_variable_c", "Continuous variable:",
+            c("head_height", "OOL",
+              "log_head_height", "log_OOL"))
+```
+```{r select cat variable log again2}
+selectInput("cat_variable_c", "Categorical variable:",
+            c("HC_fin", "swimbladder", "higher_group"))
+```
+
+
 <p class="forceBreak">&nbsp;</p>
 
 <div class="centered">
-```{r diamond size vs colour, echo=FALSE, eval=TRUE}
-# colour the size data by the colour
+```{r fish data scatter ggplot col, echo=FALSE}
+# plot histogram of price
 renderPlot({
-ggplot(diamond_data, aes(x = Color, 
-       y = log_Carats, fill = Color)) +
-# add box plots with transparency
-  geom_boxplot(colour = "dodgerblue", alpha = 0.5) +
-  scale_fill_manual(values = colorRampPalette(c("white", "Gold"))(8)) + 
-  theme_bw() + 
+  local_var <- input$cont_variable_c
+  local_var2 <- input$cat_variable_c
+  if (input$log_transform) {
+    local_var <- paste0("log_", local_var)
+  }
+  ggplot(fish_data, aes_string(x = local_var, 
+                         y = "log_total_length", 
+                         colour=local_var2)) +
+  # add box plots with transparency
+  geom_point(alpha = 0.5) +
+  # and font size and theme
+  theme_bw() +
   theme(text = element_text(size = 18))
 }, width = 450, height = 300)
 ```
 </div>
+
 </div>
+  
+<div id="hidestuffless">
 
-<span class="answer">Answer: They are also larger.</span>
+  <span class="answer">Answer: fish with a heterocercal caudal fin may have a different relationship than those without.</span>
+  
+  <span class="question">Question: Which model could we build to start to account for this?</span>
+  
+  <span class="answer">Answer:</span>
+  
+  $$\mathrm{log\_total_length} = \beta_0 + \beta_1\mathrm{log\_OOL} +\beta_2\mathrm{heterocercal\_caudal\_fin} +\varepsilon$$
 
-<span class="question">Question: Which model could we build to start to account for this?</span>
 
-<span class="answer">Answer:</span>
-
-$$\mathrm{log\_Price} = \beta_0 + \beta_1\mathrm{log\_Carats} + \beta_2\mathrm{Color}+\varepsilon$$
+</div>
 
 
 ## Multiple regression {.build}
-
+  
 <div>
 <div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
-With the <span class="code">lm(...)</span> function
+  With the <span class="code">lm(...)</span> function
 </div>
-
+  
 ```{r linear regression diamond, eval=TRUE, echo=TRUE}
-lm_diamond_fit <- lm(log_Price ~ log_Carats + Color, diamond_data)
-summary(lm_diamond_fit)$coefficients
+lm_fish_fit <- lm(log_total_length ~ log_OOL + HC_fin, fish_data)
+summary(lm_fish_fit)$coefficients
 ```
 
->- *log_Carats* row contains $\beta_1$ which is the slope
->- *Color* rows are the offset compared to the baseline D
+>- *log_OOL* row contains $\beta_1$ which is the slope when there is not heterocercal caudal fin
+>- *HC_finTRUE* rows are the offset compared to the baseline (no heterocercal caudal fin)
 
-<span class="question">Question: How much would the predicted log_Price change if we increase the log_Carat size by 0.4 and change the colour from D to J?</span>
 
-<span class="answer">Answer: 0.4*`r round(summary(lm_diamond_fit)$coefficients[2, 1], 4)``r round(summary(lm_diamond_fit)$coefficients[8, 1], 4)` = `r round(0.4*summary(lm_diamond_fit)$coefficients[2, 1] + summary(lm_diamond_fit)$coefficients[8, 1], 4)`. </span>
-
+<span class="question">Question: How much would the predicted *log_OOL* change if we increase the *log_OOL* size by 0.4 ?</span>
+  
+  <span class="answer">Answer: 0.4*(`r round(summary(lm_fish_fit)$coefficients[2, 1], 4)`) = `r round(0.4*(summary(lm_fish_fit)$coefficients[2, 1]) , 4)`. </span>
+  
 
 ## Predicted values
-
+  
 <div class="columns-2">
-
+  
 ```{r diamond price vs size and colour lines fake, echo=TRUE, eval=FALSE}
-# the slope
-beta_1 <- summary(lm_diamond_fit)$
-                  coefficients[2, 1]
-# colour the price size data by the colour
-ggplot(diamond_data, aes(x = log_Carats, 
-        y = log_Price, colour = Color)) +
-# add points with outline 
-  geom_point(aes(colour = Color), size = 2) +
-  geom_point(shape = 23, size = 2, 
-         colour = "dodgerblue", alpha = 0.5) + 
-# change colours
-  scale_color_manual(values = colorRampPalette(
-    c("white", "Gold"))(8)) +
-# add the fit lines with fixed slope  
-    geom_smooth(method = lm, 
-          formula = y ~ 1 + offset(beta_1*x)) +
-# and font size and theme
+mod<-lm(log_total_length~log_OOL+HC_fin,data=fish_data)
+local_data<-cbind(fish_data,predict(mod,interval="confidence"))
+
+ggplot(local_data, aes(x = log_OOL, 
+                      y = log_total_length, 
+                      colour = HC_fin)) +
+  # add points with outline 
+  geom_point(size = 2) +
+  # add the fit lines with fixed slope  
+  geom_line(aes(y=fit, group=HC_fin),col='black') +
+  # and font size and theme
   theme_bw() + 
   theme(text = element_text(size = 18))
 ```
 
 <p class="forceBreak">&nbsp;</p>
-
-<div class="centered">
+  
+  <div class="centered">
 ```{r diamond size vs colour lines, echo=FALSE, eval=TRUE}
 renderPlot({
 # colour the size data by the colour
-ggplot(diamond_data, aes(x = log_Carats, 
-        y = log_Price, colour = Color)) +
-# add points with outline
-  geom_point(aes(colour = Color), size = 2) +
-  geom_point(shape = 23, size = 2, colour = "dodgerblue", alpha = 0.5) + 
-# change colours
-  scale_color_manual(values=colorRampPalette(c("white", "Gold"))(8)) +
-    geom_smooth(method = lm, formula = y ~ 1 + offset(1.744521*x)) +
-# and font size and theme
-  theme_bw() +
+mod<-lm(log_total_length~log_OOL+HC_fin,data=fish_data)
+local_data<-cbind(fish_data,predict(mod,interval="confidence"))
+
+ggplot(local_data, aes(x = log_OOL, 
+                      y = log_total_length, 
+                      colour = HC_fin)) +
+  # add points with outline 
+  geom_point(size = 2) +
+  # add the fit lines with fixed slope  
+  geom_line(aes(y=fit, group=HC_fin),col='black') +
+  # and font size and theme
+  theme_bw() + 
   theme(text = element_text(size = 18))
 }, width = 450, height = 450)
 ```
+  </div>
 </div>
-</div>
-
+  
 <span class="question">Question: should the lines all have the same slope?</span>
 
 
-## Interactions {.build}
 
+## Interactions {.build}
+  
 <div>
 If $x_1$ is continuous and $x_2$ categorical with $(K+1)$ categories, in the regression
 
 $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon$$
 </div>
-
+  
 <div>
-The predicted values are
+  The predicted values are
 
 $$\widehat{y} = \left\{ \begin{array}{ccc}\beta_0 + \beta_1x_1 & & k=0 \\
 \beta_0 + \beta_1x_1 + \beta_{2,k} && k>0 \end{array} \right.$$
-
->- $k$ is the category of $x_2$, changes the intercept
+  
+  >- $k$ is the category of $x_2$, changes the intercept
 </div>
-
+  
 <div>
-To change the slope, we add the <span class="def">interaction</span> term
-
+  To change the slope, we add the <span class="def">interaction</span> term
+  
 $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3x_1x_2+ \epsilon$$
 </div>
-
+    
 <span class="question">Question: What are the predicted values?</span>
-
+      
 <div>
 <span class="answer">Answer:</span>
-
-$$\widehat{y} = \left\{ \begin{array}{ccc}\beta_0 + \beta_1x_1 & & k=0 \\
-\beta_0 + \beta_1x_1 + \beta_{2,k} + \beta_{3,k}x_1 && k>0 \end{array} \right.$$
+        
+ $$\widehat{y} = \left\{ \begin{array}{ccc}\beta_0 + \beta_1x_1 & & k=0 \\
+        \beta_0 + \beta_1x_1 + \beta_{2,k} + \beta_{3,k}x_1 && k>0 \end{array} \right.$$
 </div>
-
+          
 ## Interaction terms {.build}
-
+          
 <div>
 <div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
 With the <span class="code">lm(...)</span> function
 </div>
-
+              
 ```{r linear regression diamond two, eval=TRUE, echo=TRUE}
-lm_diamond_fit2 <- lm(log_Price ~ log_Carats*Color, diamond_data) # includes linear terms too
-summary(lm_diamond_fit2)$coefficients
+lm_fish_fit2 <- lm(log_total_length ~ log_OOL*HC_fin, fish_data) # includes linear terms too
+summary(lm_fish_fit2)$coefficients
 ```
-
->- *log_Carats:Color* rows are change in slope compared to the baseline D
-
+            
+>- *log_OOL:HC_fin* rows correspond to the change in slope compared to the baseline `HC_fin == FALSE`
 
 ## Predicted values with interactions {.build}
 
@@ -385,20 +403,16 @@ summary(lm_diamond_fit2)$coefficients
 
 ```{r diamond price vs size and colour lines interactions fake, echo=TRUE, eval=FALSE}
 # colour the price size data by the colour
-ggplot(diamond_data, aes(x = log_Carats, 
-        y = log_Price, colour = Color)) +
-# add points
-  geom_point(aes(colour = Color), size = 2) +
-  geom_point(shape = 23, size = 2, 
-         colour = "dodgerblue", alpha = 0.5) + 
-# change colours
-  scale_color_manual(values = colorRampPalette(
-    c("white", "Gold"))(8)) +
-# add the fit lines without specifying slope  
-    geom_smooth(method = lm) +
-# and font size and theme
-  theme_bw() + 
-  theme(text = element_text(size = 18))
+ggplot(fish_data, aes(x = log_OOL,
+    y = log_total_length, colour = HC_fin)) +
+    # add points
+    geom_point(aes(colour = HC_fin), size = 2) +
+    geom_point(shape = 23, size = 2, alpha = 0.5) +
+        # add the fit lines without specifying slope
+    geom_smooth(method = lm, aes(group=HC_fin) , color='black') +
+    # and font size and theme
+    theme_bw() +
+    theme(text = element_text(size = 18))
 ```
 
 <p class="forceBreak">&nbsp;</p>
@@ -407,117 +421,100 @@ ggplot(diamond_data, aes(x = log_Carats,
 ```{r diamond size vs colour lines interactions, echo=FALSE, eval=TRUE}
 # colour the size data by the colour
 renderPlot({
-# colour the size data by the colour
-ggplot(diamond_data, aes(x = log_Carats, 
-        y = log_Price, colour = Color)) +
-# add points
-  geom_point(aes(colour = Color), size = 2) +
-  geom_point(shape = 23, size = 2, colour = "dodgerblue", alpha = 0.5) + 
-# change colours
-  scale_color_manual(values = colorRampPalette(c("white", "Gold"))(8)) +
-    geom_smooth(method = lm) +
-# and font size and theme
-  theme_bw() +
-  theme(text = element_text(size = 18))
+  ggplot(fish_data, aes(x = log_OOL,
+    y = log_total_length, colour = HC_fin)) +
+    # add points
+    geom_point(aes(colour = HC_fin), size = 2) +
+    geom_point(shape = 23, size = 2, alpha = 0.5) +
+        # add the fit lines without specifying slope
+    geom_smooth(method = lm, aes(group=HC_fin) , color='black') +
+    # and font size and theme
+    theme_bw() +
+    theme(text = element_text(size = 18))
 }, width = 450, height = 450)
 ```
 </div>
 </div>
 
-<span class="question">Question: How do the residuals look?</span>
+<span class="question">Question: What about other covariates?</span>
 
 
-## Residuals and covariates {.build}
+<!-- ## Residuals and covariates {.build} -->
 
-<div>
-```{r diamond data scatterplot ggplot residuals different}
-sidebarPanel(
-  selectInput("colour_variable", "Colour by:",
-  c("Color", "Clarity", "Cut")), width = 2
-)
-renderPlot({
-  local_df <- diamond_data
-  local_df$resid <- lm_diamond_fit2$residuals
-  local_df$fitted <- lm_diamond_fit2$fitted  
-pp <- ggplot(local_df, aes(x = fitted, y = resid))
-if (input$colour_variable == "Color") {
-pp <- pp +  geom_point(aes(colour = Color), size = 3, alpha = 0.5) +  
-  # change colours
-  scale_color_manual(values = colorRampPalette(c("white", "Gold"))(8))
-}
-if (input$colour_variable == "Clarity") {
-pp <- pp +  geom_point(aes(colour = Clarity), size = 3, alpha = 0.5) +
-  # change colours
-  scale_color_manual(values = colorRampPalette(c("firebrick3", "darkorchid4"))(7))
-}
-if (input$colour_variable == "Cut") {
-pp <- pp +  geom_point(aes(colour = Cut), size = 3, alpha = 0.5) +
-  # change colours
-  scale_color_manual(values = colorRampPalette(c("darkorange", "darkorchid4"))(4))
-}
-pp <- pp + geom_point(shape = 23, size=3, colour = "dodgerblue", alpha = 0.5) + 
-# change axes labels  
-  xlab(expression(hat(y))) + ylab(expression(epsilon)) +
-# change theme 
-  theme_bw() + 
-# and font size  
-  theme(text = element_text(size = 18))
-print(pp)
-}, width = 800, height = 400)
-```
+<!-- <div> -->
+<!-- ```{r diamond data scatterplot ggplot residuals different} -->
+<!-- sidebarPanel( -->
+<!--   selectInput("colour_variable", "Colour by:", -->
+<!--               c("HC_fin",  -->
+<!--                 "higher_group",  -->
+<!--                 "swimbladder", -->
+<!--                 "head_height")), width = 2 -->
+<!-- ) -->
+<!-- renderPlot({ -->
+<!--   local_df <- fish_data -->
+<!--   local_df$resid <- lm_fish_fit2$residuals -->
+<!--   local_df$fitted <- lm_fish_fit2$fitted   -->
+<!--   pp <- ggplot(local_df, aes(x = fitted, y = resid)) -->
+<!--   if (input$colour_variable == "HC_fin") { -->
+<!--     pp <- pp +  geom_point(aes(colour = HC_fin), size = 3, alpha = 0.5)  -->
+<!--   } -->
+<!--   if (input$colour_variable == "higher_group") { -->
+<!--     pp <- pp +  geom_point(aes(colour = higher_group), size = 3, alpha = 0.5)  -->
+<!--   } -->
+<!--   if (input$colour_variable == "swimbladder") { -->
+<!--     pp <- pp +  geom_point(aes(colour = swimbladder), size = 3, alpha = 0.5) -->
+<!--   } -->
+<!--   if (input$colour_variable == "head_height") { -->
+<!--     #pp <- pp +  geom_point(aes(colour = log_head_height), size = 3, alpha = 0.5) -->
+<!--     pp = ggplot(local_df, aes(x = log_head_height, y = resid))+geom_point() -->
+<!--   } -->
+<!--   pp <- pp + -->
+<!--     # change axes labels   -->
+<!--     xlab(expression(hat(y))) + ylab(expression(epsilon)) + -->
+<!--     # change theme  -->
+<!--     theme_bw() +  -->
+<!--     # and font size   -->
+<!--     theme(text = element_text(size = 18)) -->
+<!--   print(pp) -->
+<!-- }, width = 800, height = 400) -->
+<!-- ``` -->
 
-<span class="question">Question: What about the other covariates?</span>
-</div>
+<!-- <span class="question">Question: What about the other covariates?</span> -->
+<!-- </div> -->
 
-<span class="answer">Answer: There is a clear dependence on *Clarity*, and a weaker one on *Cut*.</span>
+<!-- <span class="answer">Answer: There is a clear dependence on *...*, and a weaker one on *...*.</span> -->
 
-
-## Adding clarity to the model
+              
+## Adding head_height to the model
 
 <div>
 <div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
 With the <span class="code">lm(...)</span> function
 </div>
-
+              
 ```{r linear regression diamond three first half, eval=TRUE, echo=TRUE}
-lm_diamond_fit3 <- lm(log_Price ~ log_Carats*(Color + Clarity), diamond_data)
-summary(lm_diamond_fit3)$coefficients[1:15, ]
+lm_fish_fit3 <- lm(log_total_length ~ (log_OOL+log_head_height)*HC_fin, fish_data)
+summary(lm_fish_fit3)$coefficients
 ```
 
->- the *Clarity* rows show a strong offset, and decrease the uncertainty in the *Color* coefficients
-
-
-## Adding clarity to the model
-
-<div>
-<div id=hidestuff style="float: right; clear: right;"><span class="code">base R</span> <img src="./ibswrfiles/R_logo.png" alt="" height=50px></div>
-With the <span class="code">lm(...)</span> function
-</div>
-
-```{r linear regression diamond three second half, eval=TRUE, echo=TRUE}
-lm_diamond_fit3 <- lm(log_Price ~ log_Carats*(Color + Clarity), diamond_data)
-summary(lm_diamond_fit3)$coefficients[16:28, ]
-```
-
->- the *Clarity* rows show a strong change in slope
->- the *Color* slopes are not so different
+>- the *head_height* does not seem to add much to the model
 
 
 ## Bayesian multiple regression {.build}
 
 <div>
-<div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
-For the Bayesian version with <span class="code">brms</span> we can easily use the same syntax
+  <div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
+  For the Bayesian version with <span class="code">brms</span> we can easily use the same syntax
 </div>
-
+  
 ```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
-brmfit_diamonds <- brm(log_Price ~ log_Carats*(Color + Clarity), diamond_data) # run the model
+brmfit_fishes <- brm(log_total_length ~ (log_OOL+log_head_height)*HC_fin, fish_data) # run the model
 ```
 
 ```{r, echo = FALSE, eval = TRUE, message=FALSE, warning=FALSE}
 library(brms) # load the library
 source("./ibswrfiles/brm_run.R")
-brmfit_diamonds <- run_model(brm(log_Price ~ log_Carats*(Color + Clarity), diamond_data), "./brm_models_lectures/diamonds")
+brmfit_fishes <- run_model(brm(log_total_length ~ (log_OOL+log_head_height)*HC_fin, fish_data), "./brm_models_lectures/fishes")
 ```
 
 Note that this version has
@@ -528,40 +525,41 @@ Note that this version has
 To check convergence, we can look again at trace plots, eg
 
 <div class="columns-2">
-
+  
 ```{r, echo = FALSE, eval = TRUE, fig.height=2, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
-mcmc_plot(brmfit_diamonds, variable = "b_ColorH", type = "trace")
+mcmc_plot(brmfit_fishes, variable = "b_HC_finTRUE", type = "trace")
 ```
 
 <p class="forceBreak">&nbsp;</p>
-
+  
 ```{r, echo = FALSE, eval = TRUE, fig.height=2, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
-mcmc_plot(brmfit_diamonds, variable = "sigma", type = "trace")
+mcmc_plot(brmfit_fishes, variable = "sigma", type = "trace")
 ```
 </div>
-
+  
 <div id=hidestuffless>
-But there are many regression coefficients to plot
+  But there are many regression coefficients to plot
 </div>
+
 
 ## Bayesian multiple regression convergence {.build}
 
 <div>
 <div id=hidestuff style="float: right; clear: right;"><span class="code">Stan</span> <img src="./ibswrfiles/Stan_logo.png" alt="" height=50px></div>
 For the Bayesian version with <span class="code">brms</span> we can easily use the same syntax
-
+            
 ```{r, echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE}
-brmfit_diamonds <- brm(log_Price ~ log_Carats*(Color + Clarity), diamond_data) # run the model
+brmfit_fishes <- brm(log_total_length ~ (log_OOL+log_head_height)*HC_fin, fish_data) # run the model
 ```
 </div>
-
+  
 Automatic measures of convergence:
-
+  
 <div class="columns-2">
-
+  
 ```{r, echo = TRUE, eval = TRUE, warning=FALSE, message=FALSE}
 #rhat(brmfit_diamonds)
-summary(brmfit_diamonds)$fixed$Rhat
+summary(brmfit_fishes)$fixed$Rhat
 ```
 
 $\hat{R}$, ratio of between chain to in-chain sds
@@ -569,10 +567,9 @@ $\hat{R}$, ratio of between chain to in-chain sds
 >- should be close to 1 (less than 1.05) 
 
 <p class="forceBreak">&nbsp;</p>
-
+  
 ```{r, echo = TRUE, eval = TRUE, warning=FALSE, message=FALSE}
-#summary(brmfit_diamonds)$fixed$Bulk_ESS
-summary(brmfit_diamonds)$fixed$Tail_ESS
+summary(brmfit_fishes)$fixed$Tail_ESS
 ```
 
 Effective Sample Size (ESS), estimate of equivalent number of independent samples
@@ -580,58 +577,50 @@ Effective Sample Size (ESS), estimate of equivalent number of independent sample
 >- should be in the 100s
 
 </div>
-
+  
 If not, we need to increase the chain lengths (`warmup` and `iter` parameters)
 
 
 ## Regression coefficients
 
-We are interested in the regression coefficients of *Color* and *Clarity*
-
+We are interested in the regression coefficients of *OOL* and *head_height*
+  
 <div class="columns-2">
-
+  
 ```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
-mcmc_plot(brmfit_diamonds, variable = "*_Col*",
+mcmc_plot(brmfit_fishes, variable = "*log_OOL",
           regex = TRUE, type = "intervals")
 ```
 
 
 <p class="forceBreak">&nbsp;</p>
-
+  
 ```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
-mcmc_plot(brmfit_diamonds, variable = "*_Cla*",
+mcmc_plot(brmfit_fishes, variable = "*log_head_height",
           regex = TRUE, type = "intervals")
 ```
 
 </div>
-
+  
 <div id="hidestuffless">
-Both show strong effects
+  ...
 </div>
 
 
 ## Interaction effects 
 
-And the **interaction** regression coefficients of *Color* and *Clarity* with *log_Carat*
+And the **interaction** regression coefficients of *OOL* and *head_height* with *HC_fin*
 
-<div class="columns-2">
-
-```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
-mcmc_plot(brmfit_diamonds, variable = "*:Col*",
-          regex = TRUE, type = "intervals")
-```
-
-<p class="forceBreak">&nbsp;</p>
 
 ```{r, echo = TRUE, eval = TRUE, fig.height=3.5, fig.width=4.5, warning=FALSE, message=FALSE, fig.align = 'center'}
-mcmc_plot(brmfit_diamonds, variable = "*:Cla*",
-          regex = TRUE, type = "intervals")
+mcmc_plot(brmfit_fishes, variable = "*HC*",
+        regex = TRUE, type = "intervals")
 ```
 
-</div>
+
 
 <div id="hidestuffless">
-Weak effect for *Color* and stronger for *Clarity*
+At best a weak effect for *head_height*, but a stronger one for *OOL*
 </div>
 
 ## Summary {.build}
