@@ -570,7 +570,7 @@ Lies behind lots of Bayesian analyses
 
 ## MCMC {.build}
 
-Markov Chain Monte Carlo (MCMC) **Rosenbluth**$\times$**2, Teller**$\times$**2, Metropolis (1953); Hastings  (1970)**
+Markov Chain Monte Carlo (MCMC) **Metropolis, Rosenbluth**$\times$**2, Teller**$\times$**2 (1953); Hastings  (1970)**
 
 <div>
 To sample proportionally to any function $p(x)$:
