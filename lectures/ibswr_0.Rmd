@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "0: Overview"
 author: "Jack Kuipers"
-date: "28 November 2022"
+date: "22 May 2023"
 runtime: shiny
 output:
   ioslides_presentation:
@@ -17,7 +17,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(knitr)
-start_date <- as.Date("28-11-22", format = "%d-%m-%y")
+start_date <- as.Date("22-05-23", format = "%d-%m-%y")
 f_date <- function(d, m, k=0) {
   format(d+m*1+k, "%d-%m-%y")
 }
@@ -42,8 +42,9 @@ Interactive lectures **Jack Kuipers**
 <div>
 Every session has an associated exercise sheet
 
->- end of each session
->- hand in for marking for credit points **Wandrille Duchemin**
+>- time to work on within each session
+>- hand in later for marking for credit points **Wandrille Duchemin**
+>- short review at the start of the next session **Wandrille Duchemin**
 </div>
 
 <div>
@@ -64,10 +65,10 @@ Day 1: Bayesian beginnings, `r f_date(start_date, 0)`
 |1|t-test recap|--|9:15--10:30|
 |--|--|Coffee|10:30--11:00|
 |2|p-values and confidence intervals|--|11:00--12:30|
-|--|--|Lunch|12:30--13:30|
-|3|Monte Carlo methods|--|13:30--15:00|
-|--|--|Coffee|15:00--15:30|
-|4|Bayesian first steps|--|15:30--17:00|
+|--|--|Lunch|12:30--13:45|
+|3|Monte Carlo methods|--|13:45--15:15|
+|--|--|Coffee|15:15--15:45|
+|4|Bayesian first steps|--|15:45--17:00|
 </div>
 </div>
 
