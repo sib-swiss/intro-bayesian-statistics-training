@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "1: t-test recap"
 author: "Jack Kuipers"
-date: "28 November 2022"
+date: "22 May 2023"
 runtime: shiny
 output:
   ioslides_presentation:
@@ -92,9 +92,9 @@ $$m = \frac{1}{N}\sum_{i=1}^{N}x_i$$
 is a random variable
 </div>
 
->- mean estimate: $\widehat{\mu_{m}} = \overline{x}$
+>- mean estimate: $\widehat{\mu_{m}} = \overline{x}$, which is $m$ 
 
->- variance estimate: $\widehat{\sigma_{m}^{2}} = \frac{s^2}{N}$
+>- variance estimate: $\widehat{\sigma_{m}^{2}} = \frac{s^2}{N}$, with $s^2$ the sample variance
 
 <div>
 >- standard error 
