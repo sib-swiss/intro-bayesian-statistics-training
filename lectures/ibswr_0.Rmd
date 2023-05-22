@@ -27,9 +27,9 @@ f_date <- function(d, m, k=0) {
 
 <div>
 
-Interactive lectures **Jack Kuipers**
+8 sessions
 
->- start of each session
+>- Interactive lecture each session (c. 30 mins) **Jack Kuipers**
 >- written in R shiny
 </div>
 
@@ -42,15 +42,19 @@ Interactive lectures **Jack Kuipers**
 <div>
 Every session has an associated exercise sheet
 
->- time to work on within each session
+>- allocated time within each session (c. 45 mins)
 >- hand in later for marking for credit points **Wandrille Duchemin**
->- short review at the start of the next session **Wandrille Duchemin**
+>- short review at the start of the next session (c. 15 mins) **Wandrille Duchemin**
 </div>
 
 <div>
-New course
+Newish course
 
 >- feedback always highly appreciated
+</div>
+
+<div>
+Course material [https://github.com/sib-swiss/intro-bayesian-statistics-training]
 </div>
 
 ## Topics
@@ -83,10 +87,10 @@ Day 2: Bayesian regression, `r f_date(start_date, 1)`
 |5|Bayesian t-tests|--|9:00--10:30|
 |--|--|Coffee|10:30--11:00|
 |6|Robust t-tests and priors|--|11:00--12:30|
-|--|--|Lunch|12:30--13:30|
-|7|Bayesian multiple regression|--|13:30--15:00|
-|--|--|Coffee|15:00--15:30|
-|8|Bayesian logistic regression|--|15:30--16:45|
+|--|--|Lunch|12:30--13:45|
+|7|Bayesian multiple regression|--|13:45--15:15|
+|--|--|Coffee|15:15--15:45|
+|8|Bayesian logistic regression|--|15:45--16:45|
 |9|Outlook|--|16:45--17:00|
 </div>
 </div>
@@ -112,5 +116,6 @@ And for the Bayesian regression
 >- Rstan [https://mc-stan.org/users/interfaces/rstan]
 >- brms [https://cran.r-project.org/web/packages/brms/index.html]
 
+Link to course material [https://github.com/sib-swiss/intro-bayesian-statistics-training]
 
 
