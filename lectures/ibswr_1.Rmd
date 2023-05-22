@@ -79,7 +79,7 @@ renderPlot({
 ```
 </div>
 
->- display sample mean and standard deviation
+>- display sample mean and sample standard deviation
 
 
 ## CLT recap {.build}
@@ -97,7 +97,7 @@ is a random variable
 >- variance estimate: $\widehat{\sigma_{m}^{2}} = \frac{s^2}{N}$, with $s^2$ the sample variance
 
 <div>
->- standard error 
+>- standard error (standard deviation of the mean)
 
 $$s_{m} = \frac{s}{\sqrt{N}}$$
 </div>
