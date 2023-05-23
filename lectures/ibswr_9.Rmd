@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "9: Outlook"
 author: "Jack Kuipers"
-date: "29 November 2022"
+date: "23 May 2023"
 runtime: shiny
 output:
   ioslides_presentation:
@@ -43,7 +43,7 @@ More advanced modelling with brms
 </div>
 
 <div>
-Model checking selection (leave-one-out cross-validation)
+Model checking/selection (leave-one-out cross-validation)
 
 >- [https://mc-stan.org/loo/articles/loo2-example.html]
 >- [https://mc-stan.org/loo/articles/index.html]
