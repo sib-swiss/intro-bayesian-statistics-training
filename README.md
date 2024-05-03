@@ -52,7 +52,7 @@ Jack Kuipers, & Wandrille Duchemin. (2023, June 22). Introduction to Bayesian st
 
 ## Series of talks
 
-During this course, experts in the field presented state-of-the-art Bayesian methods and their application in the life sciences. The recordings of their talks and slides can be found below:
+In the previous iteration of this course (2023), experts in the field presented state-of-the-art Bayesian methods and their application in the life sciences. The recordings of their talks and slides can be found below:
 
 
 | Speaker      | Talk title | Links to | 
