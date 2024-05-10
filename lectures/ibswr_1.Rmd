@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "1: t-test recap"
 author: "Jack Kuipers"
-date: "22 May 2023"
+date: "13 May 2024"
 runtime: shiny
 output:
   ioslides_presentation:

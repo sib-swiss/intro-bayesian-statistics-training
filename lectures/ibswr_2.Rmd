@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "2: p-values and confidence intervals"
 author: "Jack Kuipers"
-date: "22 May 2023"
+date: "13 May 2024"
 runtime: shiny
 output:
   ioslides_presentation:
@@ -201,9 +201,9 @@ fluidRow(column(6, offset = 1, p(" "),
   actionButton('stop_CD', 'Pause'),
   actionButton('reset_CD', 'Reset')),
   column(4,
-  numericInput('minutes_CD', 'Minutes:', value = 6, min = 1, max = 12, step = 1)))
+  numericInput('minutes_CD', 'Minutes:', value = 4, min = 1, max = 12, step = 1)))
 
-  timer <- reactiveVal(360)
+  timer <- reactiveVal(240)
   active <- reactiveVal(FALSE)
 
     observe({
@@ -384,7 +384,7 @@ sidebarPanel(actionButton("start_JP", "Start"), hr(),
   selectInput("n_sampsJP", label = "Number of samples:",
         choices = c(1, 10, 20, 50, 100), selected = 1),
   sliderInput("wait_timeJP", label = "Wait time:",
-              min = 100, max = 1000, value = 1000, step = 100), width = 2)
+              min = 100, max = 1000, value = 600, step = 100), width = 2)
 
   rvJP <- reactiveValues(i = 0, samp_value = c(), flag = FALSE)
 
@@ -439,7 +439,7 @@ sidebarPanel(actionButton("start_CP", "Start"), hr(),
   selectInput("condit_CP", label = "Condition:",
         choices = c(" - ", "A", "B"), selected = " - "),
   sliderInput("wait_timeCP", label = "Wait time:",
-              min = 100, max = 1000, value = 1000, step = 100), width = 2)
+              min = 100, max = 1000, value = 600, step = 100), width = 2)
 
   xlims <- c(0, 0.1, 0.5, 0.7, 0.8, 1)
   rvCP <- reactiveValues(i = 0, samp_value = c(), flag = FALSE)

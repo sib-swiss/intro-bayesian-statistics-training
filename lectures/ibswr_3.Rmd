@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "3: Monte Carlo methods"
 author: "Jack Kuipers"
-date: "22 May 2023"
+date: "13 May 2024"
 runtime: shiny
 output:
   ioslides_presentation:
@@ -30,7 +30,7 @@ sidebarPanel(actionButton("start_CP", "Start"), hr(),
   selectInput("n_darts", label = "Number of throws:",
               choices = c(1, 5, 10, 20, 50, 100, 200, 500), selected = 1), hr(),
   sliderInput("wait_timeCP", label = "Wait time:",
-              min = 100, max = 1000, value = 1000, step = 100), width = 2)
+              min = 100, max = 1000, value = 600, step = 100), width = 2)
 
 rvCP <- reactiveValues(i = 0, samp_value_x = c(), samp_value_y = c(), flag = FALSE)
 
@@ -110,7 +110,7 @@ sidebarPanel(actionButton("start_ns", "Start"), hr(),
   selectInput("n_ns", label = "Number of samples:",
               choices = c(1, 5, 10, 20, 50, 100, 200, 500), selected = 1), hr(),
   sliderInput("wait_time_ns", label = "Wait time:",
-              min = 100, max = 1000, value = 1000, step = 100), width = 2)
+              min = 100, max = 1000, value = 600, step = 100), width = 2)
 
 rv_ns <- reactiveValues(i = 0, samp_value = c(), totalCounts = rep(0, 31), flag = FALSE)
 
@@ -655,7 +655,7 @@ sidebarPanel(actionButton("start_mcmc", "Start"), hr(),
   selectInput("n_mcmc", label = "Number of samples:",
               choices = c(1, 10, 40, 100, 400, 1000), selected = 1), hr(),
   sliderInput("wait_time_mcmc", label = "Wait time:",
-              min = 100, max = 1000, value = 1000, step = 100), width = 2)
+              min = 50, max = 500, value = 500, step = 50), width = 2)
 
 rv_mcmc2 <- reactiveValues(i = 0, x = 0, x_p = 0, mh_rat = 0, acc_flag = 0,
                            totalCounts = rep(0, 31), flag = FALSE)
@@ -705,6 +705,243 @@ renderPlot({
 ```
 </div>
 
+## HMC {.build}
+
+Hamiltonian Monte Carlo (HMC) **Duane, Kennedy, Pendleton and Roweth (1987); Neal (1995, 2011)**
+
+<div>
+To sample proportionally to any function $p(x)$: add a new dimension $\rho$!
+</div>
+
+<div>
+Make $\rho$ Gaussian, and define the negative log-likelihood as an energy surface
+$$H(x,\rho) = -\log\{p(x)\} + \frac{\rho^2}{2}$$
+</div>
+
+<div>
+[1.] From current position $x$, sample a Gaussian $\rho$ and propose a new pair $(x', \rho')$ by propagating (numerically) under the (energy-preserving) Hamiltonian dynamics: $\frac{\mathrm{d}x}{\mathrm{d}t} = \frac{\partial H}{\partial \rho}, \,   \frac{\mathrm{d}\rho}{\mathrm{d}t} = -\frac{\partial H}{\partial x}$
+</div>
+
+<div>
+[2.] Accept $x'$ with probability
+
+$$\min \left(1, \exp\{H(x,\rho) - H(x', \rho')\}\right) \approx 1$$
+
+>- and move current position to $x'$
+>- otherwise stay at $x$
+</div>
+
+<div>
+[3.] Repeat, that's all!
+</div>
+
+
+## HMC example
+
+```{r}
+sidebarPanel(actionButton("hmc_step", "Next step"), width = 2)
+
+target_dens <- function(x) {
+  0.6*dnorm(x, -0.6, 0.6/1.6) + 0.4*dnorm(x, 0.4, 0.4/1.6)
+}
+
+U <- function(x) {
+  part1 <- 0.6*dnorm(x, -0.6, 0.6/1.6)
+  part2 <- 0.4*dnorm(x, 0.4, 0.4/1.6)
+  d1 <- -(x+0.6)/(0.6/1.6)^2*part1
+  d2 <- -(x-0.4)/(0.4/1.6)^2*part2
+  dist <- part1 +  part2
+  grad <- d1 + d2
+  return(list(U = -log(dist), grad = -grad/dist))
+}
+
+xs <- 10*c(-300:300)/1000
+ys <- target_dens(xs)
+yscale <- max(ys)
+
+rhos <- c(-100:100)/20
+z <- outer(-log(ys), rhos^2/2, "+")
+
+q_sd <- 0.42
+
+L <- 10
+
+rv_hmc <- reactiveValues(x = 0, 
+                         x_p = 0,
+                         p = 0,
+                         p_p = 0,
+                         xs = rep(0,L+1),
+                         ps = rep(0,L+1),
+                         mh_rat = 0,
+                         acc_flag = 0)
+
+observeEvent(input$hmc_step, {
+  if (rv_hmc$acc_flag) {
+    rv_hmc$x <- rv_hmc$x_p
+  }
+  q <- rv_hmc$x
+  p <- rnorm(1,0,1)
+  rv_hmc$p <- p
+  p0 <- p
+  epsilon <- 0.1
+  qs <- rep(0,L+1)
+  ps <- rep(0,L+1)
+  qs[1] <- q
+  U_q <- U(q)
+  p <- p - epsilon / 2 * U_q$grad
+  ps[1] <- p
+    for (j in 1:L) {
+      # Make a full step for the position
+      q <- q + epsilon * p 
+      # Make a full step for the momentum
+      # Make a half step for momentum at the end
+      U_q_new <- U(q)
+      p <- p - epsilon * U_q_new$grad/(1 + (j==L))
+      qs[j+1] <- q
+      ps[j+1] <- p
+    }
+  rv_hmc$xs <- qs
+  rv_hmc$ps <- c(p0, ((ps[-(L+1)]+ps[-1])/2)[-L], p)
+  rv_hmc$x_p <- q
+  rv_hmc$p_p <- p
+  rv_hmc$mh_rat <- min(1, exp(U_q$U + p0^2/2 - U_q_new$U - p^2/2))
+  rv_hmc$acc_flag <- 1*(runif(1) < rv_hmc$mh_rat)
+  }, ignoreNULL = FALSE, ignoreInit = TRUE
+)
+
+renderPlot({
+  source("./ibswrfiles/colordefs.R")
+  source("./ibswrfiles/flagFALSE.R")
+  cur_x <- rv_hmc$x
+  x_p <- rv_hmc$x_p
+  acc_flag <- rv_hmc$acc_flag
+  step_rhos <- rv_hmc$ps
+  step_xs <- rv_hmc$xs
+  source("./ibswrfiles/hmc_ex.R", local = TRUE)
+}, width = 800, height = 400)
+```
+
+```{r}
+renderUI(paste0("Current x: ", round(rv_hmc$x, 6), ", random \u03c1: ", round(rv_hmc$p, 6)))
+renderUI(paste0("Proposed x: ", round(rv_hmc$x_p, 6), ", proposed \u03c1: ", round(rv_hmc$p_p, 6)))
+```
+
+```{r}
+renderUI(paste0("Acceptance probability: ", round(rv_hmc$mh_rat, 6)))
+renderUI(paste0("Move was ", ifelse(rv_hmc$acc_flag == 1, "accepted", "rejected"), "."))
+```
+
+
+## HMC samples
+
+<div id="hidestuffless" class="centered">
+```{r hmc chain}
+sidebarPanel(actionButton("start_hmc", "Start"), hr(),
+  selectInput("n_hmc", label = "Number of samples:",
+              choices = c(1, 10, 40, 100, 400, 1000), selected = 1), hr(),
+  sliderInput("wait_time_hmc", label = "Wait time:",
+              min = 50, max = 500, value = 500, step = 50), width = 2)
+
+rv_hmc2 <- reactiveValues(i = 0, x = 0, x_p = 0, 
+                          p = 0, p_p = 0, xs = rep(0,L+1), ps = rep(0,L+1),
+                         mh_rat = 0, acc_flag = 0,
+                           totalCounts = rep(0, 31), flag = FALSE)
+
+observeEvent(input$start_hmc, {
+  rv_hmc2$i <- 0
+  q <- rv_hmc2$x
+  p <- rnorm(1,0,1)
+  rv_hmc2$p <- p
+  p0 <- p
+  epsilon <- 0.1
+  qs <- rep(0,L+1)
+  ps <- rep(0,L+1)
+  qs[1] <- q
+  U_q <- U(q)
+  p <- p - epsilon / 2 * U_q$grad
+  ps[1] <- p
+    for (j in 1:L) {
+      # Make a full step for the position
+      q <- q + epsilon * p 
+      # Make a full step for the momentum
+      # Make a half step for momentum at the end
+      U_q_new <- U(q)
+      p <- p - epsilon * U_q_new$grad/(1 + (j==L))
+      qs[j+1] <- q
+      ps[j+1] <- p
+    }
+  rv_hmc2$xs <- qs
+  rv_hmc2$ps <- c(p0, ((ps[-(L+1)]+ps[-1])/2)[-L], p)
+  rv_hmc2$x_p <- q
+  rv_hmc2$p_p <- p
+  rv_hmc2$mh_rat <- min(1, exp(U_q$U + p0^2/2 - U_q_new$U - p^2/2))
+  rv_hmc2$acc_flag <- 1*(runif(1) < rv_hmc2$mh_rat)
+  rv_hmc2$totalCounts = rep(0, 31)
+  rv_hmc2$flag <- TRUE
+  observe({
+    if (isolate(rv_hmc2$flag) == TRUE) {
+      isolate({
+        rv_hmc2$i <- rv_hmc2$i + 1
+        if (rv_hmc2$acc_flag) {
+          rv_hmc2$x <- rv_hmc2$x_p
+        }
+  q <- rv_hmc2$x
+  p <- rnorm(1,0,1)
+  rv_hmc2$p <- p
+  p0 <- p
+  epsilon <- 0.1
+  qs <- rep(0,L+1)
+  ps <- rep(0,L+1)
+  qs[1] <- q
+  U_q <- U(q)
+  p <- p - epsilon / 2 * U_q$grad
+  ps[1] <- p
+    for (j in 1:L) {
+      # Make a full step for the position
+      q <- q + epsilon * p 
+      # Make a full step for the momentum
+      # Make a half step for momentum at the end
+      U_q_new <- U(q)
+      p <- p - epsilon * U_q_new$grad/(1 + (j==L))
+      qs[j+1] <- q
+      ps[j+1] <- p
+    }
+  rv_hmc2$xs <- qs
+  rv_hmc2$ps <- c(p0, ((ps[-(L+1)]+ps[-1])/2)[-L], p)
+  rv_hmc2$x_p <- q
+  rv_hmc2$p_p <- p
+  rv_hmc2$mh_rat <- min(1, exp(U_q$U + p0^2/2 - U_q_new$U - p^2/2))
+        rv_hmc2$acc_flag <- 1*(runif(1) < rv_hmc2$mh_rat)
+        hitIndex <- floor(rv_hmc2$x*5) + 16
+        if(hitIndex > 0 && hitIndex < 31){
+          rv_hmc2$totalCounts[hitIndex] <- rv_hmc2$totalCounts[hitIndex] + 1
+        } else { # put in rubbish bin
+          rv_hmc2$totalCounts[31] <- rv_hmc2$totalCounts[31] + 1
+        }
+      })
+    }
+    if (isolate(rv_hmc2$i) < isolate(as.numeric(input$n_hmc))) {
+      invalidateLater(input$wait_time_hmc, session)
+    } else {
+      rv_hmc2$flag <- FALSE
+    }
+  })
+})
+  
+renderPlot({
+  source("./ibswrfiles/colordefs.R")
+  source("./ibswrfiles/flagTRUE.R")
+  cur_x <- rv_hmc2$x
+  x_p <- rv_hmc2$x_p
+  acc_flag <- rv_hmc2$acc_flag
+  step_rhos <- rv_hmc2$ps
+  step_xs <- rv_hmc2$xs
+  local_counts <- rv_hmc2$totalCounts
+  source("./ibswrfiles/hmc_ex.R", local = TRUE)
+}, width = 600, height = 450)
+```
+</div>
+
 
 ## Summary {.build}
 
@@ -731,7 +968,7 @@ Start of chain correlated with initial point
 </div>
 
 <div>
-Faster, more computationally efficient alternatives
+Faster, more computationally efficient schemes
 
 >- <span class="def">Hamiltonian Monte Carlo</span> (HMC)
 </div>
