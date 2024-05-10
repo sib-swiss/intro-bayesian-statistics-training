@@ -32,15 +32,15 @@ if (internalFlag) {
 
 if (internalFlag2) {
   pp <- pp + geom_vline(xintercept=cis[1], colour = "darkorchid4", 
-                        linetype = 3, size = 1) +
-    geom_vline(xintercept = cis[2], colour = "darkorchid4", linetype = 3, size = 1)
+                        linetype = 3, linewidth = 1) +
+    geom_vline(xintercept = cis[2], colour = "darkorchid4", linetype = 3, linewidth = 1)
   pp <- pp + geom_area(data = subset(subset(df, xs > cis[1]), xs < cis[2]), 
-                       mapping = aes(xs, ys), colour = "darkorchid4", size = 1, fill = "darkorchid4", alpha = 0.33)
+                       mapping = aes(xs, ys), colour = "darkorchid4", linewidth = 1, fill = "darkorchid4", alpha = 0.33)
   pp <- pp + annotate("text", label = paste0(round(cis[2], 3), "]"), x = cis[2]+1, y = 0.8*max(df$ys), size = 8)
   pp <- pp + annotate("text", label = paste0("[", round(cis[1], 3), ","), x = cis[1]-1, y = 0.8*max(df$ys), size = 8)
   
 } else {
-  pp <- pp + geom_area(data = df, aes(xs, ys), colour = "darkorchid4", size = 1, fill = "darkorchid4",
+  pp <- pp + geom_area(data = df, aes(xs, ys), colour = "darkorchid4", linewidth = 1, fill = "darkorchid4",
                           alpha = 0.33)
 }
   

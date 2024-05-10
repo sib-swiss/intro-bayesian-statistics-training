@@ -8,9 +8,9 @@ df2 <- data.frame(xs, ys)
 
 pp <- ggplot() + theme_bw() + theme(text = element_text(size = 18)) +
     geom_area(data = df2, mapping = aes(x = xs, y = ys), colour = "darkorchid4",
-              size = 1, fill = "darkorchid4", alpha = 0.33) +
-    geom_vline(xintercept = 0, colour = "dodgerblue", linetype = 1, size = 1) +
-    geom_vline(xintercept = local_mean, colour = "darkorchid4", linetype = 2, size = 2) +
+              linewidth = 1, fill = "darkorchid4", alpha = 0.33) +
+    geom_vline(xintercept = 0, colour = "dodgerblue", linetype = 1, linewidth = 1) +
+    geom_vline(xintercept = local_mean, colour = "darkorchid4", linetype = 2, linewidth = 2) +
     xlab("x") + ylab("density")
 if (!input$rescaleADJ) {
   pp <- pp + xlim(-3, 3)

@@ -15,7 +15,7 @@ pp <- ggplot() +
   
 if (internalFlag == TRUE) {
   local_y <- exp(-(q2 - 2*q1*local_mu + q0*local_mu^2)/2)
-  pp <- pp + geom_vline(xintercept = local_mu, colour = "darkorange", linetype = 2, size = 2)
+  pp <- pp + geom_vline(xintercept = local_mu, colour = "darkorange", linetype = 2, linewidth = 2)
   pp <- pp + annotate("point", x = local_mu, y = local_y, colour = "darkorange", size = 4)
 }
 
