@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "3: Exercise solutions"
 author: "Jack Kuipers"
-date: "28 November 2022"
+date: "13 May 2024"
 output:
   pdf_document:
     fig_width: 6
@@ -121,7 +121,107 @@ This gets close to the numerical value
 integrate(function(x) cos(x)*dt(x, 5), -Inf, Inf)$value
 ```
 
-## Bonus Exercise 3.2 - Monte Carlo integration
+## Bonus Exercise 3.2 - HMC
+
+```{r, echo = FALSE}
+# simple HMC function
+# n_its is the number of iterations
+# start_x the initial position
+# L is the number of steps of numerical propagation
+# under the Hamiltionian H = U + rho^2/2, U = -log(target_density)
+# epsilon is the size of the steps
+basicHMC <- function(n_its = 1e2, start_x = 0, L = 10, epsilon = 0.1, ...) {
+  xs <- rep(NA, n_its) # to store all the sampled values
+  x <- start_x # starting point
+  xs[1] <- x # first value
+  U_x <- U_fn(x, ...) # log density and gradient at current x
+  for (ii in 2:n_its) { # HMC iterations
+    rho <- rnorm(1) # normal sample (we could define scheme with different sd)
+    x_prop <- x 
+    # Leapfrog method to propagate under Hamiltonian: 
+    rho_prop <- rho - epsilon/2*U_x$grad # half step for momentum
+    for (j in 1:L) {
+      x_prop <- x_prop + epsilon*rho_prop # position update 
+      U_prop <- U_fn(x_prop, ...) # update gradient
+      # update momentum, with a half step at the end
+      rho_prop <- rho_prop - epsilon*U_prop$grad/(1 + (j==L))
+    }
+    MH_prob <- exp(U_x$U + rho^2/2 - U_prop$U - rho_prop^2/2)
+    if (runif(1) < MH_prob) { # MH acceptance probability
+      x <- x_prop # accept move
+      U_x <- U_prop # update density
+    }
+    xs[ii] <- x # store current position, even when move rejected
+  }
+  return(xs)
+}
+target_density <- function(x, nu, grad = FALSE) {
+  dens <- dt(x, nu) # Student-t density
+  if (grad) { # return density and gradient
+    grad <- -(nu + 1)/(nu + x^2)*x*dens
+    return(list(dens = dens, grad = grad))
+  } else { # return just the density
+    return(dens)
+  }
+}
+U_fn <- function(x, ...) {
+  p_x <- target_density(x, ..., grad = TRUE)
+  U <- -log(p_x$dens)
+  grad <- -1/p_x$dens*p_x$grad
+  return(list(U = U, grad = grad))
+}
+```
+
+*Examine the output HMC chain for different lengths. How many samples do we now need to get close to the Student-$t$ distribution?*
+
+*Do we get good estimates for the integral from before?*
+
+First we run a short chain with the default length of 100 iterations:
+
+```{r}
+short_HMC_chain <- basicHMC(nu = 5)
+```
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+hist_t_plot(data.frame(t = short_HMC_chain), dft)
+```
+
+It's in the right range, but not looking so good so far. Of course we only have 100 samples compared to the 1000 from the short MCMC chain, but with the leapfrog propagation (of 10 internal steps) both have had a similar number of evaluations of the target density, while the HMC also needed the gradient evaluations.
+
+Let's try longer chains
+
+```{r}
+longer_HMC_chain <- basicHMC(n_its = 1e3, nu = 5)
+```
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+hist_t_plot(data.frame(t = longer_HMC_chain), dft)
+```
+
+```{r}
+even_longer_HMC_chain <- basicHMC(n_its = 1e4, nu = 5)
+```
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+hist_t_plot(data.frame(t = even_longer_HMC_chain), dft)
+```
+
+and likewise it's starting to look good.
+
+For the integral
+```{r}
+mean(cos(short_HMC_chain))
+mean(cos(longer_HMC_chain))
+mean(cos(even_longer_HMC_chain))
+very_long_HMC_chain <- basicHMC(n_its = 1e5, nu = 5)
+mean(cos(very_long_HMC_chain))
+```
+
+again we approach the numerical value `r integrate(function(x) cos(x)*dt(x, 5), -Inf, Inf)$value`.
+
+For this simple target, we don't really see any benefit of HMC over the MCMC approach, but the ability of HMC to move more easily across the distribution lends it advantages for more complex and multi-modal distributions, especially in higher dimensions.
+
+## Bonus Exercise 3.3 - Monte Carlo integration
 
 *Computing expectations can be applied to any continuous function*
 
