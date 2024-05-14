@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "9: Outlook"
 author: "Jack Kuipers"
-date: "23 May 2023"
+date: "14 May 2024"
 runtime: shiny
 output:
   ioslides_presentation:
