@@ -1,0 +1,11 @@
+---
+title: "outlooks"
+---
+
+## lecture material
+
+{{< downloadthis ../../lectures/ibswr_9.Rmd dname="oulooks" label="Download the shiny presentation" icon="filetype-md" >}}
+
+
+<!-- {{< downloadthis ../../rendered_lectures/ibswr_9.html dname="outlooks" label="Download the rendered presentation" icon="filetype-html" >}} -->
+

@@ -1,0 +1,20 @@
+---
+title: "Bayesian logistic regression"
+---
+
+## lecture material
+
+{{< downloadthis ../../lectures/ibswr_8.Rmd dname="bayesian_logistic_regression" label="Download the shiny presentation" icon="filetype-md" >}}
+
+
+{{< downloadthis ../../rendered_lectures/ibswr_8.html dname="bayesian_logistic_regression" label="Download the rendered presentation" icon="filetype-html" >}}
+
+{{< downloadthis ../assets/ibswr_lecture_data.zip dname="ibswr_lecture_data" label="Download the lecture data" icon="file-earmark-zip" >}}
+
+## exercise
+
+{{< downloadthis ../../exercises/ibswr_exercises_8.pdf dname="exercise_8" label="Download the exercise instructions" icon="filetype-pdf" >}}
+
+{{< downloadthis ../../exercises/ibswr_solutions_8.pdf dname="solutions_8" label="Download the exercise solutions" icon="filetype-pdf" >}}
+
+{{< downloadthis ../assets/ibswr_exercise_data.zip dname="ibswr_exercise_data" label="Download the exercise data" icon="file-earmark-zip" >}}

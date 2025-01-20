@@ -1,0 +1,73 @@
+project:
+  type: website
+  execute-dir: project
+  render:
+    - "website/*.qmd"
+    - "website/lectures/*.qmd"
+    - "!CONTRIBUTING.md"
+    - "!LICENSE.md"
+
+website:
+  title: "Introduction to Bayesian statistics with R"
+  favicon: website/assets/SIB_logo.svg
+  search: true
+  page-navigation: true
+  navbar:
+    background: "#003eaa"
+    left:
+      - href: website/index.qmd
+        text: Home
+      - href: website/installation_instructions.qmd
+      - href: website/precourse_preparations.qmd
+      - href: website/course_schedule.qmd
+      - text: "lectures"
+        menu:
+          - href: website/lectures/ibswr3.qmd
+          - href: website/lectures/ibswr4.qmd
+          - href: website/lectures/ibswr5.qmd
+          - href: website/lectures/ibswr6.qmd
+          - href: website/lectures/ibswr7.qmd
+          - href: website/lectures/ibswr8.qmd
+          - href: website/lectures/ibswr9.qmd
+
+          
+    right:
+      - icon: github
+        href: https://github.com/sib-swiss/intro-bayesian-statistics-training/
+        aria-label: GitHub
+  sidebar:
+    logo: website/assets/SIB_LogoQ_GBv.svg
+
+format:
+  html:
+    code-link: true
+    theme: 
+      - default
+      - website/custom.scss
+    toc: true
+    header-includes: |
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro">
+      <!-- Matomo -->
+      <script>
+        var _paq = window._paq = window._paq || [];
+        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+          var u="https://matomo.sib.swiss/";
+          _paq.push(['setTrackerUrl', u+'matomo.php']);
+          _paq.push(['setSiteId', '220']);
+          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+          g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+        })();
+      </script>
+      <!-- End Matomo Code -->
+
+
+execute:
+  freeze: auto 
+  cache: true
+  tidy: true
+
+
+

@@ -1,0 +1,16 @@
+---
+title: "Installation Instructions"
+---
+
+
+Attendees should have a Wi-Fi enabled computer. 
+
+To follow this course, make sure you have [R](https://www.r-project.org/) and [Rstudio](https://www.rstudio.com/) installed beforehand.
+Additionally, make sure to have the following R libraries installed:
+
+ * The [Rstan](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started) package (warning, there are 2 steps to the installation: Configuring C++ toolchains, and then installation of Rstan)
+ * [Rmarkdown](https://rmarkdown.rstudio.com/lesson-1.html)
+ * [Shiny](https://shiny.rstudio.com/tutorial/written-tutorial/lesson1/)
+ * [tidyverse](https://www.tidyverse.org/packages/)
+ * [BRMS](https://cran.r-project.org/web/packages/brms/index.html)
+

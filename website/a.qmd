@@ -1,0 +1,29 @@
+---
+title: "SIB course Introduction to Bayesian statistics with R"
+---
+
+
+## Teachers
+
+- Jack Kuipers [ORCiD](https://orcid.org/0000-0001-5357-2705)
+- Wandrille Duchemin [ORCiD](https://orcid.org/0000-0001-8854-7235)
+
+
+## License & copyright
+
+**License:** [CC BY 4.0](https://github.com/sib-swiss/intro-bayesian-statistics-training/blob/main/LICENSE.md)
+
+**Copyright:** [SIB Swiss Institute of Bioinformatics](https://www.sib.swiss/)
+
+Stay up to date of our [upcoming courses](https://www.sib.swiss/training/upcoming-training-courses).
+
+## Learning outcomes
+
+After this course, you will be able to:
+
+ * Recognise the core components of a Bayesian model
+ * List the main concepts of methods for Bayesian inference
+ * Implement a simple Bayesian model in R
+ * Interpret the results of a Bayesian model
+
+

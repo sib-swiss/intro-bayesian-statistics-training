@@ -1,0 +1,14 @@
+---
+title: "Precourse preparations"
+---
+
+
+In addition to installing the [pre-requisite software](installation_instructions.qmd), we ask that participant go through the following material **prior to the course**
+in order to refresh their knowledge of frequentist statistics, in order to put them in a good frame of mind for the shift of perspective of bayesian statistics.
+
+<br>
+
+## pre-course lecture 1: t-test recap
+
+{{< downloadthis ../rendered_lectures/ibswr_notes_1.pdf dname="pre_course_lecture1_notes" label="Download the lecture notes" icon="filetype-pdf" >}}
+
