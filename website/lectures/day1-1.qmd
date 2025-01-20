@@ -1,0 +1,12 @@
+---
+title: "SIB course Introduction to Bayesian statistics with R"
+---
+
+
+## lecture material
+
+--> link to Rmd & html 
+
+## exercice
+
+--> link to Rmd & pdf of exercise
