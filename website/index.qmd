@@ -2,20 +2,15 @@
 title: "SIB course Introduction to Bayesian statistics with R"
 ---
 
+Welcome to the website of the SIB course "Introduction to Bayesian statistics with R".
 
-## Teachers
+The course is divided in different lectures, each consisting in a deck of slides and a series of exercises.
+The slides are available as shiny presentation, or as rendered html files.
+The exercises are distributed as a pdf file, with an additionnal pdf containing the solutions.
 
-- Jack Kuipers [ORCiD](https://orcid.org/0000-0001-5357-2705)
-- Wandrille Duchemin [ORCiD](https://orcid.org/0000-0001-8854-7235)
 
+> note: you can grab the whole course material in one go by cloning or downloading the [git repository](https://github.com/sib-swiss/intro-bayesian-statistics-training)
 
-## License & copyright
-
-**License:** [CC BY 4.0](https://github.com/sib-swiss/intro-bayesian-statistics-training/blob/main/LICENSE.md)
-
-**Copyright:** [SIB Swiss Institute of Bioinformatics](https://www.sib.swiss/)
-
-Stay up to date of our [upcoming courses](https://www.sib.swiss/training/upcoming-training-courses).
 
 ## Learning outcomes
 
@@ -26,4 +21,20 @@ After this course, you will be able to:
  * Implement a simple Bayesian model in R
  * Interpret the results of a Bayesian model
 
+## Authors
+
+- Jack Kuipers [ORCiD](https://orcid.org/0000-0001-5357-2705) - D-BSSE - ETH Zürich 
+- Wandrille Duchemin [ORCiD](https://orcid.org/0000-0001-8854-7235) -  Swiss Institute of Bioinformatics & University of Basel
+
+## License & copyright
+
+**License:** [CC BY 4.0](https://github.com/sib-swiss/intro-bayesian-statistics-training/blob/main/LICENSE.md)
+
+**Copyright:** [SIB Swiss Institute of Bioinformatics](https://www.sib.swiss/)
+
+Stay up to date of our [upcoming courses](https://www.sib.swiss/training/upcoming-training-courses).
+
+## Attribution
+
+Parts of this course are inspired by the Broad Institute Single Cell Workshop, the CRUK CI Introduction to single-cell RNA-seq data analysis course and courses previously developed by Walid Gharib at SIB.
 
