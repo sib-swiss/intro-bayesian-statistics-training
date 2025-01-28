@@ -60,14 +60,21 @@
     "href": "website/index.html",
     "title": "SIB course Introduction to Bayesian statistics with R",
     "section": "",
-    "text": "Jack Kuipers ORCiD\nWandrille Duchemin ORCiD"
+    "text": "Welcome to the website of the SIB course “Introduction to Bayesian statistics with R”, which is addressed to beginners wanting to become familiar with the core concepts of Bayesian statistics through lectures and applied examples.\nThe course is divided in different lectures, each consisting in a deck of slides and a series of exercises. The slides are available as shiny presentation, or as rendered html files. The exercises are distributed as a pdf file, with an additionnal pdf containing the solutions."
   },
   {
-    "objectID": "website/index.html#teachers",
-    "href": "website/index.html#teachers",
+    "objectID": "website/index.html#learning-outcomes",
+    "href": "website/index.html#learning-outcomes",
     "title": "SIB course Introduction to Bayesian statistics with R",
-    "section": "",
-    "text": "Jack Kuipers ORCiD\nWandrille Duchemin ORCiD"
+    "section": "Learning outcomes",
+    "text": "Learning outcomes\nAfter this course, you will be able to:\n\nRecognise the core components of a Bayesian model\nList the main concepts of methods for Bayesian inference\nImplement a simple Bayesian model in R\nInterpret the results of a Bayesian model"
+  },
+  {
+    "objectID": "website/index.html#authors",
+    "href": "website/index.html#authors",
+    "title": "SIB course Introduction to Bayesian statistics with R",
+    "section": "Authors",
+    "text": "Authors\n\nJack Kuipers ORCiD - D-BSSE - ETH Zürich\nWandrille Duchemin ORCiD - Swiss Institute of Bioinformatics & University of Basel"
   },
   {
     "objectID": "website/index.html#license-copyright",
@@ -77,11 +84,11 @@
     "text": "License & copyright\nLicense: CC BY 4.0\nCopyright: SIB Swiss Institute of Bioinformatics\nStay up to date of our upcoming courses."
   },
   {
-    "objectID": "website/index.html#learning-outcomes",
-    "href": "website/index.html#learning-outcomes",
+    "objectID": "website/index.html#attribution",
+    "href": "website/index.html#attribution",
     "title": "SIB course Introduction to Bayesian statistics with R",
-    "section": "Learning outcomes",
-    "text": "Learning outcomes\nAfter this course, you will be able to:\n\nRecognise the core components of a Bayesian model\nList the main concepts of methods for Bayesian inference\nImplement a simple Bayesian model in R\nInterpret the results of a Bayesian model"
+    "section": "Attribution",
+    "text": "Attribution\nThis course is an original creation of Jack Kuipers."
   },
   {
     "objectID": "website/installation_instructions.html",
