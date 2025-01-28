@@ -2,7 +2,7 @@
 title: "SIB course Introduction to Bayesian statistics with R"
 ---
 
-Welcome to the website of the SIB course "Introduction to Bayesian statistics with R".
+Welcome to the website of the SIB course "Introduction to Bayesian statistics with R", which is addressed to beginners wanting to become familiar with the core concepts of Bayesian statistics through lectures and applied examples.
 
 The course is divided in different lectures, each consisting in a deck of slides and a series of exercises.
 The slides are available as shiny presentation, or as rendered html files.
@@ -36,5 +36,4 @@ Stay up to date of our [upcoming courses](https://www.sib.swiss/training/upcomin
 
 ## Attribution
 
-Parts of this course are inspired by the Broad Institute Single Cell Workshop, the CRUK CI Introduction to single-cell RNA-seq data analysis course and courses previously developed by Walid Gharib at SIB.
-
+This course is an original creation of Jack Kuipers.
