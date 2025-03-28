@@ -1,31 +1,87 @@
 [
   {
-    "objectID": "website/a.html",
-    "href": "website/a.html",
-    "title": "SIB course Introduction to Bayesian statistics with R",
+    "objectID": "website/lectures/ibswr9.html",
+    "href": "website/lectures/ibswr9.html",
+    "title": "outlooks",
     "section": "",
-    "text": "Jack Kuipers ORCiD\nWandrille Duchemin ORCiD"
+    "text": "Download the shiny presentation"
   },
   {
-    "objectID": "website/a.html#teachers",
-    "href": "website/a.html#teachers",
-    "title": "SIB course Introduction to Bayesian statistics with R",
+    "objectID": "website/lectures/ibswr9.html#lecture-material",
+    "href": "website/lectures/ibswr9.html#lecture-material",
+    "title": "outlooks",
     "section": "",
-    "text": "Jack Kuipers ORCiD\nWandrille Duchemin ORCiD"
+    "text": "Download the shiny presentation"
   },
   {
-    "objectID": "website/a.html#license-copyright",
-    "href": "website/a.html#license-copyright",
-    "title": "SIB course Introduction to Bayesian statistics with R",
-    "section": "License & copyright",
-    "text": "License & copyright\nLicense: CC BY 4.0\nCopyright: SIB Swiss Institute of Bioinformatics\nStay up to date of our upcoming courses."
+    "objectID": "website/lectures/ibswr7.html",
+    "href": "website/lectures/ibswr7.html",
+    "title": "Bayesian multiple regression",
+    "section": "",
+    "text": "Download the shiny presentation \n Download the rendered presentation \n Download the lecture data"
   },
   {
-    "objectID": "website/a.html#learning-outcomes",
-    "href": "website/a.html#learning-outcomes",
-    "title": "SIB course Introduction to Bayesian statistics with R",
-    "section": "Learning outcomes",
-    "text": "Learning outcomes\nAfter this course, you will be able to:\n\nRecognise the core components of a Bayesian model\nList the main concepts of methods for Bayesian inference\nImplement a simple Bayesian model in R\nInterpret the results of a Bayesian model"
+    "objectID": "website/lectures/ibswr7.html#lecture-material",
+    "href": "website/lectures/ibswr7.html#lecture-material",
+    "title": "Bayesian multiple regression",
+    "section": "",
+    "text": "Download the shiny presentation \n Download the rendered presentation \n Download the lecture data"
+  },
+  {
+    "objectID": "website/lectures/ibswr7.html#exercise",
+    "href": "website/lectures/ibswr7.html#exercise",
+    "title": "Bayesian multiple regression",
+    "section": "exercise",
+    "text": "exercise\n Download the exercise instructions \n Download the exercise solutions \n Download the exercise data"
+  },
+  {
+    "objectID": "website/lectures/ibswr5.html",
+    "href": "website/lectures/ibswr5.html",
+    "title": "Bayesian t-tests",
+    "section": "",
+    "text": "Download the shiny presentation \n Download the rendered presentation \n Download the lecture data"
+  },
+  {
+    "objectID": "website/lectures/ibswr5.html#lecture-material",
+    "href": "website/lectures/ibswr5.html#lecture-material",
+    "title": "Bayesian t-tests",
+    "section": "",
+    "text": "Download the shiny presentation \n Download the rendered presentation \n Download the lecture data"
+  },
+  {
+    "objectID": "website/lectures/ibswr5.html#exercise",
+    "href": "website/lectures/ibswr5.html#exercise",
+    "title": "Bayesian t-tests",
+    "section": "exercise",
+    "text": "exercise\n Download the exercise instructions \n Download the exercise solutions \n Download the exercise data —"
+  },
+  {
+    "objectID": "website/lectures/ibswr3.html",
+    "href": "website/lectures/ibswr3.html",
+    "title": "Monte Carlo methods",
+    "section": "",
+    "text": "Download the shiny presentation \n Download the rendered presentation \n Download the lecture data"
+  },
+  {
+    "objectID": "website/lectures/ibswr3.html#lecture-material",
+    "href": "website/lectures/ibswr3.html#lecture-material",
+    "title": "Monte Carlo methods",
+    "section": "",
+    "text": "Download the shiny presentation \n Download the rendered presentation \n Download the lecture data"
+  },
+  {
+    "objectID": "website/lectures/ibswr3.html#exercises",
+    "href": "website/lectures/ibswr3.html#exercises",
+    "title": "Monte Carlo methods",
+    "section": "exercises",
+    "text": "exercises\n Download the exercise instructions \n Download the exercise solutions \n Download the exercise data"
+  },
+  {
+    "objectID": "website/installation_instructions.html",
+    "href": "website/installation_instructions.html",
+    "title": "Installation Instructions",
+    "section": "",
+    "text": "Attendees should have a Wi-Fi enabled computer.\nTo follow this course, make sure you have R and Rstudio installed beforehand. Additionally, make sure to have the following R libraries installed:\n\nThe Rstan package (warning, there are 2 steps to the installation: Configuring C++ toolchains, and then installation of Rstan)\nRmarkdown\nShiny\ntidyverse\nBRMS"
   },
   {
     "objectID": "website/course_schedule.html",
@@ -54,6 +110,34 @@
     "title": "Course schedule",
     "section": "Day 2",
     "text": "Day 2\n\n\n\nn\nTopic\nBreaks\nTime\n\n\n\n\n—\nrecap of previous day\n——–\n09:00–09:30\n\n\n5\nBayesian t-tests - continued\n——–\n09:30–10:30\n\n\n—\n——————————\nCoffee\n10:30–11:00\n\n\n6\nRobust t-tests and priors\n——–\n11:00–12:30\n\n\n—\n——————————\nLunch\n12:30–13:45\n\n\n7\nBayesian multiple regression\n——–\n13:45–15:15\n\n\n—\n——————————\nCoffee\n15:15–15:45\n\n\n8\nBayesian logistic regression\n——–\n15:45–16:45\n\n\n9\nOutlook\n——–\n16:45–17:00"
+  },
+  {
+    "objectID": "website/a.html",
+    "href": "website/a.html",
+    "title": "SIB course Introduction to Bayesian statistics with R",
+    "section": "",
+    "text": "Jack Kuipers ORCiD\nWandrille Duchemin ORCiD"
+  },
+  {
+    "objectID": "website/a.html#teachers",
+    "href": "website/a.html#teachers",
+    "title": "SIB course Introduction to Bayesian statistics with R",
+    "section": "",
+    "text": "Jack Kuipers ORCiD\nWandrille Duchemin ORCiD"
+  },
+  {
+    "objectID": "website/a.html#license-copyright",
+    "href": "website/a.html#license-copyright",
+    "title": "SIB course Introduction to Bayesian statistics with R",
+    "section": "License & copyright",
+    "text": "License & copyright\nLicense: CC BY 4.0\nCopyright: SIB Swiss Institute of Bioinformatics\nStay up to date of our upcoming courses."
+  },
+  {
+    "objectID": "website/a.html#learning-outcomes",
+    "href": "website/a.html#learning-outcomes",
+    "title": "SIB course Introduction to Bayesian statistics with R",
+    "section": "Learning outcomes",
+    "text": "Learning outcomes\nAfter this course, you will be able to:\n\nRecognise the core components of a Bayesian model\nList the main concepts of methods for Bayesian inference\nImplement a simple Bayesian model in R\nInterpret the results of a Bayesian model"
   },
   {
     "objectID": "website/index.html",
@@ -91,13 +175,6 @@
     "text": "Attribution\nThis course is an original creation of Jack Kuipers."
   },
   {
-    "objectID": "website/installation_instructions.html",
-    "href": "website/installation_instructions.html",
-    "title": "Installation Instructions",
-    "section": "",
-    "text": "Attendees should have a Wi-Fi enabled computer.\nTo follow this course, make sure you have R and Rstudio installed beforehand. Additionally, make sure to have the following R libraries installed:\n\nThe Rstan package (warning, there are 2 steps to the installation: Configuring C++ toolchains, and then installation of Rstan)\nRmarkdown\nShiny\ntidyverse\nBRMS"
-  },
-  {
     "objectID": "website/precourse_preparations.html",
     "href": "website/precourse_preparations.html",
     "title": "Precourse preparations",
@@ -109,28 +186,7 @@
     "href": "website/precourse_preparations.html#pre-course-lecture-1-t-test-recap",
     "title": "Precourse preparations",
     "section": "pre-course lecture 1: t-test recap",
-    "text": "pre-course lecture 1: t-test recap\n Download the lecture notes"
-  },
-  {
-    "objectID": "website/lectures/ibswr3.html",
-    "href": "website/lectures/ibswr3.html",
-    "title": "Monte Carlo methods",
-    "section": "",
-    "text": "Download the shiny presentation \n Download the rendered presentation \n Download the lecture data"
-  },
-  {
-    "objectID": "website/lectures/ibswr3.html#lecture-material",
-    "href": "website/lectures/ibswr3.html#lecture-material",
-    "title": "Monte Carlo methods",
-    "section": "",
-    "text": "Download the shiny presentation \n Download the rendered presentation \n Download the lecture data"
-  },
-  {
-    "objectID": "website/lectures/ibswr3.html#exercises",
-    "href": "website/lectures/ibswr3.html#exercises",
-    "title": "Monte Carlo methods",
-    "section": "exercises",
-    "text": "exercises\n Download the exercise instructions \n Download the exercise solutions \n Download the exercise data"
+    "text": "pre-course lecture 1: t-test recap\nThe lecture is cut into 8 videos where you are sometimes asked to take the time to think on some question between the video.\nYou can also download the lecture notes:\n Download the lecture notes \n\n1.1 Introduction\n\n\nIs the mean 0?\n\n\n1.2 Average difference and the normal distribution\n\n\nWhat is the probability the mean is 0?\n\n\n1.3 p-values\n\n\nWhich range should we take?\n\n\n1.4 p-values encore\n\n\n\n\n1.5 Computing p-values\n\n\nIs the mean 0?\n\n\n1.6 Computing p-values still\n\n\n\n\n1.7 Computing p-values in R\n\n\nLook at Zurich_data.csv, read it into R, examine the data frame and use it to run a t-test.\n Download Zurich_data.csv \n\n\n1.8 Summary\n\n\n\n\n1.exercises\n Download the exercise instructions \n Download the exercise solutions \n Download lung_data.csv"
   },
   {
     "objectID": "website/lectures/ibswr4.html",
@@ -154,27 +210,6 @@
     "text": "exercise\n Download the exercise instructions \n Download the exercise solutions \n Download the exercise data"
   },
   {
-    "objectID": "website/lectures/ibswr5.html",
-    "href": "website/lectures/ibswr5.html",
-    "title": "Bayesian t-tests",
-    "section": "",
-    "text": "Download the shiny presentation \n Download the rendered presentation \n Download the lecture data"
-  },
-  {
-    "objectID": "website/lectures/ibswr5.html#lecture-material",
-    "href": "website/lectures/ibswr5.html#lecture-material",
-    "title": "Bayesian t-tests",
-    "section": "",
-    "text": "Download the shiny presentation \n Download the rendered presentation \n Download the lecture data"
-  },
-  {
-    "objectID": "website/lectures/ibswr5.html#exercise",
-    "href": "website/lectures/ibswr5.html#exercise",
-    "title": "Bayesian t-tests",
-    "section": "exercise",
-    "text": "exercise\n Download the exercise instructions \n Download the exercise solutions \n Download the exercise data —"
-  },
-  {
     "objectID": "website/lectures/ibswr6.html",
     "href": "website/lectures/ibswr6.html",
     "title": "Robust t-tests and priors",
@@ -192,27 +227,6 @@
     "objectID": "website/lectures/ibswr6.html#exercise",
     "href": "website/lectures/ibswr6.html#exercise",
     "title": "Robust t-tests and priors",
-    "section": "exercise",
-    "text": "exercise\n Download the exercise instructions \n Download the exercise solutions \n Download the exercise data"
-  },
-  {
-    "objectID": "website/lectures/ibswr7.html",
-    "href": "website/lectures/ibswr7.html",
-    "title": "Bayesian multiple regression",
-    "section": "",
-    "text": "Download the shiny presentation \n Download the rendered presentation \n Download the lecture data"
-  },
-  {
-    "objectID": "website/lectures/ibswr7.html#lecture-material",
-    "href": "website/lectures/ibswr7.html#lecture-material",
-    "title": "Bayesian multiple regression",
-    "section": "",
-    "text": "Download the shiny presentation \n Download the rendered presentation \n Download the lecture data"
-  },
-  {
-    "objectID": "website/lectures/ibswr7.html#exercise",
-    "href": "website/lectures/ibswr7.html#exercise",
-    "title": "Bayesian multiple regression",
     "section": "exercise",
     "text": "exercise\n Download the exercise instructions \n Download the exercise solutions \n Download the exercise data"
   },
@@ -236,19 +250,5 @@
     "title": "Bayesian logistic regression",
     "section": "exercise",
     "text": "exercise\n Download the exercise instructions \n Download the exercise solutions \n Download the exercise data"
-  },
-  {
-    "objectID": "website/lectures/ibswr9.html",
-    "href": "website/lectures/ibswr9.html",
-    "title": "outlooks",
-    "section": "",
-    "text": "Download the shiny presentation"
-  },
-  {
-    "objectID": "website/lectures/ibswr9.html#lecture-material",
-    "href": "website/lectures/ibswr9.html#lecture-material",
-    "title": "outlooks",
-    "section": "",
-    "text": "Download the shiny presentation"
   }
 ]

@@ -1,1 +1,1 @@
-Sitemap: https://github.com/sib-swiss/intro-bayesian-statistics-training.git/sitemap.xml
+Sitemap: https://sib-swiss.github.io/intro-bayesian-statistics-training/sitemap.xml
