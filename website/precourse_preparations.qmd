@@ -6,9 +6,74 @@ title: "Precourse preparations"
 In addition to installing the [pre-requisite software](installation_instructions.qmd), we ask that participant go through the following material **prior to the course**
 in order to refresh their knowledge of frequentist statistics, in order to put them in a good frame of mind for the shift of perspective of bayesian statistics.
 
+<iframe src="https://drive.google.com/file/d/1VdoRYssI9Ugt4TRougRxl3uwfdKQh60V/preview" width="640" height="480" allow="autoplay"></iframe>
+
+
+
+
 <br>
+
 
 ## pre-course lecture 1: t-test recap
 
+The lecture is cut into 8 videos where you are sometimes asked to take the time to think on some question between the video.
+
+
+You can also download the lecture notes: 
 {{< downloadthis ../rendered_lectures/ibswr_notes_1.pdf dname="pre_course_lecture1_notes" label="Download the lecture notes" icon="filetype-pdf" >}}
+
+
+### 1.1 Introduction
+
+<iframe src="https://drive.google.com/file/d/1GNc7j-Wffgg4V4OpKCiBg7DIakemGR26/preview" width="640" height="480" allow="autoplay"></iframe>
+
+Is the mean 0?
+
+### 1.2 Average difference and the normal distribution
+
+<iframe src="https://drive.google.com/file/d/1qMEJ--yCZIr3FvLVQrKM0J4OUOJxNGQj/preview" width="640" height="480" allow="autoplay"></iframe>
+
+What is the probability the mean is 0?
+
+### 1.3 p-values
+
+<iframe src="https://drive.google.com/file/d/1-Q7FAB-nw9-aeV5eFL-xPouvF6GuZIA3/preview" width="640" height="480" allow="autoplay"></iframe>
+
+
+Which range should we take?
+
+### 1.4 p-values encore
+
+<iframe src="https://drive.google.com/file/d/16p-7paZ95QtF4czPQifdODyGuuS6yONS/preview" width="640" height="480" allow="autoplay"></iframe>
+
+### 1.5 Computing p-values
+
+<iframe src="https://drive.google.com/file/d/1n8Cvaw1COcFj5ON1KtGlAA-4fCTlzEDB/preview" width="640" height="480" allow="autoplay"></iframe>
+
+Is the mean 0?
+
+### 1.6 Computing p-values still
+
+<iframe src="https://drive.google.com/file/d/1vYNsRetK2xkB3DWVBNGs5hNCbVIWOhZL/preview" width="640" height="480" allow="autoplay"></iframe>
+
+
+### 1.7 Computing p-values in R
+
+<iframe src="https://drive.google.com/file/d/1YdeC7-h1Vje4DQrkU0vbx4tZ3nJf_Dl7/preview" width="640" height="480" allow="autoplay"></iframe>
+
+Look at Zurich_data.csv, read it into R, examine the data frame and use it to run a t-test.
+
+{{< downloadthis ../lectures/data/Zurich_data.csv  dname="Zurich_data" label="Download Zurich_data.csv" icon="file-earmark" >}}
+
+### 1.8 Summary
+
+<iframe src="https://drive.google.com/file/d/1FeF7vdt4ARPyVZURaW_lYKugy5I-MRZd/preview" width="640" height="480" allow="autoplay"></iframe>
+
+### 1.exercises 
+
+{{< downloadthis ../exercises/ibswr_exercises_1.pdf dname="exercise_1" label="Download the exercise instructions" icon="filetype-pdf" >}}
+
+{{< downloadthis ../exercises/ibswr_solutions_1.pdf dname="solutions_1" label="Download the exercise solutions" icon="filetype-pdf" >}}
+
+{{< downloadthis ../exercises/data/lung_data.csv  dname="lung_data" label="Download lung_data.csv" icon="file-earmark" >}}
 
