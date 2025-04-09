@@ -1,0 +1,14 @@
+---
+title: "Pre-course lecture 0 - welcome"
+---
+
+
+In addition to installing the [pre-requisite software](../installation_instructions.qmd), we ask that participant go through the following material **prior to the course**
+in order to refresh their knowledge of frequentist statistics, in order to put them in a good frame of mind for the shift of perspective of bayesian statistics.
+
+<iframe src="https://drive.google.com/file/d/1VdoRYssI9Ugt4TRougRxl3uwfdKQh60V/preview" width="640" height="400" allow="autoplay"></iframe>
+
+
+<br>
+
+You can now go to the [pre-course lecture 1](ibswr1.qmd)

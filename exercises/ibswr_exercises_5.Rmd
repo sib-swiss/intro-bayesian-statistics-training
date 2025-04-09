@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "5: Exercises"
 author: "Jack Kuipers"
-date: "29 November 2022"
+date: "5 May 2025"
 output:
   pdf_document:
     fig_width: 6

@@ -2,22 +2,21 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "0: Overview"
 author: "Jack Kuipers"
-date: "13 May 2024"
+date: "5 May 2025"
 runtime: shiny
 output:
-  ioslides_presentation:
+  ioslides_presentation: 
     css: ibswr.css
     incremental: true
     widescreen: true
     smaller: true
     fig_width: 6
-    fig_height: 4.5
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(knitr)
-start_date <- as.Date("13-05-24", format = "%d-%m-%y")
+start_date <- as.Date("05-05-25", format = "%d-%m-%y")
 f_date <- function(d, m, k=0) {
   format(d+m*1+k, "%d-%m-%y")
 }
@@ -27,9 +26,9 @@ f_date <- function(d, m, k=0) {
 
 <div>
 
-8 sessions
+8 sessions - 2 recorded (with lecture notes), 6 in-person
 
->- Interactive lecture each session (c. 30 mins) **Jack Kuipers**
+>- Interactive lecture each session (c. 45 mins) **Jack Kuipers**
 >- written in R shiny
 </div>
 
@@ -42,9 +41,9 @@ f_date <- function(d, m, k=0) {
 <div>
 Every session has an associated exercise sheet
 
->- allocated time within each session (c. 45 mins)
+>- allocated time within each session (c. 1 hr)
 >- hand in later for marking for credit points **Wandrille Duchemin**
->- short review at the start of the next session (c. 15 mins) **Wandrille Duchemin**
+>- short review at the end of each session (c. 15 mins) **Wandrille Duchemin**
 </div>
 
 <div>
@@ -57,6 +56,37 @@ Newish course
 Course material [https://github.com/sib-swiss/intro-bayesian-statistics-training]
 </div>
 
+## Topics {.build}
+
+<div>
+Course starts with a self-study phase
+
+>- containing the first two sessions
+
+These sessions
+
+>- recap core concepts from frequentist statistics
+
+<br>
+
+</div>
+
+<div>
+<div class="centered">
+<div style="width: 50%; display: inline-block">
+| n | Topic |
+|:-:|:-----:|
+|1|t-test recap|
+|2|p-values and confidence intervals|
+</div>
+</div>
+
+<br>
+<br>
+
+Which we will later leverage to transition to Bayesian statistics
+</div>
+
 ## Topics
 
 Day 1: Bayesian beginnings, `r f_date(start_date, 0)`
@@ -66,13 +96,12 @@ Day 1: Bayesian beginnings, `r f_date(start_date, 0)`
 | n | Topic | Breaks | Time |
 |:-:|:-----:|:------:|:----:|
 |0|Overview|--|9:00--9:15|
-|1|t-test recap|--|9:15--10:30|
-|--|--|Coffee|10:30--11:00|
-|2|p-values and confidence intervals|--|11:00--12:30|
-|--|--|Lunch|12:30--13:45|
-|3|Monte Carlo methods|--|13:45--15:15|
-|--|--|Coffee|15:15--15:45|
-|4|Bayesian first steps|--|15:45--17:00|
+|3|Monte Carlo methods|--|9:15--11:30|
+|--|(including)|Coffee|10:30--11:00|
+|4|Bayesian first steps|--|11:30--14:30|
+|--|(including)|Lunch|12:30--13:30|
+|5|Bayesian t-tests|--|14:30--17:00|
+|--|(including)|Coffee|15:30--16:00|
 </div>
 </div>
 
@@ -84,13 +113,12 @@ Day 2: Bayesian regression, `r f_date(start_date, 1)`
 <div style="width: 75%; display: inline-block">
 | n | Topic | Breaks | Time |
 |:-:|:-----:|:------:|:----:|
-|5|Bayesian t-tests|--|9:00--10:30|
-|--|--|Coffee|10:30--11:00|
-|6|Robust t-tests and priors|--|11:00--12:30|
-|--|--|Lunch|12:30--13:45|
-|7|Bayesian multiple regression|--|13:45--15:15|
-|--|--|Coffee|15:15--15:45|
-|8|Bayesian logistic regression|--|15:45--16:45|
+|6|Robust t-tests and priors|--|9:00--11:30|
+|--|(including)|Coffee|10:30--11:00|
+|7|Bayesian multiple regression|--|11:30--14:30|
+|--|(including)|Lunch|12:30--13:30|
+|8|Bayesian logistic regression|--|14:30--16:45|
+|--|(including)|Coffee|15:30--16:00|
 |9|Outlook|--|16:45--17:00|
 </div>
 </div>

@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "8: Exercises"
 author: "Jack Kuipers"
-date: "29 November 2022"
+date: "6 May 2025"
 output:
   pdf_document:
     fig_width: 6
@@ -39,7 +39,9 @@ For Bayesian modelling with `brms` we can use the `brm()` function with `family 
 * What is the posterior distribution of the probability of having cancer for a 75 year-old Black female from registry 27? 
 
 
-## Optional Exercise 8.2 - Logistic regression
+## Bonus Exercise 8.2 - Logistic regression
+
+**NOTE**: This exercise is an optional bonus for when you have sufficient free time.
 
 To run a logistic regression, we can use the `glm()` function with `family = "binomial"` (see details in `?stats::family`) and `formula = cbind(cancers, noncancers) ~ ...`
 

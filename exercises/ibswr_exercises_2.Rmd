@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "2: Exercises"
 author: "Jack Kuipers"
-date: "28 November 2022"
+date: ""
 output:
   pdf_document:
     fig_width: 6
@@ -29,11 +29,13 @@ test_sample <- rnorm(50, mean = -0.25, sd = 1)
 t.test(test_sample)$conf.int
 ```
 
-Is the true mean inside your confidence interval?
+In the lecture notes we looked at the following questions, which you might like to check and code for yourself: Is the true mean inside your confidence interval? If you repeat this procedure a large number of times, how often is the true mean in the confidence interval? And is your result in line with questions 4 and 5 of the confidence interval quiz?
 
-Repeat this procedure a large number of times. How often is the true mean in the confidence interval?
+Here instead we focus on question 6 of the confidence interval quiz and see how often new sample means are in the original confidence interval above.
 
-Is your result in line with questions 4--6 of the confidence interval quiz?
+For this, sample from the same process as above a large number of times and see how often the sample means lie within the first confidence interval.
+
+Is it 95%? How does this align with statement 6 if we replace "true mean" with "sample mean"?
 
 ## Bonus Exercise 2.2 - a testing example
 

@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "4: Exercise solutions"
 author: "Jack Kuipers"
-date: "28 November 2022"
+date: "5 May 2025"
 output:
   pdf_document:
     fig_width: 6
@@ -103,7 +103,7 @@ short_chain <- basicMCMCmu(x2=x2, x1=x1, x0=x0, t_s=2, nu=5)
 On the histogram we overlay the target density and see ok agreement
 
 ```{r, echo = FALSE, message=FALSE, warning=FALSE}
-source("./ibswrfiles/colordefs.R")
+source("../lectures/ibswrfiles/colordefs.R")
 mus <- 1.5*c(-1000:1000)/1000
 ys <- target_density(mus, x2, x1, x0, t_s=2, nu=5)
 ys <- ys/(sum(ys)*(mus[2]-mus[1])) # normalise

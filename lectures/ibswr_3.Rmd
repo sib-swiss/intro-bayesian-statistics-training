@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "3: Monte Carlo methods"
 author: "Jack Kuipers"
-date: "13 May 2024"
+date: "5 May 2025"
 runtime: shiny
 output:
   ioslides_presentation:

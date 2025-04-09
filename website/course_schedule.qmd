@@ -10,35 +10,31 @@ title: "Course schedule"
 ## Before the course
 
  1. [install the pre-requisite software](installation_instructions.qmd)
- 2. [go through the pre-course material](precourse_preparations.qmd)
+ 2. [go through the pre-course material](precourse_lectures/ibswr0.qmd)
 
-## Day 1
+## Day 1: Bayesian beginnings
 
 | n | Topic                         | Breaks | Time |
 |:-:|:-----------------------------:|:------:|:----:|
-|---|Welcome                        |--------|09:00--09:30|
-|---|Overview and recap             |--------|09:30--10:00|
-| 3 |       Monte Carlo methods     |--------|10:00--10:30|
-|---|-------------------------------|Coffee  |10:30--11:00|
-| 3 |Monte Carlo methods - continued|--------|11:00--12:30|
-|---|-------------------------------|Lunch   |12:30--13:45|
-| 4 |Bayesian first steps           |--------|13:45--15:15|
-|---|-------------------------------|Coffee  |15:15--15:45|
-| 5 |Bayesian t-tests               |--------|15:45--17:00|
+|---|Overview                       |--------|09:00--09:15|
+| 3 |       Monte Carlo methods     |--------|09:15--11:30|
+|---|          (including)          | Coffee |10:30--11:00|
+| 4 |Bayesian first steps           |--------|11:30--14:30|
+|---|          (including)          |Lunch   |12:30--13:30|
+| 5 |Bayesian t-tests               |--------|14:30--17:00|
+|---|          (including)          |Coffee  |15:30--16:00|
 
 
-## Day 2
+## Day 2: Bayesian regression
 
 | n | Topic                        | Breaks | Time |
 |:-:|:----------------------------:|:------:|:----:|
-|---|recap of previous day         |--------|09:00--09:30|
-| 5 |Bayesian t-tests - continued  |--------|09:30--10:30|
-|---|------------------------------|Coffee  |10:30--11:00|
-| 6 |Robust t-tests and priors     |--------|11:00--12:30|
-|---|------------------------------|Lunch   |12:30--13:45|
-| 7 |Bayesian multiple regression  |--------|13:45--15:15|
-|---|------------------------------|Coffee  |15:15--15:45|
-| 8 |Bayesian logistic regression  |--------|15:45--16:45|
+| 6 |Robust t-tests and priors     |--------|09:00--11:30|
+|---|          (including)         |Coffee  |10:30--11:00|
+| 7 |Bayesian multiple regression  |--------|11:30--14:30|
+|---|          (including)         |Lunch   |12:30--13:30|
+| 8 |Bayesian logistic regression  |--------|14:30--16:45|
+|---|          (including)         |Coffee  |15:30--16:00|
 | 9 |Outlook                       |--------|16:45--17:00|
 
 

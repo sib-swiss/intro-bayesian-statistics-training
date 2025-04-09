@@ -1,7 +1,7 @@
 /*jshint browser:true, strict:false, curly:false, indent:3*/
 (function(){
 try {
-   var timings = [ { marker: 'knitr', elapsed: 293 }, { marker: 'pandoc', elapsed: 246 }, { marker: 'post-processor', elapsed: 89 }, { marker: 'pre-processor', elapsed: 8 }, { marker: 'render', elapsed: 913 } ];
+   var timings = [ { marker: 'knitr', elapsed: 257 }, { marker: 'pandoc', elapsed: 357 }, { marker: 'post-processor', elapsed: 112 }, { marker: 'pre-processor', elapsed: 5 }, { marker: 'render', elapsed: 1032 } ];
 
    var build_popup = function(popup) {
       // sort the timings in descending order

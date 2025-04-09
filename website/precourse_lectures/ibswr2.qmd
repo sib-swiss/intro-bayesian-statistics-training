@@ -1,0 +1,68 @@
+---
+title: "Pre-course lecture 2 - p-values and confidence intervals"
+---
+
+The lecture is cut into 6 videos where you are sometimes asked to take the time to think on some question between the video.
+
+You can also download the lecture notes: 
+{{< downloadthis ../rendered_lectures/ibswr_notes_2.pdf dname="pre_course_lecture2_notes" label="Download the lecture notes" icon="filetype-pdf" >}}
+
+### 2.1 Confidence intervals
+
+<iframe src="https://drive.google.com/file/d/1LYS2z4HUYC5Ai2Y2z62JKjgLN4m7WsGo/preview" width="640" height="400" allow="autoplay"></iframe>
+
+If the 95% confidence interval excludes 0, what can you say about the p-value?
+
+### 2.2 Confidence interval quiz
+
+<iframe src="https://drive.google.com/file/d/1uF-JmWf3IsKJTUlgR9ycOON4c_OW2mvS/preview" width="640" height="400" allow="autoplay"></iframe>
+
+Professor Bumbledorf conducts an experiment, analyzes the data, and reports:
+
+> "The 95% confidence interval for the mean ranges from 0.1 to 0.4!"
+
+Please mark each of the following six statements as "true" or "false".  False means that the statement does not follow logically from Bumbledorf's result.  Also note that all, several, or none of the statements may be correct.
+
+ 1. The probability that the true mean is greater than 0 is at least 95%.
+ 2. The probability that the true mean equals 0 is smaller than 5%.
+ 3. The "null hypothesis" that the true mean equals 0 is likely to be incorrect.
+ 4. There is a 95% probability that the true mean lies between 0.1 and 0.4.
+ 5. We can be 95% confident that the true mean lies between 0.1 and 0.4.
+ 6. If we were to repeat the experiment over and over, then 95% of the time the true mean falls between 0.1 and 0.4.
+
+**Which statements are true and which are false?**
+
+### 2.3 Probability
+
+<iframe src="https://drive.google.com/file/d/1XP4ztSWo9dr2KrxvASYsKwM2L6NHb4Xo/preview" width="640" height="400" allow="autoplay"></iframe>
+
+
+What is the probability of A and B?
+
+### 2.4 Conditional probability
+
+<iframe src="https://drive.google.com/file/d/1BNFkQ2OqIPgqfvBepeGrF4IXq2DrUVHq/preview" width="640" height="400" allow="autoplay"></iframe>
+
+What is the probability of A given B?
+
+### 2.5 Bayes theorem
+
+<iframe src="https://drive.google.com/file/d/1BKYNQmKdOZHU69L4lNLW9fdT22AD_SVM/preview" width="640" height="400" allow="autoplay"></iframe>
+
+What is the probability the winning family has two daughters?
+
+### 2.6 Bayes theorem and p-values
+
+<iframe src="https://drive.google.com/file/d/1KLHeEy0tlyeraT7qDcCeKnUJeP7oNskz/preview" width="640" height="400" allow="autoplay"></iframe>
+
+### 2.exercises 
+
+{{< downloadthis ../../exercises/ibswr_exercises_2.pdf dname="exercise_2" label="Download the exercise instructions" icon="filetype-pdf" >}}
+
+{{< downloadthis ../../exercises/ibswr_solutions_2.pdf dname="solutions_2" label="Download the exercise solutions" icon="filetype-pdf" >}}
+
+
+<br>
+
+
+Thank you for completing the pre-course content.

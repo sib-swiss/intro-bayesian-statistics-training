@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "2: p-values and confidence intervals"
 author: "Jack Kuipers"
-date: "13 May 2024"
+date: ""
 runtime: shiny
 output:
   ioslides_presentation:

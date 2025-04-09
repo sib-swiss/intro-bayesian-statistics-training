@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "7: Exercise solutions"
 author: "Jack Kuipers"
-date: "29 November 2022"
+date: "6 May 2025"
 output:
   pdf_document:
     fig_width: 6
@@ -90,7 +90,7 @@ For the posterior visualisation, we already have the kernel density above, and m
 mcmc_plot(brmfit_ex7, variable = "b_log10conc", type = "hist")
 ```
 
-## Exercise 7.2 - Multiple regression
+## Bonus Exercise 7.2 - Multiple regression
 
 *Run a multiple regression of*
 $$

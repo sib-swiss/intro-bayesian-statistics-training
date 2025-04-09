@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "8: Exercise solutions"
 author: "Jack Kuipers"
-date: "29 November 2022"
+date: "6 May 2025"
 output:
   pdf_document:
     fig_width: 6
@@ -124,7 +124,7 @@ posterior_linpred(brmfit_ex8, newdata, transform = TRUE) %>% data.frame(probs = 
   ggplot(aes(probs)) + geom_density(color = "dodgerblue")
 ```
 
-## Optional Exercise 8.2 - Logistic regression
+## Bonus Exercise 8.2 - Logistic regression
 
 *To run a logistic regression, we can use the `glm()` function with `family = "binomial"` (see details in `?stats::family`) and `formula = cbind(cancers, noncancers) ~ ...`*
 

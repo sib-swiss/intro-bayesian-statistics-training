@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "2: Exercise solutions"
 author: "Jack Kuipers"
-date: "28 November 2022"
+date: ""
 output:
   pdf_document:
     fig_width: 6
@@ -29,20 +29,23 @@ library(tidyverse); set.seed(42)
 
 ## Exercise 2.1 - confidence intervals
 
-*Take a sample from a normal distribution extract its 95% confidence interval. Is the true mean inside this confidence interval?*
+The answers to the first part are in the lecture notes, so we focus on the following questions here.
 
-*Repeat this procedure a large number of times. How often is the true mean in the confidence interval?*
+*Take a sample from a normal distribution extract its 95% confidence interval.*
 
-*Is your result in line with questions 4 and 5 of the confidence interval quiz?*
+*Sample from the same process a large number of times and see how often the sample means lie within the first confidence interval.*
 
-For a single sample
+*Is it 95%? How does this align with statement 6 if we replace "true mean" with "sample mean"?*
+
+Let's take our first sample and store its mean and confidence interval
 
 ```{r, echo=TRUE}
 test_sample <- rnorm(50, mean = -0.25, sd = 1)
-t.test(test_sample)$conf.int
+(first_sample_mean <- mean(test_sample))
+(first_conf_int <- t.test(test_sample)$conf.int)
 ```
 
-we can see that the true mean is `r ifelse(t.test(test_sample)$conf.int[1] > -0.25 | t.test(test_sample)$conf.int[2] < -0.25, "not", "")` in the confidence interval.
+in this case we can see that the interval is shifted `r ifelse(first_sample_mean > -0.25, "right", "left")` compared to one centred at the mean.
 
 Let's move to 100 repetitions
 
@@ -53,29 +56,31 @@ for (ii in 1:100) {
     tt   <- t.test(test_sample, mu = -0.25) # test against true mean
     low  <- tt$conf.int[1]
     high <- tt$conf.int[2]
-    pval <- tt$p.value
     me   <- tt$estimate
+    inside <- me < first_conf_int[2] && me > first_conf_int[1]
     conf_ints  <- rbind(conf_ints, 
-                  data.frame(id = ii, low = low, high = high, pval = pval, me = me))
+                  data.frame(id = ii, low = low, high = high, inside = inside, me = me))
 }
 ```
 
-Remembering that for two-sided tests, if a $p$-value (with a null of the true mean) is significant at a significance level $\alpha$, the $1 - \alpha$ confidence interval does *not* contain the true mean, we colour by significance and plot:
+Let's plot them all and see which sample means lie in our original confidence interval:
 
 ```{r, out.width = "75%"}
 ggplot(conf_ints) +
-  geom_segment(aes(x = low, xend = high, y = id, yend = id, col = pval < 0.05)) + 
-  geom_point(aes(x = me, y = id, col = pval < 0.05), size = 2) + theme_minimal() +
+  geom_segment(aes(x = low, xend = high, y = id, yend = id, col = inside)) + 
+  geom_point(aes(x = me, y = id, col = inside), size = 2) + theme_minimal() +
   theme(legend.title = element_blank(), axis.text.y = element_blank()) +
   scale_color_manual(values = c("dodgerblue", "darkorchid4"),
-                     label = c("p-value >= 0.05", "p-value < 0.05")) +
+                     label = c("outside", "inside")) +
   labs(x = "", y = "Different CIs") + 
   ggtitle("95% confidence intervals of the mean") +
-  geom_vline(aes(xintercept = -0.25), col = "firebrick3") + 
+  geom_vline(aes(xintercept = first_sample_mean), col = "firebrick3") + 
+  geom_vline(aes(xintercept = first_conf_int[1]), col = "firebrick3", linetype=2) +
+  geom_vline(aes(xintercept = first_conf_int[2]), col = "firebrick3", linetype=2) +
   theme(text = element_text(size = 14))
 ```
 
-Here `r sum(conf_ints$pval < 0.05)` were significant so `r 100*mean(conf_ints$pval > 0.05)` percent of the confidence intervals included the true mean.
+Here `r sum(conf_ints$inside)` of the new sample means were inside the original confidence interval.
 
 For a larger number of repetitions, say a million:
 
@@ -83,29 +88,42 @@ For a larger number of repetitions, say a million:
 n_reps <- 1e6
 mean_inside <- rep(NA, n_reps)
 for (ii in 1:n_reps) {
-    tt <- t.test(test_sample <- rnorm(50, mean = -0.25, sd = 1), mu = -0.25)
-    mean_inside[ii] <- tt$conf.int[1] < -0.25 && tt$conf.int[2] > -0.25
+    tt <- t.test(test_sample <- rnorm(50, mean = -0.25, sd = 1), mu = -0.25)$estimate
+    mean_inside[ii] <- tt < first_conf_int[2] && tt > first_conf_int[1]
 }
 round(100*mean(mean_inside), 2)
 ```
 
-we indeed get around 95% of the confidence intervals including the true mean of $-\frac{1}{4}$.
+and we actually get `r ifelse(mean(mean_inside) > 0.95, "more", "less")` than 95% of the new sample means lying in the original confidence interval.
 
-Why, then are statements 4 and 5 of the confidence interval quiz false? The pedantic answer is that $\mu$ is fixed. Whether $\mu$ lies between 0.1 and 0.4 is deterministic and either true or false. Is it not a probabilistic question, and we cannot answer it with a probability. Note that in all the simulations above we knew the true mean, but in the quiz setting we only know the sample mean. From the sample mean and without knowing the true mean, we don't know if our particular confidence interval included the true mean or not. A weak analogy would be rolling a die. Before rolling it, the chance you get a 6 is $\frac{1}{6}$. 
+In fact this percentage will depend on the original confidence interval, if its mean is to the left or right of the real mean and if its width is over or underestimated. Let's generate some statistics
 
-```{r}
-die_sample <- sample(6, 1)
+```{r, echo = TRUE}
+n_reps <- 1e3
+inside_means <- rep(NA, n_reps)
+for (jj in 1:n_reps) {
+  test_sample <- rnorm(50, mean = -0.25, sd = 1)
+  first_conf_int <- t.test(test_sample)$conf.int
+  n_reps_inner <- 1e3
+  mean_inside <- rep(NA, n_reps_inner)
+  for (ii in 1:n_reps) {
+    tt <- t.test(test_sample <- rnorm(50, mean = -0.25, sd = 1), mu = -0.25)$estimate
+    mean_inside[ii] <- tt < first_conf_int[2] && tt > first_conf_int[1]
+  }
+  inside_means[jj] <- mean(mean_inside)
+}
 ```
 
-Once rolled, you get a `r die_sample` and it either is a 6 or isn't (`r ifelse(die_sample == 6, "is", "not")` in this case). Before running our experiment and getting the data, the probability the confidence interval containing the true mean is 95%. For the particular random realisation of the confidence interval we cannot say.
+and make a kernel density plot of the different estimates
 
-The misinterpretation of confidence intervals is fairly common. For example, despite this correct note in a book from a statistics professor
+```{r, out.width = "75%"}
+ggplot(data.frame(inside_means = inside_means), aes(x = inside_means)) +
+  geom_density(colour = "dodgerblue", fill = "dodgerblue", alpha = 0.5) +
+  geom_vline(aes(xintercept = mean(inside_means)), col = "firebrick3") +
+  theme(text = element_text(size = 14)) + xlab("fraction inside")
+```
 
-\includegraphics{./ibswr_exercise_files/spiegel1.png}
-
-their own incorrect description 7 pages later of the confidence interval computed from real data, ironically highlights their point about misinterpretation
-
-\includegraphics{./ibswr_exercise_files/spiegel2.png}
+As you can see, in general they are not at 95% with a mean (red line) at `r round(100*mean(inside_means),2)`%. Of course if we know the true mean (and the standard error), we can construct an interval which will contain 95% of sample means, but from one sample we do not know where we are compared to the true mean or how many other sample means will align with that particular one. So for question 6, we cannot make such a quantitative statement about sample means, let alone the true mean (as in the wording of question 6) which is not even a random variable.  
 
 
 ## Bonus Exercise 2.2 - a testing example

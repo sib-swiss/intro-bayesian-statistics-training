@@ -4,6 +4,7 @@ project:
   render:
     - "website/*.qmd"
     - "website/lectures/*.qmd"
+    - "website/precourse_lectures/*.qmd"
     - "!CONTRIBUTING.md"
     - "!LICENSE.md"
 
@@ -18,8 +19,12 @@ website:
       - href: website/index.qmd
         text: Home
       - href: website/installation_instructions.qmd
-      - href: website/precourse_preparations.qmd
       - href: website/course_schedule.qmd
+      - text: "pre-course lectures"
+        menu:
+          - href: website/precourse_lectures/ibswr0.qmd
+          - href: website/precourse_lectures/ibswr1.qmd
+          - href: website/precourse_lectures/ibswr2.qmd
       - text: "lectures"
         menu:
           - href: website/lectures/ibswr3.qmd

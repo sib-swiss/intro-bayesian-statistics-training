@@ -2,7 +2,7 @@
 title: "Introduction to Bayesian Statistics with R"
 subtitle: "7: Exercises"
 author: "Jack Kuipers"
-date: "29 November 2022"
+date: "6 May 2025"
 output:
   pdf_document:
     fig_width: 6
@@ -44,7 +44,9 @@ with `brms` and the `brm()` function.
 * Visualise the posterior distribution of the slope coefficient between SEAP and the log concentration.
 
 
-## Optional Exercise 7.2 - Multiple regression
+## Bonus Exercise 7.2 - Multiple regression
+
+**NOTE**: This exercise is an optional bonus for when you have sufficient free time.
 
 Run a multiple regression of
 $$

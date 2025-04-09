@@ -2,9 +2,10 @@
 <html class=""><head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <script type="application/shiny-singletons"></script>
-  <script type="application/html-dependencies">jquery[3.6.0];shiny-css[1.7.3];shiny-javascript[1.7.3]</script>
+  <script type="application/html-dependencies">jquery[3.6.0];shiny-css[1.10.0];shiny-busy-indicators[1.10.0];shiny-javascript[1.10.0]</script>
 <script src="ibswr_0_files/jquery.min.js"></script>
 <link href="ibswr_0_files/shiny.min.css" rel="stylesheet">
+<link href="ibswr_0_files/busy-indicators.css" rel="stylesheet">
 <script src="ibswr_0_files/shiny.min.js"></script>  <script src="ibswr_0_files/rmd_loader.js"></script>
   <link href="ibswr_0_files/rmd_loader.css" rel="stylesheet">
 <script src="ibswr_0_files/header-attrs.js"></script><meta name="viewport" content="width=device-width, initial-scale=1"><link href="ibswr_0_files/bootstrap.min.css" rel="stylesheet" type="text/css"><script src="ibswr_0_files/bootstrap.min.js"></script><script src="ibswr_0_files/html5shiv.min.js"></script><script src="ibswr_0_files/respond.min.js"></script><style>h1 {font-size: 34px;}
@@ -15,7 +16,7 @@
        h5 {font-size: 16px;}
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }</style><link href="ibswr_0_files/fonts.css" rel="stylesheet" type="text/css"><link href="ibswr_0_files/default.css" rel="stylesheet" type="text/css"><link href="ibswr_0_files/phone.css" rel="stylesheet" type="text/css"><script src="ibswr_0_files/modernizr.custom.45394.js"></script><script src="ibswr_0_files/prettify.js"></script><script src="ibswr_0_files/lang-r.js"></script><script src="ibswr_0_files/lang-yaml.js"></script><script src="ibswr_0_files/hammer.js"></script><script src="ibswr_0_files/slide-controller.js"></script><script src="ibswr_0_files/slide-deck.js"></script><link href="ibswr_0_files/rmd_perf.css" rel="stylesheet" type="text/css"><script src="ibswr_0_files/rmd_perf.js"></script><meta name="rstudio_origin" content="127.0.0.1:64278"><script src="ibswr_0_files/rsiframe.js"></script>
+       pre:not([class]) { background-color: white }</style><link href="ibswr_0_files/fonts.css" rel="stylesheet" type="text/css"><link href="ibswr_0_files/default.css" rel="stylesheet" type="text/css"><link href="ibswr_0_files/phone.css" rel="stylesheet" type="text/css"><script src="ibswr_0_files/modernizr.custom.45394.js"></script><script src="ibswr_0_files/prettify.js"></script><script src="ibswr_0_files/lang-r.js"></script><script src="ibswr_0_files/lang-yaml.js"></script><script src="ibswr_0_files/hammer.js"></script><script src="ibswr_0_files/slide-controller.js"></script><script src="ibswr_0_files/slide-deck.js"></script><link href="ibswr_0_files/rmd_perf.css" rel="stylesheet" type="text/css"><script src="ibswr_0_files/rmd_perf.js"></script><meta name="rstudio_origin" content="127.0.0.1:45371"><script src="ibswr_0_files/rsiframe.js"></script>
   <title>Introduction to Bayesian Statistics with R</title>
 
   <meta charset="utf-8">
@@ -24,12 +25,12 @@
 
 
 
-  <meta name="date" content="2022-11-28">
+  <meta name="date" content="2025-05-05">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
-  <!-- base href="http://127.0.0.1:3986/ibswr_0.Rmd" -->
+  <!-- base href="http://127.0.0.1:5258/ibswr_0.Rmd" -->
 
   <script type="text/javascript">
     var SLIDE_CONFIG = {
@@ -144,7 +145,7 @@ slide:not(.current) .plotly.html-widget{
 #MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
 #MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
 #MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
-</style><style type="text/css">.MathJax_Preview {color: #888}
+</style><style type="text/css">.MathJax_Preview {color: #888; display: contents}
 #MathJax_Message {position: fixed; left: 1px; bottom: 2px; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
 #MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
 .MathJax_Error {color: #CC0000; font-style: italic}
@@ -205,7 +206,7 @@ slide:not(.current) .plotly.html-widget{
 </style></head>
 <body class="loaded"><div id="MathJax_Message" style="display: none;"></div>
   <div>
-    <div data-display-if="!output.__reactivedoc__" data-ns-prefix="" style="display: none;">
+    <div class="shiny-panel-conditional" data-display-if="!output.__reactivedoc__" data-ns-prefix="" style="display: none;">
       <div id="rmd_loader_wrapper">
         <div id="rmd_loader" style="">
           <p>Please wait...</p>
@@ -221,27 +222,27 @@ slide:not(.current) .plotly.html-widget{
 
 <slides class="layout-widescreen">
 
-  <slide class="title-slide segue nobackground" data-slide-num="1" data-total-slides="5">
+  <slide class="title-slide segue nobackground current" data-slide-num="1" data-total-slides="6">
         <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
     <hgroup class="auto-fadein">
       <h1 data-config-title="">Introduction to Bayesian Statistics with R</h1>
       <h2 data-config-subtitle="">0: Overview</h2>
       <p data-config-presenter="">Jack Kuipers<br></p>
-            <p style="margin-top: 6px; margin-left: -2px;">28 November 2022</p>
+            <p style="margin-top: 6px; margin-left: -2px;">5 May 2025</p>
           </hgroup>
   </slide>
 
-<slide class="far-past" data-slide-num="2" data-total-slides="5"><hgroup><h2>Overview</h2></hgroup><article id="overview" class="smaller build">
+<slide class="next" data-slide-num="2" data-total-slides="6"><hgroup><h2>Overview</h2></hgroup><article id="overview" class="smaller build">
 
-<div class="">
-<p>Interactive lectures <strong>Jack Kuipers</strong></p>
+<div class="to-build">
+<p>8 sessions - 2 recorded (with lecture notes), 6 in-person</p>
 
 <ul>
-<li>start of each session</li>
+<li>Interactive lecture each session (c.&nbsp;45 mins) <strong>Jack Kuipers</strong></li>
 <li>written in R shiny</li>
 </ul></div>
 
-<div class="">
+<div class="to-build">
 <p><span class="question">
 Questions on the slides</span></p>
 
@@ -250,24 +251,67 @@ Questions on the slides</span></p>
 think about and work on the question <br> or form small groups and discuss</span></li>
 </ul></div>
 
-<div class="">
+<div class="to-build">
 <p>Every session has an associated exercise sheet</p>
 
 <ul>
-<li>end of each session</li>
-<li>hand in for marking for credit points <strong>Wandrille Duchemin</strong></li>
+<li>allocated time within each session (c.&nbsp;1 hr)</li>
+<li>hand in later for marking for credit points <strong>Wandrille Duchemin</strong></li>
+<li>short review at the end of each session (c.&nbsp;15 mins) <strong>Wandrille Duchemin</strong></li>
 </ul></div>
 
-<div class="">
-<p>New course</p>
+<div class="to-build">
+<p>Newish course</p>
 
 <ul>
 <li>feedback always highly appreciated</li>
 </ul></div>
 
-</article></slide><slide class="past" data-slide-num="3" data-total-slides="5"><hgroup><h2>Topics</h2></hgroup><article id="topics" class="smaller ">
+<div class="to-build">
+<p>Course material [<a href="https://github.com/sib-swiss/intro-bayesian-statistics-training" title="">https://github.com/sib-swiss/intro-bayesian-statistics-training</a>]</p></div>
 
-<p>Day 1: Bayesian beginnings, 28-11-22</p>
+</article></slide><slide class="far-next" data-slide-num="3" data-total-slides="6"><hgroup><h2>Topics</h2></hgroup><article id="topics" class="smaller build">
+
+<div class="to-build">
+<p>Course starts with a self-study phase</p>
+
+<ul>
+<li>containing the first two sessions</li>
+</ul>
+
+<p>These sessions</p>
+
+<ul>
+<li>recap core concepts from frequentist statistics</li>
+</ul>
+
+<p><br></p></div>
+
+<div class="to-build">
+<div class="centered">
+<div style="width: 50%; display: inline-block">
+<table class="rmdtable">
+<tbody><tr class="header">
+<th align="center">n</th>
+<th align="center">Topic</th>
+</tr>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">t-test recap</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">p-values and confidence intervals</td>
+</tr>
+</tbody></table></div></div>
+
+<p><br> <br></p>
+
+<p>Which we will later leverage to transition to Bayesian statistics</p></div>
+
+</article></slide><slide class="" data-slide-num="4" data-total-slides="6"><hgroup><h2>Topics</h2></hgroup><article id="topics-1" class="smaller ">
+
+<p>Day 1: Bayesian beginnings, 05-05-25</p>
 
 <div class="centered">
 <div style="width: 75%; display: inline-block">
@@ -285,52 +329,46 @@ think about and work on the question <br> or form small groups and discuss</span
 <td align="center">9:00–9:15</td>
 </tr>
 <tr class="even">
-<td align="center">1</td>
-<td align="center">t-test recap</td>
-<td align="center">–</td>
-<td align="center">9:15–10:30</td>
-</tr>
-<tr class="odd">
-<td align="center">–</td>
-<td align="center">–</td>
-<td align="center">Coffee</td>
-<td align="center">10:30–11:00</td>
-</tr>
-<tr class="even">
-<td align="center">2</td>
-<td align="center">p-values and confidence intervals</td>
-<td align="center">–</td>
-<td align="center">11:00–12:30</td>
-</tr>
-<tr class="odd">
-<td align="center">–</td>
-<td align="center">–</td>
-<td align="center">Lunch</td>
-<td align="center">12:30–13:30</td>
-</tr>
-<tr class="even">
 <td align="center">3</td>
 <td align="center">Monte Carlo methods</td>
 <td align="center">–</td>
-<td align="center">13:30–15:00</td>
+<td align="center">9:15–11:30</td>
 </tr>
 <tr class="odd">
 <td align="center">–</td>
-<td align="center">–</td>
+<td align="center">(including)</td>
 <td align="center">Coffee</td>
-<td align="center">15:00–15:30</td>
+<td align="center">10:30–11:00</td>
 </tr>
 <tr class="even">
 <td align="center">4</td>
 <td align="center">Bayesian first steps</td>
 <td align="center">–</td>
-<td align="center">15:30–17:00</td>
+<td align="center">11:30–14:30</td>
+</tr>
+<tr class="odd">
+<td align="center">–</td>
+<td align="center">(including)</td>
+<td align="center">Lunch</td>
+<td align="center">12:30–13:30</td>
+</tr>
+<tr class="even">
+<td align="center">5</td>
+<td align="center">Bayesian t-tests</td>
+<td align="center">–</td>
+<td align="center">14:30–17:00</td>
+</tr>
+<tr class="odd">
+<td align="center">–</td>
+<td align="center">(including)</td>
+<td align="center">Coffee</td>
+<td align="center">15:30–16:00</td>
 </tr>
 </tbody></table></div></div>
 
-</article></slide><slide class="current" data-slide-num="4" data-total-slides="5"><hgroup><h2>Topics</h2></hgroup><article id="topics-1" class="smaller ">
+</article></slide><slide class="" data-slide-num="5" data-total-slides="6"><hgroup><h2>Topics</h2></hgroup><article id="topics-2" class="smaller ">
 
-<p>Day 2: Bayesian regression, 29-11-22</p>
+<p>Day 2: Bayesian regression, 06-05-25</p>
 
 <div class="centered">
 <div style="width: 75%; display: inline-block">
@@ -342,48 +380,42 @@ think about and work on the question <br> or form small groups and discuss</span
 <th align="center">Time</th>
 </tr>
 <tr class="odd">
-<td align="center">5</td>
-<td align="center">Bayesian t-tests</td>
-<td align="center">–</td>
-<td align="center">9:00–10:30</td>
-</tr>
-<tr class="even">
-<td align="center">–</td>
-<td align="center">–</td>
-<td align="center">Coffee</td>
-<td align="center">10:30–11:00</td>
-</tr>
-<tr class="odd">
 <td align="center">6</td>
 <td align="center">Robust t-tests and priors</td>
 <td align="center">–</td>
-<td align="center">11:00–12:30</td>
+<td align="center">9:00–11:30</td>
 </tr>
 <tr class="even">
 <td align="center">–</td>
-<td align="center">–</td>
-<td align="center">Lunch</td>
-<td align="center">12:30–13:30</td>
+<td align="center">(including)</td>
+<td align="center">Coffee</td>
+<td align="center">10:30–11:00</td>
 </tr>
 <tr class="odd">
 <td align="center">7</td>
 <td align="center">Bayesian multiple regression</td>
 <td align="center">–</td>
-<td align="center">13:30–15:00</td>
+<td align="center">11:30–14:30</td>
 </tr>
 <tr class="even">
 <td align="center">–</td>
-<td align="center">–</td>
-<td align="center">Coffee</td>
-<td align="center">15:00–15:30</td>
+<td align="center">(including)</td>
+<td align="center">Lunch</td>
+<td align="center">12:30–13:30</td>
 </tr>
 <tr class="odd">
 <td align="center">8</td>
 <td align="center">Bayesian logistic regression</td>
 <td align="center">–</td>
-<td align="center">15:30–16:45</td>
+<td align="center">14:30–16:45</td>
 </tr>
 <tr class="even">
+<td align="center">–</td>
+<td align="center">(including)</td>
+<td align="center">Coffee</td>
+<td align="center">15:30–16:00</td>
+</tr>
+<tr class="odd">
 <td align="center">9</td>
 <td align="center">Outlook</td>
 <td align="center">–</td>
@@ -391,7 +423,7 @@ think about and work on the question <br> or form small groups and discuss</span
 </tr>
 </tbody></table></div></div>
 
-</article></slide><slide class="next" data-slide-num="5" data-total-slides="5"><hgroup><h2>Learning outcomes and software</h2></hgroup><article id="learning-outcomes-and-software" class="smaller build">
+</article></slide><slide class="" data-slide-num="6" data-total-slides="6"><hgroup><h2>Learning outcomes and software</h2></hgroup><article id="learning-outcomes-and-software" class="smaller build">
 
 <p class="to-build">At the end of the course, participants should be able to:</p>
 
@@ -415,7 +447,9 @@ think about and work on the question <br> or form small groups and discuss</span
 <ul class="to-build">
 <li>Rstan [<a href="https://mc-stan.org/users/interfaces/rstan" title="">https://mc-stan.org/users/interfaces/rstan</a>]</li>
 <li>brms [<a href="https://cran.r-project.org/web/packages/brms/index.html" title="">https://cran.r-project.org/web/packages/brms/index.html</a>]</li>
-</ul></article></slide>
+</ul>
+
+<p class="to-build">Link to course material [<a href="https://github.com/sib-swiss/intro-bayesian-statistics-training" title="">https://github.com/sib-swiss/intro-bayesian-statistics-training</a>]</p></article></slide>
 
 
   <slide class="backdrop"></slide>
@@ -443,6 +477,11 @@ think about and work on the question <br> or form small groups and discuss</span
          window.jQuery(e.target).trigger('shown');
       });
     }
+    if (window.Shiny) {
+      // Initialize slides when this script appears on the page, since it
+      // indicates that the <slides> markup has been fully loaded.
+      window.loadDeck();
+    }
   })();
 </script>
 
@@ -451,4 +490,4 @@ think about and work on the question <br> or form small groups and discuss</span
   </div>
 
 
-<div id="shiny-disconnected-overlay"></div></body></html>
+</body></html>
