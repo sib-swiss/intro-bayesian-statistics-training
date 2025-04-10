@@ -7,8 +7,7 @@ title: "Pre-course lecture 1 - t-test recap"
 The lecture is cut into 8 videos where you are sometimes asked to take the time to think on some question between the video.
 
 
-You can also download the lecture notes: 
-{{< downloadthis ../rendered_lectures/ibswr_notes_1.pdf dname="pre_course_lecture1_notes" label="Download the lecture notes" icon="filetype-pdf" >}}
+You can also download the lecture notes: {{< downloadthis ../../rendered_lectures/ibswr_notes_1.pdf dname="pre_course_lecture1_notes" label="pre-course lecture notes 1" icon="filetype-pdf" >}}
 
 
 ### 1.1 Introduction

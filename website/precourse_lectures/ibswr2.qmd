@@ -4,8 +4,7 @@ title: "Pre-course lecture 2 - p-values and confidence intervals"
 
 The lecture is cut into 6 videos where you are sometimes asked to take the time to think on some question between the video.
 
-You can also download the lecture notes: 
-{{< downloadthis ../rendered_lectures/ibswr_notes_2.pdf dname="pre_course_lecture2_notes" label="Download the lecture notes" icon="filetype-pdf" >}}
+You can also download the lecture notes: {{< downloadthis ../../rendered_lectures/ibswr_notes_2.pdf dname="pre_course_lecture2_notes" label="pre-course lecture notes 2" icon="filetype-pdf" >}}
 
 ### 2.1 Confidence intervals
 
