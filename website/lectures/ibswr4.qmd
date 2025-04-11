@@ -4,7 +4,9 @@ title: "Bayesian First Steps"
 
 ## lecture material
 
-{{< downloadthis ../../lectures/ibswr_4.Rmd dname="bayesian_first_steps" label="Download the shiny presentation" icon="filetype-md" >}}
+You can download the rendered html lecture, or clone/download the content of our [github repository](https://github.com/sib-swiss/intro-bayesian-statistics-training/) to run the sniny presentation yourself.
+
+<!-- {{< downloadthis ../../lectures/ibswr_4.Rmd dname="bayesian_first_steps" label="Download the shiny presentation" icon="filetype-md" >}} -->
 
 
 {{< downloadthis ../../rendered_lectures/ibswr_4.html dname="bayesian_first_steps" label="Download the rendered presentation" icon="filetype-html" >}}

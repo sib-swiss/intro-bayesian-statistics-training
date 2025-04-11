@@ -4,8 +4,10 @@ title: "outlooks"
 
 ## lecture material
 
-{{< downloadthis ../../lectures/ibswr_9.Rmd dname="oulooks" label="Download the shiny presentation" icon="filetype-md" >}}
+You can download the rendered html lecture, or clone/download the content of our [github repository](https://github.com/sib-swiss/intro-bayesian-statistics-training/) to run the sniny presentation yourself.
+
+<!-- {{< downloadthis ../../lectures/ibswr_9.Rmd dname="oulooks" label="Download the shiny presentation" icon="filetype-md" >}} -->
 
 
-<!-- {{< downloadthis ../../rendered_lectures/ibswr_9.html dname="outlooks" label="Download the rendered presentation" icon="filetype-html" >}} -->
+{{< downloadthis ../../rendered_lectures/ibswr_9.html dname="outlooks" label="Download the rendered presentation" icon="filetype-html" >}}
 
