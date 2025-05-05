@@ -48,7 +48,7 @@ prior_t <- function(mu, t_s, nu) {
 }
 ```
 
-Update the \code{basicMCMC} code from Exercise 3.2 to sample $\mu$ from its posterior distribution, depending on the data $x$, and the prior choices $t_s$ and $\nu$.
+Update the \code{basicMCMC} code from Exercise 3.1 to sample $\mu$ from its posterior distribution, depending on the data $x$, and the prior choices $t_s$ and $\nu$.
 
 For data we will use Gosset's data on barley seed yield from his 1908 paper which introduced the Student-$t$ distribution. The yields (in US cwt per acre) for 11 plots of land for normal seed and seed which has been dried in a kiln are in \code{seed\_data.csv}.
 
