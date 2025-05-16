@@ -34,6 +34,12 @@ After this course, you will be able to:
 
 Stay up to date of our [upcoming courses](https://www.sib.swiss/training/upcoming-training-courses).
 
+## Citation
+
+If you re-use or mention this course material, please cite:
+
+Jack Kuipers, & Wandrille Duchemin. (2025, May 16). Introduction to Bayesian statistics with R. Zenodo. [https://doi.org/10.5281/zenodo.15434109](https://doi.org/10.5281/zenodo.15434109)
+
 ## Attribution
 
 This course is an original creation of Jack Kuipers.
