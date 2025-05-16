@@ -1,4 +1,5 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8070046.svg)](https://doi.org/10.5281/zenodo.8070046)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15434109.svg)](https://doi.org/10.5281/zenodo.15434109)
+
 
 
 
@@ -47,7 +48,7 @@ Each lecture is accompanied by one or two exercises which can be found in the `e
 
 If you re-use or mention this course material, please cite:
 
-Jack Kuipers, & Wandrille Duchemin. (2023, June 22). Introduction to Bayesian statistics with R. Zenodo. https://doi.org/10.5281/zenodo.8070046
+Jack Kuipers, & Wandrille Duchemin. (2025, May 16). Introduction to Bayesian statistics with R. Zenodo. [https://doi.org/10.5281/zenodo.15434109](https://doi.org/10.5281/zenodo.15434109)
 
 
 ## Series of talks
