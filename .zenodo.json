@@ -1,4 +1,5 @@
 {
+  "upload_type": "lesson",
   "title": "Introduction to Bayesian statistics with R",
   "keywords": [
     "training",
@@ -12,12 +13,12 @@
   ],
   "creators": [
     {
-      "name": "Jack Kuipers",
+      "name": "Kuipers, Jack",
       "affiliation": "ETH Zürich, D-BSSE",
       "orcid": "0000-0001-5357-2705"
     },
     {
-      "name": "Wandrille Duchemin",
+      "name": "Duchemin, Wandrille",
       "affiliation": "SIB Swiss Institute of Bioinformatics",
       "orcid": "0000-0001-8854-7235"
     }  
